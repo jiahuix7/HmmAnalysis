@@ -64,8 +64,7 @@ class HmmAnalyzer : public MainEvent {
                        float &_ptErr, float &_pt_sys_up, float &_pt_sys_down,
                        const int _charge, const int _trk_layers,
                        const float _GEN_pt, const bool _isData);
-    // void EventLoop(const char *, /*const char * */);
-    void EventLoop(const char *);
+    void EventLoop();
     // declare any specific function required
 
     void clearTreeVectors();
@@ -317,7 +316,7 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     isData = isData_input;
     year = year_num;
     yearst = std::string(year.Data());
-    std::string path_RochCor = "../data/Rocco/RoccoR" + yearst + ".txt";
+    std::string path_RochCor = "./data/Rocco/RoccoR" + yearst + ".txt";
     std::cout << "Rochester correction files: " << path_RochCor << std::endl;
     _Roch_calib.init(path_RochCor);
 
@@ -347,25 +346,25 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     // if (year == "2016") {
 
     std::string Mu_ID_file1 =
-        //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID.root";
+        //"./data/leptonSF/" + yearst + "/RunBCDEF_SF_ID.root";
         // std::string Mu_Iso_file1 =
-        //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO.root";
+        //"./data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO.root";
         // std::string Mu_ID_file2 =
-        //"../data/leptonSF/" + yearst + "/RunGH_SF_ID.root";
+        //"./data/leptonSF/" + yearst + "/RunGH_SF_ID.root";
         // std::string Mu_Iso_file2 =
-        //"../data/leptonSF/" + yearst + "/RunGH_SF_ISO.root";
+        //"./data/leptonSF/" + yearst + "/RunGH_SF_ISO.root";
         // std::string Mu_Trg_file1 =
-        //"../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunBtoF.root";
+        //"./data/leptonSF/" + yearst + "/EfficienciesAndSF_RunBtoF.root";
         // std::string Mu_Trg_file2 =
-        //"../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunGtoH.root";
-        "../data/leptonSF/2016/RunBCDEF_SF_ID.root";
-    std::string Mu_Iso_file1 = "../data/leptonSF/2016/RunBCDEF_SF_ISO.root";
-    std::string Mu_ID_file2 = "../data/leptonSF/2016/RunGH_SF_ID.root";
-    std::string Mu_Iso_file2 = "../data/leptonSF/2016/RunGH_SF_ISO.root";
+        //"./data/leptonSF/" + yearst + "/EfficienciesAndSF_RunGtoH.root";
+        "./data/leptonSF/2016/RunBCDEF_SF_ID.root";
+    std::string Mu_Iso_file1 = "./data/leptonSF/2016/RunBCDEF_SF_ISO.root";
+    std::string Mu_ID_file2 = "./data/leptonSF/2016/RunGH_SF_ID.root";
+    std::string Mu_Iso_file2 = "./data/leptonSF/2016/RunGH_SF_ISO.root";
     std::string Mu_Trg_file1 =
-        "../data/leptonSF/2016/EfficienciesAndSF_RunBtoF.root";
+        "./data/leptonSF/2016/EfficienciesAndSF_RunBtoF.root";
     std::string Mu_Trg_file2 =
-        "../data/leptonSF/2016/EfficienciesAndSF_RunGtoH.root";
+        "./data/leptonSF/2016/EfficienciesAndSF_RunGtoH.root";
     std::cout << "Muon ID correction files: " << Mu_ID_file1 << " "
               << Mu_ID_file2 << std::endl;
     std::cout << "Muon Isolation correction files: " << Mu_Iso_file1 << " "
@@ -391,12 +390,12 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
 
     //} else if (year == "2017") {
     // std::string Mu_Trg_file =
-    //"../data/leptonSF/" + yearst +
+    //"./data/leptonSF/" + yearst +
     //"/EfficienciesAndSF_RunBtoF_Nov17Nov2017.root";
     // std::string Mu_ID_file =
-    //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID_syst.root";
+    //"./data/leptonSF/" + yearst + "/RunBCDEF_SF_ID_syst.root";
     // std::string Mu_Iso_file =
-    //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO_syst.root";
+    //"./data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO_syst.root";
     // muon_effSF_TRIG_files.push_back(Mu_Trg_file);
     // muon_effSF_ID_files.push_back(Mu_ID_file);
     // muon_effSF_ISO_files.push_back(Mu_Iso_file);
@@ -408,12 +407,12 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     // histo_names_ISO.push_back(Mu_Iso_name);
     //} else {
     // std::string Mu_Trg_file =
-    //"../data/leptonSF/" + yearst +
+    //"./data/leptonSF/" + yearst +
     //"/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root";
     // std::string Mu_ID_file =
-    //"../data/leptonSF/" + yearst + "/RunABCD_SF_ID.root";
+    //"./data/leptonSF/" + yearst + "/RunABCD_SF_ID.root";
     // std::string Mu_Iso_file =
-    //"../data/leptonSF/" + yearst + "/RunABCD_SF_ISO.root";
+    //"./data/leptonSF/" + yearst + "/RunABCD_SF_ISO.root";
     // muon_effSF_TRIG_files.push_back(Mu_Trg_file);
     // muon_effSF_ID_files.push_back(Mu_ID_file);
     // muon_effSF_ISO_files.push_back(Mu_Iso_file);
@@ -488,10 +487,10 @@ void HmmAnalyzer::getPileupHistograms() {
     std::cout << "Looking for pileup hists file\n";
     if (yearst == "2022") {
         pileupWeightFile =
-            new TFile("../data/pileup/PileupReweight_Summer22.root");
+            new TFile("./data/pileup/PileupReweight_Summer22.root");
     } else if (yearst == "2022EE") {
         pileupWeightFile =
-            new TFile("../data/pileup/PileupReweight_Summer22EE.root");
+            new TFile("./data/pileup/PileupReweight_Summer22EE.root");
     }
     if (pileupWeightFile) {
         pileupWeightHist = (TH1F *)pileupWeightFile->Get("npu_nominal");

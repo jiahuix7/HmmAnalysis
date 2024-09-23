@@ -36,18 +36,18 @@ int main(int argc, char *argv[]) {
     std::cout << "dataset " << data << " year " << year_num << std::endl;
     std::cout << std::boolalpha;
     std::cout << "is data? " << isData_input << std::endl;
-    Hmm.EventLoop(data /*, isData*/);
+    Hmm.EventLoop();
 
     return 0;
 }
 
-void HmmAnalyzer::EventLoop(const char *data /*, bool isData*/) {
+void HmmAnalyzer::EventLoop() {
 
     if (fChain == 0)
         return;
 
     // btag SF
-    BTagCalibration calib("deepcsv", "../data/btagSF/DeepCSV_94XSF_V3_B_F.csv");
+    BTagCalibration calib("deepcsv", "./data/btagSF/DeepCSV_94XSF_V3_B_F.csv");
     BTagCalibrationReader reader(BTagEntry::OP_MEDIUM, // operating point
                                  "central",            // central sys type
                                  {"up", "down"});      // other sys types
