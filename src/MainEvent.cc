@@ -9,7 +9,7 @@
 #include "../lib/MainEvent.h"
 #include <TH2.h>
 #include <TStyle.h>
-#include <iostream>
+//#include <iostream>
 
 double MainEvent::DeltaPhi(double phi1, double phi2) {
     double result = phi1 - phi2;
@@ -27,12 +27,12 @@ double MainEvent::DeltaR(double eta1, double phi1, double eta2, double phi2) {
 }
 // -------------------- modify following functions according to code
 // -------------------
-int MainEvent::FindMom(
-    double dau, double mom,
-    int i) { // this logic works here because we haven't saved a particle for
-             // which id=dau id. So no need for recursion.In general there has
-             // to be a recursive function.
-}
+//int MainEvent::FindMom(
+    //double dau, double mom,
+    //int i) { // this logic works here because we haven't saved a particle for
+             //// which id=dau id. So no need for recursion.In general there has
+             //// to be a recursive function.
+//}
 
 double MainEvent::HT(std::vector<TLorentzVector> vjets) {
     double ht = 0.0;

@@ -6,8 +6,6 @@
 #include <TLorentzVector.h>
 #include <TFile.h>
 #include <TSelector.h>
-#include "TH1F.h"
-#include "TH2F.h"
 #include <vector>
 #ifdef __CINT__
 

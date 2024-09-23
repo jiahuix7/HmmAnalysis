@@ -1,4 +1,3 @@
-
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
 // Mon Aug 27 15:49:34 2018 by ROOT version 6.10/09
@@ -42,6 +41,7 @@
 // Header file for the classes stored in the TTree if any.
 
 // NULL_FLOAT_VALUE = -999.
+constexpr float MUON_MASS = 0.1056583745;
 
 class HmmAnalyzer : public MainEvent {
   public:
@@ -55,6 +55,7 @@ class HmmAnalyzer : public MainEvent {
 
     Bool_t FillChain(TChain *chain, const TString &inputFileList);
     Long64_t LoadTree(Long64_t entry);
+    void getPileupHistograms();
     float getPileupWeight(int);
     float getPileupWeightUp(int);
     float getPileupWeightDown(int);
@@ -325,12 +326,16 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
 
     // muon pT selection
     muon_pt_cut["2016"] = 26.0;
-    muon_pt_cut["2017"] = 29.0;
-    muon_pt_cut["2018"] = 26.0;
-    // b-tag score selection
+    muon_pt_cut["2022"] = 26.0;
+    muon_pt_cut["2022EE"] = 26.0;
+    // muon_pt_cut["2017"] = 29.0;
+    // muon_pt_cut["2018"] = 26.0;
+    //  b-tag score selection
     btag_cut["2016"] = 0.6321;
-    btag_cut["2017"] = 0.4941;
-    btag_cut["2018"] = 0.4184;
+    btag_cut["2022"] = 0.6321;
+    btag_cut["2022EE"] = 0.6321;
+    // btag_cut["2017"] = 0.4941;
+    // btag_cut["2018"] = 0.4184;
 
     // muon eff SFs
     muon_effSF_TRIG_files.clear();
@@ -339,107 +344,122 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     histo_names_TRIG.clear();
     histo_names_ID.clear();
     histo_names_ISO.clear();
-    if (year == "2016") {
-        std::string Mu_ID_file1 =
-            "../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID.root";
-        std::string Mu_Iso_file1 =
-            "../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO.root";
-        std::string Mu_ID_file2 =
-            "../data/leptonSF/" + yearst + "/RunGH_SF_ID.root";
-        std::string Mu_Iso_file2 =
-            "../data/leptonSF/" + yearst + "/RunGH_SF_ISO.root";
-        std::string Mu_Trg_file1 =
-            "../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunBtoF.root";
-        std::string Mu_Trg_file2 =
-            "../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunGtoH.root";
-        std::cout << "Muon ID correction files: " << Mu_ID_file1 << " "
-                  << Mu_ID_file2 << std::endl;
-        std::cout << "Muon Isolation correction files: " << Mu_Iso_file1 << " "
-                  << Mu_Iso_file2 << std::endl;
-        std::cout << "Muon triger SF files: " << Mu_Trg_file1 << " "
-                  << Mu_Trg_file2 << std::endl;
+    // if (year == "2016") {
 
-        muon_effSF_TRIG_files.push_back(Mu_Trg_file1);
-        muon_effSF_TRIG_files.push_back(Mu_Trg_file2);
-        muon_effSF_ID_files.push_back(Mu_ID_file1);
-        muon_effSF_ID_files.push_back(Mu_ID_file2);
-        muon_effSF_ISO_files.push_back(Mu_Iso_file1);
-        muon_effSF_ISO_files.push_back(Mu_Iso_file2);
-        std::string Mu_Trg_name =
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio";
-        std::string Mu_ID_name = "NUM_MediumID_DEN_genTracks_eta_pt";
-        std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_eta_pt";
-        histo_names_TRIG.push_back(Mu_Trg_name);
-        histo_names_ID.push_back(Mu_ID_name);
-        histo_names_ISO.push_back(Mu_Iso_name);
-        histo_names_TRIG.push_back(Mu_Trg_name);
-        histo_names_ID.push_back(Mu_ID_name);
-        histo_names_ISO.push_back(Mu_Iso_name);
-    } else if (year == "2017") {
-        std::string Mu_Trg_file =
-            "../data/leptonSF/" + yearst +
-            "/EfficienciesAndSF_RunBtoF_Nov17Nov2017.root";
-        std::string Mu_ID_file =
-            "../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID_syst.root";
-        std::string Mu_Iso_file =
-            "../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO_syst.root";
-        muon_effSF_TRIG_files.push_back(Mu_Trg_file);
-        muon_effSF_ID_files.push_back(Mu_ID_file);
-        muon_effSF_ISO_files.push_back(Mu_Iso_file);
-        std::string Mu_Trg_name = "IsoMu27_PtEtaBins/pt_abseta_ratio";
-        std::string Mu_ID_name = "NUM_MediumID_DEN_genTracks_pt_abseta";
-        std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_pt_abseta";
-        histo_names_TRIG.push_back(Mu_Trg_name);
-        histo_names_ID.push_back(Mu_ID_name);
-        histo_names_ISO.push_back(Mu_Iso_name);
-    } else {
-        std::string Mu_Trg_file =
-            "../data/leptonSF/" + yearst +
-            "/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root";
-        std::string Mu_ID_file =
-            "../data/leptonSF/" + yearst + "/RunABCD_SF_ID.root";
-        std::string Mu_Iso_file =
-            "../data/leptonSF/" + yearst + "/RunABCD_SF_ISO.root";
-        muon_effSF_TRIG_files.push_back(Mu_Trg_file);
-        muon_effSF_ID_files.push_back(Mu_ID_file);
-        muon_effSF_ISO_files.push_back(Mu_Iso_file);
-        std::string Mu_Trg_name = "IsoMu24_PtEtaBins/pt_abseta_ratio";
-        std::string Mu_ID_name = "NUM_MediumID_DEN_TrackerMuons_pt_abseta";
-        std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_pt_abseta";
-        histo_names_TRIG.push_back(Mu_Trg_name);
-        histo_names_ID.push_back(Mu_ID_name);
-        histo_names_ISO.push_back(Mu_Iso_name);
-    }
+    std::string Mu_ID_file1 =
+        //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID.root";
+        // std::string Mu_Iso_file1 =
+        //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO.root";
+        // std::string Mu_ID_file2 =
+        //"../data/leptonSF/" + yearst + "/RunGH_SF_ID.root";
+        // std::string Mu_Iso_file2 =
+        //"../data/leptonSF/" + yearst + "/RunGH_SF_ISO.root";
+        // std::string Mu_Trg_file1 =
+        //"../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunBtoF.root";
+        // std::string Mu_Trg_file2 =
+        //"../data/leptonSF/" + yearst + "/EfficienciesAndSF_RunGtoH.root";
+        "../data/leptonSF/2016/RunBCDEF_SF_ID.root";
+    std::string Mu_Iso_file1 = "../data/leptonSF/2016/RunBCDEF_SF_ISO.root";
+    std::string Mu_ID_file2 = "../data/leptonSF/2016/RunGH_SF_ID.root";
+    std::string Mu_Iso_file2 = "../data/leptonSF/2016/RunGH_SF_ISO.root";
+    std::string Mu_Trg_file1 =
+        "../data/leptonSF/2016/EfficienciesAndSF_RunBtoF.root";
+    std::string Mu_Trg_file2 =
+        "../data/leptonSF/2016/EfficienciesAndSF_RunGtoH.root";
+    std::cout << "Muon ID correction files: " << Mu_ID_file1 << " "
+              << Mu_ID_file2 << std::endl;
+    std::cout << "Muon Isolation correction files: " << Mu_Iso_file1 << " "
+              << Mu_Iso_file2 << std::endl;
+    std::cout << "Muon triger SF files: " << Mu_Trg_file1 << " " << Mu_Trg_file2
+              << std::endl;
+
+    muon_effSF_TRIG_files.push_back(Mu_Trg_file1);
+    muon_effSF_TRIG_files.push_back(Mu_Trg_file2);
+    muon_effSF_ID_files.push_back(Mu_ID_file1);
+    muon_effSF_ID_files.push_back(Mu_ID_file2);
+    muon_effSF_ISO_files.push_back(Mu_Iso_file1);
+    muon_effSF_ISO_files.push_back(Mu_Iso_file2);
+    std::string Mu_Trg_name = "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio";
+    std::string Mu_ID_name = "NUM_MediumID_DEN_genTracks_eta_pt";
+    std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_eta_pt";
+    histo_names_TRIG.push_back(Mu_Trg_name);
+    histo_names_ID.push_back(Mu_ID_name);
+    histo_names_ISO.push_back(Mu_Iso_name);
+    histo_names_TRIG.push_back(Mu_Trg_name);
+    histo_names_ID.push_back(Mu_ID_name);
+    histo_names_ISO.push_back(Mu_Iso_name);
+
+    //} else if (year == "2017") {
+    // std::string Mu_Trg_file =
+    //"../data/leptonSF/" + yearst +
+    //"/EfficienciesAndSF_RunBtoF_Nov17Nov2017.root";
+    // std::string Mu_ID_file =
+    //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ID_syst.root";
+    // std::string Mu_Iso_file =
+    //"../data/leptonSF/" + yearst + "/RunBCDEF_SF_ISO_syst.root";
+    // muon_effSF_TRIG_files.push_back(Mu_Trg_file);
+    // muon_effSF_ID_files.push_back(Mu_ID_file);
+    // muon_effSF_ISO_files.push_back(Mu_Iso_file);
+    // std::string Mu_Trg_name = "IsoMu27_PtEtaBins/pt_abseta_ratio";
+    // std::string Mu_ID_name = "NUM_MediumID_DEN_genTracks_pt_abseta";
+    // std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_pt_abseta";
+    // histo_names_TRIG.push_back(Mu_Trg_name);
+    // histo_names_ID.push_back(Mu_ID_name);
+    // histo_names_ISO.push_back(Mu_Iso_name);
+    //} else {
+    // std::string Mu_Trg_file =
+    //"../data/leptonSF/" + yearst +
+    //"/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root";
+    // std::string Mu_ID_file =
+    //"../data/leptonSF/" + yearst + "/RunABCD_SF_ID.root";
+    // std::string Mu_Iso_file =
+    //"../data/leptonSF/" + yearst + "/RunABCD_SF_ISO.root";
+    // muon_effSF_TRIG_files.push_back(Mu_Trg_file);
+    // muon_effSF_ID_files.push_back(Mu_ID_file);
+    // muon_effSF_ISO_files.push_back(Mu_Iso_file);
+    // std::string Mu_Trg_name = "IsoMu24_PtEtaBins/pt_abseta_ratio";
+    // std::string Mu_ID_name = "NUM_MediumID_DEN_TrackerMuons_pt_abseta";
+    // std::string Mu_Iso_name = "NUM_LooseRelIso_DEN_MediumID_pt_abseta";
+    // histo_names_TRIG.push_back(Mu_Trg_name);
+    // histo_names_ID.push_back(Mu_ID_name);
+    // histo_names_ISO.push_back(Mu_Iso_name);
+    //}
 
     Mu_eff_SF_TRIG.init(muon_effSF_TRIG_files, histo_names_TRIG);
     Mu_eff_SF_ID.init(muon_effSF_ID_files, histo_names_ID);
     Mu_eff_SF_ISO.init(muon_effSF_ISO_files, histo_names_ISO);
 
+    if (!isData) {
+        getPileupHistograms();
+    }
+
     std::string Mu_ID_name_stat = "NUM_MediumID_DEN_genTracks_eta_pt_stat";
     std::string Mu_ID_name_syst = "NUM_MediumID_DEN_genTracks_eta_pt_syst";
     std::string Mu_Iso_name_stat = "NUM_LooseRelIso_DEN_MediumID_eta_pt_stat";
     std::string Mu_Iso_name_syst = "NUM_LooseRelIso_DEN_MediumID_eta_pt_syst";
-    if (year == "2017") {
-        Mu_ID_name_stat = "NUM_MediumID_DEN_genTracks_pt_abseta_stat";
-        Mu_ID_name_syst = "NUM_MediumID_DEN_genTracks_pt_abseta_syst";
-        Mu_Iso_name_stat = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_stat";
-        Mu_Iso_name_syst = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_syst";
-    } else if (year == "2018") {
-        Mu_ID_name_stat = "NUM_MediumID_DEN_TrackerMuons_pt_abseta_stat";
-        Mu_ID_name_syst = "NUM_MediumID_DEN_TrackerMuons_pt_abseta_syst";
-        Mu_Iso_name_stat = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_stat";
-        Mu_Iso_name_syst = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_syst";
-    }
+    // if (year == "2017") {
+    // Mu_ID_name_stat = "NUM_MediumID_DEN_genTracks_pt_abseta_stat";
+    // Mu_ID_name_syst = "NUM_MediumID_DEN_genTracks_pt_abseta_syst";
+    // Mu_Iso_name_stat = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_stat";
+    // Mu_Iso_name_syst = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_syst";
+    //} else if (year == "2018") {
+    // Mu_ID_name_stat = "NUM_MediumID_DEN_TrackerMuons_pt_abseta_stat";
+    // Mu_ID_name_syst = "NUM_MediumID_DEN_TrackerMuons_pt_abseta_syst";
+    // Mu_Iso_name_stat = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_stat";
+    // Mu_Iso_name_syst = "NUM_LooseRelIso_DEN_MediumID_pt_abseta_syst";
+    //}
     histo_names_ID_stat.push_back(Mu_ID_name_stat);
     histo_names_ID_syst.push_back(Mu_ID_name_syst);
     histo_names_ISO_stat.push_back(Mu_Iso_name_stat);
     histo_names_ISO_syst.push_back(Mu_Iso_name_syst);
-    if (year == "2016") {
-        histo_names_ID_stat.push_back(Mu_ID_name_stat);
-        histo_names_ID_syst.push_back(Mu_ID_name_syst);
-        histo_names_ISO_stat.push_back(Mu_Iso_name_stat);
-        histo_names_ISO_syst.push_back(Mu_Iso_name_syst);
-    }
+
+    // if (year == "2016") {
+    histo_names_ID_stat.push_back(Mu_ID_name_stat);
+    histo_names_ID_syst.push_back(Mu_ID_name_syst);
+    histo_names_ISO_stat.push_back(Mu_Iso_name_stat);
+    histo_names_ISO_syst.push_back(Mu_Iso_name_syst);
+    //}
+
     Mu_eff_SF_ID_stat.init(muon_effSF_ID_files, histo_names_ID_stat);
     Mu_eff_SF_ID_syst.init(muon_effSF_ID_files, histo_names_ID_syst);
     Mu_eff_SF_ISO_stat.init(muon_effSF_ISO_files, histo_names_ISO_stat);
@@ -451,8 +471,6 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
         std::cerr << "Cannot get the tree " << std::endl;
     } else {
         std::cout << "Initiating analysis of dataset " << dataset << std::endl;
-        char temp[] = "T";
-
         if (isData)
             std::cout << "Initiating analysis on Data" << endl;
         else
@@ -466,8 +484,26 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     BookTreeBranches();
 }
 
+void HmmAnalyzer::getPileupHistograms() {
+    std::cout << "Looking for pileup hists file\n";
+    if (yearst == "2022") {
+        pileupWeightFile =
+            new TFile("../data/pileup/PileupReweight_Summer22.root");
+    } else if (yearst == "2022EE") {
+        pileupWeightFile =
+            new TFile("../data/pileup/PileupReweight_Summer22EE.root");
+    }
+    if (pileupWeightFile) {
+        pileupWeightHist = (TH1F *)pileupWeightFile->Get("npu_nominal");
+        pileupWeightSysUpHist = (TH1F *)pileupWeightFile->Get("npu_up");
+        pileupWeightSysDownHist = (TH1F *)pileupWeightFile->Get("npu_down");
+    } else {
+        std::cerr << "Pileup file didn't found" << std::endl;
+    }
+    std::cout << "Done with getting pileup histograms!\n";
+}
+
 float HmmAnalyzer::getPileupWeight(int NPU) {
-    std::cout << "are we using this vaina?" << std::endl;
     if (pileupWeightHist) {
         return pileupWeightHist->GetBinContent(
             pileupWeightHist->GetXaxis()->FindFixBin(NPU));
@@ -514,7 +550,7 @@ void HmmAnalyzer::CorrectPtRoch(const RoccoR &_calib, const bool _doSys,
     _pt_sys_up = -999;
     _pt_sys_down = -999;
     float q_term = 1.0;
-    float q_term_sys = -99;
+    // float q_term_sys = -99;
 
     float fRand_1 = gRandom->Rndm();
     // float fRand_2 = gRandom->Rndm();
@@ -637,6 +673,9 @@ HmmAnalyzer::~HmmAnalyzer() {
     h_sumOfgpw->Write();
     oFile->Write();
     oFile->Close();
+    if (!isData) {
+        pileupWeightFile->Close();
+    }
 }
 
 Long64_t HmmAnalyzer::LoadTree(Long64_t entry) {

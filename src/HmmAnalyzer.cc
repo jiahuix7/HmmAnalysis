@@ -18,8 +18,6 @@
 #pragma link C++ class vector < bool> + ;
 #endif
 
-constexpr float MUON_MASS = 0.1056583745;
-
 int main(int argc, char *argv[]) {
 
     if (argc != 6) {
@@ -84,13 +82,21 @@ void HmmAnalyzer::EventLoop(const char *data /*, bool isData*/) {
 
         // sum of genWeight and pileupweight
         float value_h_sumOfgpw = h_sumOfgpw->GetBinContent(1);
-        if (!isData)
-            value_h_sumOfgpw = value_h_sumOfgpw + genWeight * 1.0; // puWeight;
-        else
+        float puWeight, puWeightUp, puWeightDown;
+        if (!isData) {
+            puWeight = getPileupWeight(Pileup_nPU);
+            puWeightUp = getPileupWeightUp(Pileup_nPU);
+            puWeightDown = getPileupWeightDown(Pileup_nPU);
+            // value_h_sumOfgpw = value_h_sumOfgpw + genWeight * 1.0; //
+            // puWeight;
+            value_h_sumOfgpw = value_h_sumOfgpw + genWeight * puWeight;
+        } else
             value_h_sumOfgpw = value_h_sumOfgpw + 1.0;
         h_sumOfgpw->SetBinContent(1, value_h_sumOfgpw);
 
-        bool trig_decision = (year == "2016" && HLT_IsoMu24 == 1);
+        bool trig_decision = (HLT_IsoMu24 == 1);
+        //bool trig_decision = ((year == "2016" && HLT_IsoMu24 == 1) ||
+                              //(year == "2022" && HLT_IsoMu24 == 1));
 
         int index_mu1 = -999;
         int index_mu2 = -999;
@@ -246,24 +252,24 @@ void HmmAnalyzer::EventLoop(const char *data /*, bool isData*/) {
                 continue;
             }
 
-            if (year == "2016") {
-                t_Mu_EffSF_TRIG->push_back(Mu_eff_SF_TRIG.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSFErr_TRIG->push_back(
-                    Mu_eff_SF_TRIG.getSFErr(13, Muon_pt[i], Muon_eta[i]));
-                t_Mu_EffSF_ID->push_back(
-                    Mu_eff_SF_ID.getSFAve(11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSF_ID_stat->push_back(Mu_eff_SF_ID_stat.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSF_ID_syst->push_back(Mu_eff_SF_ID_syst.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSF_ISO->push_back(Mu_eff_SF_ISO.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSF_ISO_stat->push_back(Mu_eff_SF_ISO_stat.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-                t_Mu_EffSF_ISO_syst->push_back(Mu_eff_SF_ISO_syst.getSFAve(
-                    11, Muon_pt[i], Muon_eta[i], 0.5548));
-            } 
+            // if (year == "2016") {
+            t_Mu_EffSF_TRIG->push_back(
+                Mu_eff_SF_TRIG.getSFAve(11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSFErr_TRIG->push_back(
+                Mu_eff_SF_TRIG.getSFErr(13, Muon_pt[i], Muon_eta[i]));
+            t_Mu_EffSF_ID->push_back(
+                Mu_eff_SF_ID.getSFAve(11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSF_ID_stat->push_back(Mu_eff_SF_ID_stat.getSFAve(
+                11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSF_ID_syst->push_back(Mu_eff_SF_ID_syst.getSFAve(
+                11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSF_ISO->push_back(
+                Mu_eff_SF_ISO.getSFAve(11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSF_ISO_stat->push_back(Mu_eff_SF_ISO_stat.getSFAve(
+                11, Muon_pt[i], Muon_eta[i], 0.5548));
+            t_Mu_EffSF_ISO_syst->push_back(Mu_eff_SF_ISO_syst.getSFAve(
+                11, Muon_pt[i], Muon_eta[i], 0.5548));
+            //}
         }
 
         t_mu1 = t_index_mu1;
@@ -489,9 +495,12 @@ void HmmAnalyzer::EventLoop(const char *data /*, bool isData*/) {
 
         if (!isData) {
             t_genWeight = genWeight;
-            t_puWeight = 1.0;     // puWeight;
-            t_puWeightUp = 1.0;   // puWeightUp;
-            t_puWeightDown = 1.0; // puWeightDown;
+            // t_puWeight = 1.0;     // puWeight;
+            // t_puWeightUp = 1.0;   // puWeightUp;
+            // t_puWeightDown = 1.0; // puWeightDown;
+            t_puWeight = puWeight;
+            t_puWeightUp = puWeightUp;
+            t_puWeightDown = puWeightDown;
             //  if (year != "2017") {
             t_PrefireWeight = 1.0;
             t_PrefireWeight_Up = 1.0;
