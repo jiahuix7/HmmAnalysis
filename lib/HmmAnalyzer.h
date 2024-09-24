@@ -49,10 +49,10 @@ class HmmAnalyzer : public MainEvent {
   public:
     HmmAnalyzer(const TString &inputFileList = "foo.txt",
                 const char *outFileName = "histo.root",
-                TString dataset = "data", bool isData_input = false,
+                TString dataset = "data", bool is_data_input = false,
                 TString year_num = "2017");
     virtual ~HmmAnalyzer();
-    // void Analyze(bool isData, int option, string outputFileName, string
+    // void Analyze(bool is_data, int option, string outputFileName, string
     // label);
 
     Bool_t FillChain(TChain *chain, const TString &inputFileList);
@@ -72,7 +72,7 @@ class HmmAnalyzer : public MainEvent {
 
     void clearTreeVectors();
     void BookTreeBranches();
-    bool isData;
+    bool is_data;
     TString year;
     std::string yearst;
     std::map<std::string, float> muon_pt_cut;
@@ -308,11 +308,11 @@ class HmmAnalyzer : public MainEvent {
 
 #ifdef HmmAnalyzer_cxx
 HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
-                         TString dataset, bool isData_input, TString year_num) {
+                         TString dataset, bool is_data_input, TString year_num) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
 
-    isData = isData_input;
+    is_data = is_data_input;
     year = year_num;
     yearst = std::string(year.Data());
     std::string path_RochCor = "./data/Rocco/RoccoR" + yearst + ".txt";
@@ -427,7 +427,7 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     Mu_eff_SF_ID.init(muon_effSF_ID_files, histo_names_ID);
     Mu_eff_SF_ISO.init(muon_effSF_ISO_files, histo_names_ISO);
 
-    if (!isData) {
+    if (!is_data) {
         getPileupHistograms();
     }
 
@@ -469,14 +469,14 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
         std::cerr << "Cannot get the tree " << std::endl;
     } else {
         std::cout << "Initiating analysis of dataset " << dataset << std::endl;
-        if (isData)
+        if (is_data)
             std::cout << "Initiating analysis on Data" << endl;
         else
             std::cout << "Initiating analysis on MC" << endl;
     }
 
     MainEvent::Init(tree);
-    if (!isData) {
+    if (!is_data) {
         MainEvent::InitSimulationVariables(tree);
     }
     oFile = new TFile(outFileName, "recreate");
@@ -632,7 +632,7 @@ bool HmmAnalyzer::FillChain(TChain *chain, const TString &inputFileList) {
     while (getline(infile, buffer)) {
         std::cout << "Adding tree from " << buffer.c_str() << std::endl;
         chain->Add(buffer.c_str());
-        // if(!isData){
+        // if(!is_data){
         //   std::string friend_buffer = "";
 
         //   std::string delimiter = "/";
@@ -679,7 +679,7 @@ HmmAnalyzer::~HmmAnalyzer() {
     h_sumOfgpw->Write();
     oFile->Write();
     oFile->Close();
-    if (!isData) {
+    if (!is_data) {
         pileupWeightFile->Close();
     }
 }

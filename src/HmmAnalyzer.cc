@@ -29,13 +29,15 @@ int main(int argc, char *argv[]) {
     const char *inputFileList = argv[1];
     const char *outFileName = argv[2];
     const char *data = argv[3];
-    // const char *isData = argv[4];
-    const bool isData_input = *argv[4] == 'T';
+    // const char *is_data = argv[4];
+    const bool is_data_input = *argv[4] == 'T';
     TString year_num = argv[5];
-    HmmAnalyzer Hmm(inputFileList, outFileName, data, isData_input, year_num);
-    std::cout << "dataset " << data << " year " << year_num << std::endl;
+    HmmAnalyzer Hmm(inputFileList, outFileName, data, is_data_input, year_num);
+    std::cout << "Running on: " << std::endl;
+    std::cout << "  Dataset: " << data << " year " << year_num << std::endl;
+    std::cout << "  Era:  " << year_num << std::endl;
     std::cout << std::boolalpha;
-    std::cout << "is data? " << isData_input << std::endl;
+    std::cout << "  Is data? " << is_data_input << std::endl;
     Hmm.EventLoop();
 
     return 0;
@@ -74,7 +76,7 @@ void HmmAnalyzer::EventLoop() {
 
         // sum of genWeight
         float value_h_sumOfgw = h_sumOfgw->GetBinContent(1);
-        if (!isData)
+        if (!is_data)
             value_h_sumOfgw = value_h_sumOfgw + genWeight;
         else
             value_h_sumOfgw = value_h_sumOfgw + 1.0;
@@ -83,7 +85,7 @@ void HmmAnalyzer::EventLoop() {
         // sum of genWeight and pileupweight
         float value_h_sumOfgpw = h_sumOfgpw->GetBinContent(1);
         float puWeight, puWeightUp, puWeightDown;
-        if (!isData) {
+        if (!is_data) {
             puWeight = getPileupWeight(Pileup_nPU);
             puWeightUp = getPileupWeightUp(Pileup_nPU);
             puWeightDown = getPileupWeightDown(Pileup_nPU);
@@ -103,7 +105,6 @@ void HmmAnalyzer::EventLoop() {
              Flag_BadChargedCandidateFilter && trig_decision &&
              PV_npvsGood > 0);
 
-        // std::cout << "test 2\n";
         if (!run_muChecks) {
             continue;
         }
@@ -132,7 +133,7 @@ void HmmAnalyzer::EventLoop() {
             //  <<std::endl;
 
             float gen_pt = FLOAT_NULL_VALUE;
-            if (!isData) {
+            if (!is_data) {
                 for (int j = 0; j < nGenPart; j++) {
                     if (((Muon_charge[i] == -1 && GenPart_pdgId[j] == 13) ||
                          ((Muon_charge[i] == 1 && GenPart_pdgId[j] == -13))) &&
@@ -145,7 +146,7 @@ void HmmAnalyzer::EventLoop() {
             }
             CorrectPtRoch(_Roch_calib, false, mu_raw, pt_Roch, ptErr_Roch,
                           pt_Roch_sys_up, pt_Roch_sys_down, Muon_charge[i],
-                          Muon_nTrackerLayers[i], gen_pt, isData);
+                          Muon_nTrackerLayers[i], gen_pt, is_data);
             // std::cout <<"pt_Roch "<<pt_Roch<<std::endl;
             mu_pt_Roch_corr.push_back(pt_Roch);
             mu_ptErr_Roch_corr.push_back(ptErr_Roch);
@@ -210,7 +211,6 @@ void HmmAnalyzer::EventLoop() {
         if (!(two_valid_muons && trig_match)) {
             continue;
         }
-        std::cout << "test 4\n";
 
         t_run = run;
         t_luminosityBlock = luminosityBlock;
@@ -257,7 +257,7 @@ void HmmAnalyzer::EventLoop() {
             t_Mu_nTrackerLayers->push_back(Muon_nTrackerLayers[i]);
             t_index++;
 
-            if (isData) {
+            if (is_data) {
                 continue;
             }
 
@@ -370,7 +370,7 @@ void HmmAnalyzer::EventLoop() {
             t_bJet_nMuons->push_back(Jet_nMuons[j]);
             // t_bJet_puId->push_back(Jet_puId[j]);
 
-            if (!isData) {
+            if (!is_data) {
                 continue;
             }
 
@@ -505,7 +505,7 @@ void HmmAnalyzer::EventLoop() {
         t_PV_npvs = PV_npvs;
         t_PV_npvsGood = PV_npvsGood;
 
-        if (!isData) {
+        if (!is_data) {
             t_genWeight = genWeight;
             // t_puWeight = 1.0;     // puWeight;
             // t_puWeightUp = 1.0;   // puWeightUp;
