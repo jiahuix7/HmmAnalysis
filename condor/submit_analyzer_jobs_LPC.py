@@ -52,10 +52,13 @@ Inputfiles_DIR = Analyzer_DIR + "list/"
 cmsswReleaseVersion = CMSSW_BASE_DIR.split("/")[-1]
 print("Using CMSSW version " + cmsswReleaseVersion)
 
+# Create script to send all of the jobs directly
+send_all_jobs = open(Condor_BASE_DIR + "/condor_job_sender.sh", "w+")
+
 # Create directory for condor jobs
 for list_file in all_dataset_lists.keys():
     dataset_name = list_file.replace(".list","")
-    print("Preparing analyzer workflow for dataset: " + dataset_name + "\n")
+    print("Preparing analyzer workflow for dataset: " + dataset_name)
     if not os.path.exists(Inputfiles_DIR + list_file):
         print(" (!) List file: " + list_file + " does not exist. Skipping!")
         continue
@@ -67,7 +70,7 @@ for list_file in all_dataset_lists.keys():
     Output_DIR = "analyzer_%s/"%(outputfile) + "%s/"%(dataset_name)
     Job_DIR = Condor_BASE_DIR + Output_DIR
     if os.path.exists(Job_DIR + "input_list.tgz"):
-        print(" (!) Warning: condor directory " + Job_DIR + " is not empty. Skipping.")
+        print(" (!) Skipping. Condor directory " + Job_DIR + " is not empty.")
         continue
 
     # Create condor directories
@@ -160,3 +163,9 @@ for list_file in all_dataset_lists.keys():
         jobfile_JDL.write(str(i)+"\n")
     jobfile_JDL.write(")\n")
     jobfile_JDL.close()
+
+    print(" --> Send job: cd " + Job_DIR + "; condor_submit task.jdl")
+    send_all_jobs.write("cd " + Job_DIR + "\n")
+    send_all_jobs.write("condor_submit task.jdl" + "\n")
+
+send_all_jobs.close()

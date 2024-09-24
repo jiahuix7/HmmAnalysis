@@ -6,7 +6,7 @@ This code is based in the Run2 Anaylis https://github.com/irenedutta23/HmmAna
 cmsrel CMSSW_14_0_14
 cd CMSSW_14_0_14/src
 git clone git@github.com:MatBarria/HmmAnalysis.git
-  cd HmmAnalysis
+cd HmmAnalysis
 ```
 
 ## Run the analysis 
