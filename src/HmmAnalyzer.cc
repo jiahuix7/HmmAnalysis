@@ -95,11 +95,6 @@ void HmmAnalyzer::EventLoop() {
         h_sumOfgpw->SetBinContent(1, value_h_sumOfgpw);
 
         bool trig_decision = (HLT_IsoMu24 == 1);
-        //bool trig_decision = ((year == "2016" && HLT_IsoMu24 == 1) ||
-                              //(year == "2022" && HLT_IsoMu24 == 1));
-
-        int index_mu1 = -999;
-        int index_mu2 = -999;
 
         bool run_muChecks =
             (nMuon >= 2 && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter &&
@@ -108,15 +103,20 @@ void HmmAnalyzer::EventLoop() {
              Flag_BadChargedCandidateFilter && trig_decision &&
              PV_npvsGood > 0);
 
+        // std::cout << "test 2\n";
         if (!run_muChecks) {
             continue;
         }
+
+        int index_mu1 = INT_NULL_VALUE;
+        int index_mu2 = INT_NULL_VALUE;
         vector<float> mu_pt_Roch_corr, mu_ptErr_Roch_corr, mu_Iso_Roch_corr;
         // mu_pt_Roch_corr.clear(), mu_ptErr_Roch_corr.clear(),
         // mu_Iso_Roch_corr.clear();
 
         float pt_Roch, ptErr_Roch, pt_Roch_sys_up, pt_Roch_sys_down;
-        pt_Roch = 0, ptErr_Roch = 0, pt_Roch_sys_up = 0, pt_Roch_sys_down = 0;
+        // pt_Roch = 0, ptErr_Roch = 0, pt_Roch_sys_up = 0, pt_Roch_sys_down =
+        // 0;
         bool two_valid_muons = false;
         bool trig_match = false;
 
@@ -131,7 +131,7 @@ void HmmAnalyzer::EventLoop() {
             //  std::cout <<"pt "<<Muon_pt[i]<<" Err "<<Muon_ptErr[i]
             //  <<std::endl;
 
-            float gen_pt = -999.;
+            float gen_pt = FLOAT_NULL_VALUE;
             if (!isData) {
                 for (int j = 0; j < nGenPart; j++) {
                     if (((Muon_charge[i] == -1 && GenPart_pdgId[j] == 13) ||
@@ -151,21 +151,27 @@ void HmmAnalyzer::EventLoop() {
             mu_ptErr_Roch_corr.push_back(ptErr_Roch);
         }
 
-        for (int i = 0; i < nMuon; i++) {
-            if (!(Muon_isGlobal[i] &&
-                  mu_pt_Roch_corr[i] > muon_pt_cut[yearst] &&
-                  Muon_mediumId[i] && fabs(Muon_eta[i]) < 2.4 &&
-                  Muon_pfRelIso04_all[i] < 0.25)) {
+        for (int muon_index_1 = 0; muon_index_1 < nMuon; muon_index_1++) {
+            if (!(Muon_isGlobal[muon_index_1] &&
+                  mu_pt_Roch_corr[muon_index_1] > muon_pt_cut[yearst] &&
+                  Muon_mediumId[muon_index_1] &&
+                  fabs(Muon_eta[muon_index_1]) < 2.4 &&
+                  Muon_pfRelIso04_all[muon_index_1] < 0.25)) {
                 continue;
             }
 
-            for (int j = i + 1; j < nMuon; j++) {
-                if (Muon_isGlobal[j] && Muon_charge[i] * Muon_charge[j] == -1 &&
-                    mu_pt_Roch_corr[j] > 20. && Muon_mediumId[j] &&
-                    fabs(Muon_eta[j]) < 2.4 && Muon_pfRelIso04_all[j] < 0.25) {
+            for (int muon_index_2 = muon_index_1 + 1; muon_index_2 < nMuon;
+                 muon_index_2++) {
+                if (Muon_isGlobal[muon_index_2] &&
+                    Muon_charge[muon_index_1] * Muon_charge[muon_index_2] ==
+                        -1 &&
+                    mu_pt_Roch_corr[muon_index_2] > 20. &&
+                    Muon_mediumId[muon_index_2] &&
+                    fabs(Muon_eta[muon_index_2]) < 2.4 &&
+                    Muon_pfRelIso04_all[muon_index_2] < 0.25) {
                     two_valid_muons = true;
-                    index_mu1 = i;
-                    index_mu2 = j;
+                    index_mu1 = muon_index_1;
+                    index_mu2 = muon_index_2;
                     break;
                 }
             }
@@ -173,14 +179,15 @@ void HmmAnalyzer::EventLoop() {
                 break;
         }
 
-        for (int i = 0; i < nTrigObj; i++) {
+        for (int trigger_index = 0; trigger_index < nTrigObj; trigger_index++) {
             //  float dR_TrigObj = 999.;
-            if (TrigObj_id[i] != 13)
+            if (TrigObj_id[trigger_index] != 13)
                 continue;
 
             float dR_TrigObj;
-            dR_TrigObj = DeltaR(Muon_eta[index_mu1], Muon_phi[index_mu1],
-                                TrigObj_eta[i], TrigObj_phi[i]);
+            dR_TrigObj =
+                DeltaR(Muon_eta[index_mu1], Muon_phi[index_mu1],
+                       TrigObj_eta[trigger_index], TrigObj_phi[trigger_index]);
             if (dR_TrigObj < 0.1 && Muon_tightId[index_mu1] &&
                 Muon_pfRelIso04_all[index_mu1] < 0.15 &&
                 mu_pt_Roch_corr[index_mu1] > muon_pt_cut[yearst]) {
@@ -188,8 +195,9 @@ void HmmAnalyzer::EventLoop() {
                 t_index_trigm_mu = 1;
                 break;
             }
-            dR_TrigObj = DeltaR(Muon_eta[index_mu2], Muon_phi[index_mu2],
-                                TrigObj_eta[i], TrigObj_phi[i]);
+            dR_TrigObj =
+                DeltaR(Muon_eta[index_mu2], Muon_phi[index_mu2],
+                       TrigObj_eta[trigger_index], TrigObj_phi[trigger_index]);
             if (mu_pt_Roch_corr[index_mu2] > muon_pt_cut[yearst] &&
                 Muon_tightId[index_mu2] &&
                 Muon_pfRelIso04_all[index_mu2] < 0.15 && dR_TrigObj < 0.1) {
@@ -202,13 +210,14 @@ void HmmAnalyzer::EventLoop() {
         if (!(two_valid_muons && trig_match)) {
             continue;
         }
+        std::cout << "test 4\n";
 
         t_run = run;
         t_luminosityBlock = luminosityBlock;
         t_event = event;
         // std::cout<<jentry<<" : "<<t_event<<"-------------------\n";
-        int t_index_mu1 = -999;
-        int t_index_mu2 = -999;
+        int t_index_mu1 = INT_NULL_VALUE;
+        int t_index_mu2 = INT_NULL_VALUE;
         int t_index = 0;
         for (int i = 0; i < nMuon; i++) {
             // if(fabs(Muon_eta[i])<2.4 && Muon_mediumId[i] &&
@@ -299,10 +308,13 @@ void HmmAnalyzer::EventLoop() {
         t_SoftActivityJetNjets5 = SoftActivityJetNjets5;
 
         for (int j = 0; j < nJet; j++) {
-            if (!(Jet_pt[j] > 25. && fabs(Jet_eta[j]) < 4.7 &&
-                  Jet_jetId[j] >= 2 /* && Jet_puId[j]>=1 */)) {
+            if (!isValidJet(j)) {
                 continue;
             }
+            // if (!(Jet_pt[j] > 25. && fabs(Jet_eta[j]) < 4.7 &&
+            // Jet_jetId[j] >= 2 [> && Jet_puId[j]>=1 <])) {
+            // continue;
+            //}
             double dR1 = DeltaR(Muon_eta[index_mu1], Muon_phi[index_mu1],
                                 Jet_eta[j], Jet_phi[j]);
             double dR2 = DeltaR(Muon_eta[index_mu2], Muon_phi[index_mu2],

@@ -42,6 +42,8 @@
 
 // NULL_FLOAT_VALUE = -999.
 constexpr float MUON_MASS = 0.1056583745;
+constexpr float FLOAT_NULL_VALUE = -999.;
+constexpr float INT_NULL_VALUE = -999.;
 
 class HmmAnalyzer : public MainEvent {
   public:
@@ -59,6 +61,7 @@ class HmmAnalyzer : public MainEvent {
     float getPileupWeight(int);
     float getPileupWeightUp(int);
     float getPileupWeightDown(int);
+    bool isValidJet(int index);
     void CorrectPtRoch(const RoccoR &_calib, const bool _doSys,
                        const ROOT::Math::PtEtaPhiMVector _mu_vec, float &_pt,
                        float &_ptErr, float &_pt_sys_up, float &_pt_sys_down,
@@ -308,10 +311,6 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
                          TString dataset, bool isData_input, TString year_num) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
-    // if (isData)
-    // DataIs = false;
-    // else
-    // DataIs = true;
 
     isData = isData_input;
     year = year_num;
@@ -477,6 +476,9 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     }
 
     MainEvent::Init(tree);
+    if (!isData) {
+        MainEvent::InitSimulationVariables(tree);
+    }
     oFile = new TFile(outFileName, "recreate");
     TString histname(outFileName);
     // ohistFile = new TFile("hist_"+histname, "recreate");
@@ -538,6 +540,11 @@ float HmmAnalyzer::getPileupWeightDown(int NPU) {
     }
 }
 
+bool HmmAnalyzer::isValidJet(int index) {
+    return (Jet_pt[index] > 25. && fabs(Jet_eta[index]) < 4.7 &&
+            Jet_jetId[index] >= 2 /* && Jet_puId[index]>=1 */);
+}
+
 void HmmAnalyzer::CorrectPtRoch(const RoccoR &_calib, const bool _doSys,
                                 const ROOT::Math::PtEtaPhiMVector _mu_vec,
                                 float &_pt, float &_ptErr, float &_pt_sys_up,
@@ -546,8 +553,8 @@ void HmmAnalyzer::CorrectPtRoch(const RoccoR &_calib, const bool _doSys,
                                 const bool _isData) {
 
     _pt = _mu_vec.Pt();
-    _pt_sys_up = -999;
-    _pt_sys_down = -999;
+    _pt_sys_up = FLOAT_NULL_VALUE;
+    _pt_sys_down = FLOAT_NULL_VALUE;
     float q_term = 1.0;
     // float q_term_sys = -99;
 
@@ -695,19 +702,19 @@ void HmmAnalyzer::clearTreeVectors() {
     t_run = 0;
     t_luminosityBlock = 0;
     t_event = 0;
-    t_genWeight = -999.;
-    t_puWeight = -999.;
-    t_puWeightUp = -999.;
-    t_puWeightDown = -999.;
+    t_genWeight = FLOAT_NULL_VALUE;
+    t_puWeight = FLOAT_NULL_VALUE;
+    t_puWeightUp = FLOAT_NULL_VALUE;
+    t_puWeightDown = FLOAT_NULL_VALUE;
     t_PrefireWeight = 1.0;
     t_PrefireWeight_Up = 1.0;
     t_PrefireWeight_Down = 1.0;
-    t_mu1 = -999;
-    t_mu2 = -999;
-    t_index_trigm_mu = -999;
+    t_mu1 = FLOAT_NULL_VALUE;
+    t_mu2 = FLOAT_NULL_VALUE;
+    t_index_trigm_mu = FLOAT_NULL_VALUE;
     t_nJet = 0;
     t_nbJet = 0;
-    t_SoftActivityJetNjets5 = -1000;
+    t_SoftActivityJetNjets5 = FLOAT_NULL_VALUE;
     t_El_genPartIdx->clear();
     t_El_genPartFlav->clear();
     t_El_charge->clear();
@@ -773,14 +780,14 @@ void HmmAnalyzer::clearTreeVectors() {
     t_Mu_nStations->clear();
     t_Mu_nTrackerLayers->clear();
 
-    t_diMuon_pt = -1000;
-    t_diMuon_eta = -1000;
-    t_diMuon_phi = -1000;
-    t_diMuon_mass = -1000;
+    t_diMuon_pt = FLOAT_NULL_VALUE;
+    t_diMuon_eta = FLOAT_NULL_VALUE;
+    t_diMuon_phi = FLOAT_NULL_VALUE;
+    t_diMuon_mass = FLOAT_NULL_VALUE;
 
-    t_MET_phi = -1000;
-    t_MET_pt = -1000;
-    t_MET_sumEt = -1000;
+    t_MET_phi = FLOAT_NULL_VALUE;
+    t_MET_pt = FLOAT_NULL_VALUE;
+    t_MET_sumEt = FLOAT_NULL_VALUE;
 
     t_FatJet_area->clear();
     t_FatJet_btagCMVA->clear();
@@ -836,11 +843,11 @@ void HmmAnalyzer::clearTreeVectors() {
     t_Jet_nMuons->clear();
     t_Jet_puId->clear();
 
-    t_diJet_pt = -1000;
-    t_diJet_eta = -1000;
-    t_diJet_phi = -1000;
-    t_diJet_mass = -1000;
-    t_diJet_mass_mo = -1000;
+    t_diJet_pt = FLOAT_NULL_VALUE;
+    t_diJet_eta = FLOAT_NULL_VALUE;
+    t_diJet_phi = FLOAT_NULL_VALUE;
+    t_diJet_mass = FLOAT_NULL_VALUE;
+    t_diJet_mass_mo = FLOAT_NULL_VALUE;
 
     t_bJet_area->clear();
     t_bJet_btagCMVA->clear();
