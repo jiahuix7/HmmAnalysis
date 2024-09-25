@@ -17,28 +17,33 @@ all_dataset_lists = OrderedDict()
 #################
 # 2022 Datasets
 #################
-all_dataset_lists["DoubleMuon_2022A.list"] = ["T", 3, "2022"]
-all_dataset_lists["DoubleMuon_2022B.list"] = ["T", 3, "2022"]
-all_dataset_lists["DoubleMuon_2022C.list"] = ["T", 3, "2022"]
-all_dataset_lists["Muon_2022C.list"] = ["T", 3, "2022"]
-all_dataset_lists["Muon_2022D.list"] = ["T", 3, "2022"]
-all_dataset_lists["Muon_2022E.list"] = ["T", 3, "2022"]
-all_dataset_lists["Muon_2022F.list"] = ["T", 3, "2022"]
-all_dataset_lists["Muon_2022G.list"] = ["T", 3, "2022"]
+all_dataset_lists["DoubleMuon_2022A.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["DoubleMuon_2022B.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["DoubleMuon_2022C.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["Muon_2022C.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["Muon_2022D.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["Muon_2022E.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["Muon_2022F.list"] = ["T", 3, "2022", "Data"]
+all_dataset_lists["Muon_2022G.list"] = ["T", 3, "2022", "Data"]
 ################################
 # 2022 Simulations Backgrounds
 ################################
-all_dataset_lists["DY120to200_Summer22.list"] = ["F", 3, "2022"]
-all_dataset_lists["DY50to150_Summer22.list"] = ["F", 3, "2022"]
-all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022"]
-all_dataset_lists["DY50to150_Summer22EE.list"] = ["F", 3, "2022"]
+all_dataset_lists["DY120to200_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DY50to120_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DY50to120_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["TTto2L2Nu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["TTto2L2Nu_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["TTtoLNu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["TTtoLNu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+
 ###########################
 # 2022 Simulations Signal
 ###########################
-all_dataset_lists["ggH_Summer22.list"] = ["F", 3, "2022"]
-all_dataset_lists["ggH_Summer22EE.list"] = ["F", 3, "2022"]
-all_dataset_lists["VBF_Summer22.list"] = ["F", 3, "2022"]
-all_dataset_lists["VBF_Summer22EE.list"] = ["F", 3, "2022"]
+all_dataset_lists["ggH_Summer22.list"] = ["F", 3, "2022", "MC_signal"]
+all_dataset_lists["ggH_Summer22EE.list"] = ["F", 3, "2022", "MC_signal"]
+all_dataset_lists["VBF_Summer22.list"] = ["F", 3, "2022", "MC_signal"]
+all_dataset_lists["VBF_Summer22EE.list"] = ["F", 3, "2022", "MC_signal"]
 
 
 # cmsswReleaseVersion = "CMSSW_10_6_5"
@@ -65,7 +70,7 @@ for list_file in all_dataset_lists.keys():
 
     list_all_runs = open(Inputfiles_DIR + list_file, "r")
 
-    isData, max_runs_per_job, year = all_dataset_lists[list_file]
+    isData, max_runs_per_job, year, type_info = all_dataset_lists[list_file]
 
     Output_DIR = "analyzer_%s/"%(outputfile) + "%s/"%(dataset_name)
     Job_DIR = Condor_BASE_DIR + Output_DIR
@@ -129,7 +134,7 @@ for list_file in all_dataset_lists.keys():
     jobfile_JDL.write("Universe  = vanilla" + "\n")
     jobfile_JDL.write("Executable = ./run_job_LPC.sh" + "\n")
 
-    EOS_SUBPATH = os.getenv('LOGNAME') + "/" + Output_DIR
+    EOS_SUBPATH = os.getenv('LOGNAME') + "/analyzer_%s/"%(outputfile) + type_info + "/%s/"%(dataset_name)
     args = outputfile + " $(I) " + isData + " " + year + " " + EOS_SUBPATH + " " + cmsswReleaseVersion
     jobfile_JDL.write("Arguments = " + args + "\n")
 
