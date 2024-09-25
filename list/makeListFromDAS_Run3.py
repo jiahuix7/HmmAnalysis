@@ -55,3 +55,5 @@ for processName in datasets.keys():
         blockName = p["file"][0]["block.name"]
         fileName = p["file"][0]["name"]
         outputFile.write("root://cmsxrootd.fnal.gov/" + fileName + "\n")
+
+    os.remove("tmpOutput.json")
