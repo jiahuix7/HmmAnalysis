@@ -34,6 +34,7 @@ all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022", "MC_backgroun
 all_dataset_lists["DY50to120_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTto2L2Nu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTto2L2Nu_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["TTto2L2Nu_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTtoLNu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTtoLNu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
 
