@@ -28,23 +28,66 @@ all_dataset_lists["Muon_2022G.list"] = ["T", 3, "2022", "Data"]
 ################################
 # 2022 Simulations Backgrounds
 ################################
-all_dataset_lists["DY120to200_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["DY50to120_Summer22.list"] = ["F", 3, "2022", "MC_background"]
-all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
-all_dataset_lists["DY50to120_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DY120to200_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DYJetstoLL_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["DYto2L-2Jets_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTto2L2Nu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTto2L2Nu_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
-all_dataset_lists["TTto2L2Nu_Summer22EE.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTtoLNu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
 all_dataset_lists["TTtoLNu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WZto2L2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WZto2L2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WZto3LNu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WZtoLNu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WZtoLNu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2L2Nu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2L2Nu_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2L2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2L2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2Nu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto2Nu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto4L_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["ZZto4L_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWto2L2Nu_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWto2L2Nu_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWto4Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWto4Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWtoLNu2Q_Summer22.list"] = ["F", 3, "2022", "MC_background"]
+all_dataset_lists["WWtoLNu2Q_Summer22_ext1.list"] = ["F", 3, "2022", "MC_background"]
+
+all_dataset_lists["DY50to120_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["DYJetstoLL_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["DYto2L-2Jets_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["TTto2L2Nu_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WZto2L2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WZto2L2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WZto3LNu_Summer22.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WZtoLNu2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WZtoLNu2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2L2Nu_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2L2Nu_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2L2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2L2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2Nu2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto2Nu2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto4L_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["ZZto4L_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWto2L2Nu_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWto2L2Nu_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWto4Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWto4Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWtoLNu2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["WWtoLNu2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
 
 ###########################
 # 2022 Simulations Signal
 ###########################
 all_dataset_lists["ggH_Summer22.list"] = ["F", 3, "2022", "MC_signal"]
-all_dataset_lists["ggH_Summer22EE.list"] = ["F", 3, "2022", "MC_signal"]
 all_dataset_lists["VBF_Summer22.list"] = ["F", 3, "2022", "MC_signal"]
-all_dataset_lists["VBF_Summer22EE.list"] = ["F", 3, "2022", "MC_signal"]
+all_dataset_lists["ggH_Summer22EE.list"] = ["F", 3, "2022EE", "MC_signal"]
+all_dataset_lists["VBF_Summer22EE.list"] = ["F", 3, "2022EE", "MC_signal"]
 
 
 # cmsswReleaseVersion = "CMSSW_10_6_5"
@@ -110,7 +153,7 @@ for list_file in all_dataset_lists.keys():
     ###################################################
     # Copy run script, executable, and required files
     ###################################################
-    os.system("cp " + "%s/condor/run_job_LPC.sh"%(Analyzer_DIR) + " " + Job_DIR)
+    os.system("cp " + "%s/condor/template_run_job_LPC.sh"%(Analyzer_DIR) + " " + "%s/run_job_LPC.sh"%(Job_DIR))
     os.system("cp " + "%s/bin/%s"%(Analyzer_DIR, analyzer) + " " + Job_DIR)
     Analyzer_Data_DIR = Analyzer_DIR + "data/"
     Job_Data_DIR = Job_DIR + "/data/"
@@ -136,6 +179,7 @@ for list_file in all_dataset_lists.keys():
     jobfile_JDL.write("Executable = ./run_job_LPC.sh" + "\n")
 
     EOS_SUBPATH = os.getenv('LOGNAME') + "/analyzer_%s/"%(outputfile) + type_info + "/%s/"%(dataset_name)
+    os.system("xrdfs root://cmseos.fnal.gov mkdir -p /store/user/"+ EOS_SUBPATH)
     args = outputfile + " $(I) " + isData + " " + year + " " + EOS_SUBPATH + " " + cmsswReleaseVersion
     jobfile_JDL.write("Arguments = " + args + "\n")
 
