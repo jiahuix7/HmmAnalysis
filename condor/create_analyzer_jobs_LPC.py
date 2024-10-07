@@ -80,7 +80,7 @@ all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 3, "2022EE", "MC_backgro
 all_dataset_lists["DYJetstoLL_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
 all_dataset_lists["DYto2L-2Jets_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
 all_dataset_lists["TTto2L2Nu_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
-all_dataset_lists["TTtoLNu2Q_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
+all_dataset_lists["TTtoLNu2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
 all_dataset_lists["TTtoLNu2Q_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
 all_dataset_lists["TWminusto2L2Nu_Summer22EE.list"] = ["F", 3, "2022EE", "MC_background"]
 all_dataset_lists["TWminusto2L2Nu_Summer22EE_ext1.list"] = ["F", 3, "2022EE", "MC_background"]
@@ -224,9 +224,9 @@ for list_file in all_dataset_lists.keys():
     args = outputfile + " $(I) " + isData + " " + year + " " + EOS_SUBPATH + " " + cmsswReleaseVersion
     jobfile_JDL.write("Arguments = " + args + "\n")
 
-    jobfile_JDL.write("Log = log/job.$(Cluster).$(Process).log" + "\n")
-    jobfile_JDL.write("Output = out/job.$(Cluster).$(Process).out" + "\n")
-    jobfile_JDL.write("Error = err/job.$(Cluster).$(Process).err" + "\n")
+    jobfile_JDL.write("Log = log/jobR$(I).$(Cluster).$(Process).log" + "\n")
+    jobfile_JDL.write("Output = out/jobR$(I).$(Cluster).$(Process).out" + "\n")
+    jobfile_JDL.write("Error = err/jobR$(I).$(Cluster).$(Process).err" + "\n")
     jobfile_JDL.write("x509userproxy = $ENV(X509_USER_PROXY)" + "\n")
 
     transfer_files = Job_DIR + "/run_job_LPC.sh, "
