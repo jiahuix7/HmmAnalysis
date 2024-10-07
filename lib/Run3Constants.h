@@ -4,23 +4,56 @@
 #include <TString.h>
 #include <map>
 
+const float H_TO_MUMU_BRANCHING_RATIO = 2.176e-4;
+
 const std::map<TString, float> LUMINOSITY = {
-    {"2022B", 0.09656}, {"2022C", 5.0104},  {"2022D", 2.9700},
-    {"2022E", 5.8070},  {"2022F", 17.7819}, {"2022G", 3.0828},
+    {"2022B", 0.09656}, {"2022C", 5.0104}, {"2022D", 2.9700}, {"2022E", 5.8070},
+    {"2022F", 17.7819}, {"2022G", 3.0828}, {"2022", 7.9804},  {"2022EE", 26.6717},
+
 };
 
 const std::map<TString, float> CROSS_SECTION = {
-    // Background
-    {"TT", 102.41},
-    {"DY", 6244.8},
-    {"DY50-120", 16793 * 8 / 70.},
-    {"DY120-200", 1970.12 / 80},
-    // Signal
-    {"ggF", 52.1},
-    {"VBF", 4.075},
-    {"ttH", 0.5688},
-    // Dummy data value 
+    //********************//
+    //     Background     //
+    //********************//
+    // TT
+    {"TTto2L2Nu", 86.61},
+    {"TTtoLNu2Q", 358.61},
+    {"TWminusto2L2Nu", -1},
+
+    // DY
+    //{"DYJetstoLL", 6244.8},
+    {"DYto2L-2Jets", 6244.8},
+    //{"DY50-120", 16793 * 8 / 70.},
+    //{"DY120-200", 1970.12 / 80},
+    // Diboson
+    {"WWto2L2Nu", 12.178},
+    {"WWto4Q", -1},
+    {"WWtoLNu2Q", -1},
+    {"WZto2L2Q", 6.321},
+    {"WZto3LNu", 4.658},
+    {"WZtoLNu2Q", -1},
+    {"ZZto2L2Nu", 0.601},
+    {"ZZto2L2Q", 3.696},
+    {"ZZto4L", 1.325},
+    // TriBoson
+    {"WWW_4F", 0.2086},
+    //********************//
+    //       Signal       //
+    //********************//
+    {"ggH", 52.23 * H_TO_MUMU_BRANCHING_RATIO},
+    {"VBF", 4.078 * H_TO_MUMU_BRANCHING_RATIO},
+    {"ttH", 0.57 * H_TO_MUMU_BRANCHING_RATIO},
+    //********************//
+    //  Dummy data value  //
+    //********************//
     {"Data", -1},
+    {"DoubleMuon_2022C", -1},
+    {"Muon_2022C", -1},
+    {"Muon_2022D", -1},
+    {"Muon_2022E", -1},
+    {"Muon_2022F", -1},
+    {"Muon_2022G", -1},
 };
 
 #endif // LIB_RUN3CONTANTS_H
