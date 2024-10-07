@@ -247,7 +247,7 @@ for list_file in all_dataset_lists.keys():
 
     jobfile_JDL.write("should_transfer_files = YES" + "\n")
     jobfile_JDL.write("when_to_transfer_output = ON_EXIT" + "\n\n# Resources request\n")
-    jobfile_JDL.write("RequestMemory = 2000 \n\n# Jobs selection\n")
+    jobfile_JDL.write("RequestMemory = 2100 \n\n# Jobs selection\n")
 
     jobfile_JDL.write("Queue I from (")
     for i in range(1, n_jobs+1):
