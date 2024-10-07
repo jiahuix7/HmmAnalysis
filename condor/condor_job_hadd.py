@@ -70,6 +70,9 @@ for dataset in list_datasets:
 
     if not all_jobs_were_saved(dataset):
         continue
+    if os.path.exists("analyzer_HiggsMuMu/" + dataset + "_ext1"):
+        if not all_jobs_were_saved(dataset + "_ext1"):
+            continue
 
     #####################################
     # Create Condor JDL file
