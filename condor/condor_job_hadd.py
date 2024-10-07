@@ -8,6 +8,20 @@ import glob
 import sys
 from collections import OrderedDict
 
+def all_jobs_were_saved(dataset_name):
+    LOG_DIR = "analyzer_HiggsMuMu/" + dataset_name + "/log/"
+    OUT_DIR = "analyzer_HiggsMuMu/" + dataset_name + "/out/"
+    N_in_log = len(os.listdir(LOG_DIR))
+    N_in_out = len(os.listdir(OUT_DIR))
+
+    same_N_files = N_in_log == N_in_out
+    if not same_N_files:
+        print(" (!!!) Different number of log and out files from job in dataset " + dataset_name)
+        print("       Check log (there might be missing jobs that ran out of space in farm!)")
+
+    return same_N_files
+
+
 list_datasets = []
 analysis_job_sender = open("condor_job_sender.sh", "r")
 for line in analysis_job_sender:
@@ -52,6 +66,9 @@ for dataset in list_datasets:
         continue
     elif os.path.exists("/eos/uscms/" + FILESDIR + "/SumGenWeight.root"):
         print("Dataset already merged! Skipping " + dataset)
+        continue
+
+    if not all_jobs_were_saved(dataset):
         continue
 
     #####################################
