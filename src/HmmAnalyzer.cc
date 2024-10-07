@@ -510,6 +510,7 @@ void HmmAnalyzer::EventLoop() {
             // t_puWeight = 1.0;     // puWeight;
             // t_puWeightUp = 1.0;   // puWeightUp;
             // t_puWeightDown = 1.0; // puWeightDown;
+            t_pileup = Pileup_nPU;
             t_puWeight = puWeight;
             t_puWeightUp = puWeightUp;
             t_puWeightDown = puWeightDown;

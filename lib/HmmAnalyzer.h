@@ -106,6 +106,7 @@ class HmmAnalyzer : public MainEvent {
     uint t_luminosityBlock;
     ulong t_event;
     float t_genWeight;
+    float t_pileup;
     float t_puWeight;
     float t_puWeightUp;
     float t_puWeightDown;
@@ -703,6 +704,7 @@ void HmmAnalyzer::clearTreeVectors() {
     t_luminosityBlock = 0;
     t_event = 0;
     t_genWeight = FLOAT_NULL_VALUE;
+    t_pileup = FLOAT_NULL_VALUE;
     t_puWeight = FLOAT_NULL_VALUE;
     t_puWeightUp = FLOAT_NULL_VALUE;
     t_puWeightDown = FLOAT_NULL_VALUE;
@@ -913,6 +915,7 @@ void HmmAnalyzer::BookTreeBranches() {
                  "t_luminosityBlock/i");
     tree->Branch("t_event", &t_event, "t_event/l");
     tree->Branch("t_genWeight", &t_genWeight, "t_genWeight/F");
+    tree->Branch("t_pileup", &t_pileup, "t_pileup/F");
     tree->Branch("t_puWeight", &t_puWeight, "t_puWeight/F");
     tree->Branch("t_puWeightUp", &t_puWeightUp, "t_puWeightUp/F");
     tree->Branch("t_puWeightDown", &t_puWeightDown, "t_puWeightDown/F");
