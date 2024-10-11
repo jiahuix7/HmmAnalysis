@@ -46,3 +46,7 @@ echo "Output file saved in root://cmseos.fnal.gov//${FILESDIR}/SumGenWeight.root
 xrdcp -f SumGenWeight_${dataset_name}.root root://cmseos.fnal.gov//${FILESDIR}/SumGenWeight.root
 rm SumGenWeight_${dataset_name}.root
 rm rootfiles* -rv
+
+# Check file was saved correctly
+echo "Checking output file is saved correctly"
+xrdfs root://cmseos.fnal.gov ls -lh /${FILESDIR}/SumGenWeight.root

@@ -3,5 +3,6 @@ analyzer_HiggsMuMu/
 hadd/
 # Job sender is updated everytime submit_jobs is run
 condor_job_sender.sh
+condor_job_sender_missing_files.sh
 # Ignore files created by condor job management
 docker_stderror

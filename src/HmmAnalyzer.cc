@@ -76,24 +76,22 @@ void HmmAnalyzer::EventLoop() {
 
         // sum of genWeight
         float value_h_sumOfgw = h_sumOfgw->GetBinContent(1);
-        if (!is_data)
-            value_h_sumOfgw = value_h_sumOfgw + genWeight;
-        else
-            value_h_sumOfgw = value_h_sumOfgw + 1.0;
-        h_sumOfgw->SetBinContent(1, value_h_sumOfgw);
-
         // sum of genWeight and pileupweight
         float value_h_sumOfgpw = h_sumOfgpw->GetBinContent(1);
         float puWeight, puWeightUp, puWeightDown;
         if (!is_data) {
+            value_h_sumOfgw = value_h_sumOfgw + genWeight;
             puWeight = getPileupWeight(Pileup_nPU);
             puWeightUp = getPileupWeightUp(Pileup_nPU);
             puWeightDown = getPileupWeightDown(Pileup_nPU);
-            // value_h_sumOfgpw = value_h_sumOfgpw + genWeight * 1.0; //
-            // puWeight;
+            h_pileup->Fill(Pileup_nPU);
+
             value_h_sumOfgpw = value_h_sumOfgpw + genWeight * puWeight;
-        } else
+        } else {
+            value_h_sumOfgw = value_h_sumOfgw + 1.0;
             value_h_sumOfgpw = value_h_sumOfgpw + 1.0;
+        }
+        h_sumOfgw->SetBinContent(1, value_h_sumOfgw);
         h_sumOfgpw->SetBinContent(1, value_h_sumOfgpw);
 
         bool trig_decision = (HLT_IsoMu24 == 1);
@@ -320,7 +318,7 @@ void HmmAnalyzer::EventLoop() {
             double dR2 = DeltaR(Muon_eta[index_mu2], Muon_phi[index_mu2],
                                 Jet_eta[j], Jet_phi[j]);
             if (dR1 < 0.4 || dR2 < 0.4) {
-                break; //  should be a continue?
+                continue;
             }
 
             t_nJet++;
