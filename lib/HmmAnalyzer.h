@@ -81,6 +81,7 @@ class HmmAnalyzer : public MainEvent {
     TH1D *h_sumOfgw = new TH1D("h_sumOfgenWeight", "h_sumOfgenWeight", 1, 0, 1);
     TH1D *h_sumOfgpw =
         new TH1D("h_sumOfgenpuWeight", "h_sumOfgenpuWeight", 1, 0, 1);
+    TH1D *h_pileup = new TH1D("h_pileup", "h_pileup", 99, 0, 99);
     RoccoR _Roch_calib;
 
     TFile *pileupWeightFile;
@@ -322,6 +323,7 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
 
     h_sumOfgw->SetBinContent(1, 0.0);
     h_sumOfgpw->SetBinContent(1, 0.0);
+    h_pileup->SetBinContent(1, 0.0);
 
     // muon pT selection
     muon_pt_cut["2016"] = 26.0;
@@ -678,6 +680,7 @@ HmmAnalyzer::~HmmAnalyzer() {
     oFile->cd();
     h_sumOfgw->Write();
     h_sumOfgpw->Write();
+    h_pileup->Write();
     oFile->Write();
     oFile->Close();
     if (!is_data) {
