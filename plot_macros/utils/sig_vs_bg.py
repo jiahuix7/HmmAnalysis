@@ -3,13 +3,18 @@ import mplhep as hep
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .labels import x_labels, y_labels
+from .labels import x_labels
 from .helper import get_canvas, save_figure, get_histograms
 
 y_axis_max_range = {
-    "pt": 0.07,
-    "phi": 0.015,
-    "eta": 0.025,
+    "diMuon_rapidity": 0.06,
+    "diMuon_pt": 0.16,
+    "mu1_pt_mass_ratio": 0.3,
+    "mu2_pt_mass_ratio": 0.3,
+    "mu1_eta": 0.06,
+    "mu2_eta": 0.06,
+    "phi_CS": 0.03,
+    "cos_theta_CS": 0.03,
 }
 
 
@@ -17,8 +22,8 @@ def draw_sig_and_bg(variable, era, background_sources, signal_sources):
 
     plt.style.use(hep.style.CMS)
 
-    background_histograms = get_histograms(variable, background_sources)
-    signal_histograms = get_histograms(variable, signal_sources)
+    background_histograms = get_histograms(variable, background_sources, era)
+    signal_histograms = get_histograms(variable, signal_sources, era)
 
     total_bg_np_histogram = np.array([])
     total_sig_np_histogram = np.array([])
@@ -39,7 +44,7 @@ def draw_sig_and_bg(variable, era, background_sources, signal_sources):
     fig, ax = get_canvas()
 
     hep.histplot(
-        total_bg_np_histogram/np.sum(total_bg_np_histogram),
+        total_bg_np_histogram / np.sum(total_bg_np_histogram),
         bins,
         yerr=True,
         histtype="fill",
@@ -51,7 +56,7 @@ def draw_sig_and_bg(variable, era, background_sources, signal_sources):
     )
 
     hep.histplot(
-        total_sig_np_histogram/np.sum(total_sig_np_histogram),
+        total_sig_np_histogram / np.sum(total_sig_np_histogram),
         bins,
         yerr=True,
         histtype="fill",
@@ -62,15 +67,13 @@ def draw_sig_and_bg(variable, era, background_sources, signal_sources):
         alpha=0.5,
     )
 
-    hep.cms.label(
-        data="True", label="Test", year="2022", com="13,6", lumi="17.4", ax=ax
-    )
+    hep.cms.label(data="True", label="Test", year="2022", com="13,6", ax=ax)
 
-    ax.set_ylabel(y_labels[variable])
+    ax.set_ylabel("Events / Total Events")
     ax.set_xlabel(x_labels[variable])
     ax.set_ylim(0, y_axis_max_range[variable])
     ax.set_xlim(bins[0], bins[-1])
     # ax.set_yscale("log")
     ax.legend(frameon=False, loc="upper right", ncols=2)
 
-    save_figure(fig, "../plots/sig_vs_bg/", variable + "_" + era + "_MCData_ratio")
+    save_figure(fig, "../plots/sig_vs_bkg/", variable + "_" + era + "_MCData_ratio")

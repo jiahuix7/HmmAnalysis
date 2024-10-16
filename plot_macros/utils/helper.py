@@ -27,7 +27,7 @@ def get_histograms(variable, sources, era):
     histograms = []
     for source in sources:
         with ur.open("../root_io/" + source + "_" + era + "_histograms.root") as file:
-            histograms.append(file["diMuon_" + variable])
+            histograms.append(file[variable])
 
     return histograms
 

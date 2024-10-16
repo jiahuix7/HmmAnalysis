@@ -7,11 +7,12 @@ from .labels import x_labels, y_labels, background_labels
 from .helper import get_canvas, save_figure, get_histograms, get_histograms_ratio
 
 y_axis_max_range = {
-    "mass": 10e6,
-    "mass_full_range": 10e8,
-    "pt": 10e8,
-    "phi": 10e8,
-    "eta": 10e6,
+    "diMuon_mass": 10e6,
+    "diMuon_rapidity": 10e6,
+    "diMuon_mass_full_range": 10e8,
+    "diMuon_pt": 10e8,
+    "diMuon_phi": 10e8,
+    "diMuon_eta": 10e8,
 }
 
 
@@ -44,12 +45,12 @@ def get_background_label_list(background_sources):
 
 
 def draw_signal_sources(signal_sources, variable, era, ax):
-    signal_colors = {"ggH": "red", "VBF": "blue"}
+    signal_colors = {"ggH": "red", "VBF": "blue", "ttH": "lime"}
     for source in signal_sources:
         with ur.open(
             "../root_io/" + source + "_" + era + "_histograms.root"
         ) as data_file:
-            histogram = data_file["diMuon_" + variable]
+            histogram = data_file[variable]
 
         numpy_histogram, bins = histogram.to_numpy()
         hep.histplot(
@@ -68,10 +69,10 @@ def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sour
     background_histograms = get_histograms(variable, background_sources, era)
 
     with ur.open("../root_io/Data_" + era + "_histograms.root") as data_file:
-        data_histogram = data_file["diMuon_" + variable]
+        data_histogram = data_file[variable]
 
     data_numpy_histogram, data_bins = data_histogram.to_numpy()
-    if variable == "mass":
+    if "mass" in variable:
         data_numpy_histogram[data_numpy_histogram == 0] = -100.0
     # print(data_numpy_histogram)
 
@@ -139,4 +140,6 @@ def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sour
     axs[1].set_xlim(data_bins[0], data_bins[-1])
     axs[1].set_xlabel(x_labels[variable])
 
-    save_figure(fig, "../plots/ratio/era/", variable + "_" + era + "_MCData_ratio")
+    save_figure(
+        fig, "../plots/ratio/" + era + "/", variable + "_" + era + "_MCData_ratio"
+    )
