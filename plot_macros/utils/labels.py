@@ -9,10 +9,20 @@ x_labels = {
     "diMuon_pt": r"$p_T^{\mu\mu}$ [GeV]",
     "diMuon_mass": r"$M_{\mu\mu}$ GeV",
     "diMuon_mass_full_range": r"$M_{\mu\mu}$ GeV",
-    "diMuon_pt": r"$Pt_{\mu\mu}$ GeV",
     "diMuon_phi": r"$Phi_{\mu\mu}$ rad",
     "diMuon_eta": r"$eta_{\mu\mu}$ ",
     "t_Mu_pt": r"$Pt_{\mu}$ GeV",
+    "n_jet": r"Number of Jets",
+    "jet_pt": r"$Pt_{jet}$ GeV",
+    "jet_eta": r"$eta_{jet}$ ",
+    "jet_phi": r"$Phi_{jet}$ rad",
+    "jet_mass": r"$M_{jet}$ GeV",
+    "diJet_pt": r"$Pt_{Dijet}$ GeV",
+    "diJet_eta": r"$eta_{Dijet}$ ",
+    "diJet_phi": r"$Phi_{Dijet}$ rad",
+    "diJet_mass": r"$M_{Dijet}$ GeV",
+    "diJet_mass_mo": r"$M_{Dijet highest mass}$ GeV",
+    "diJet_DeltaEta": r"$\Delta\eta_{jj}$",
 }
 
 y_labels = {
@@ -38,5 +48,10 @@ background_labels = {
     "WWto2L2Nu": "WWto2L2Nu",
     "ZZto2L2QNu": "ZZto2L2QNu",
     "WZto2L2QNu": "WZto2L2QNu",
+}
+
+luminosity = {
+    "2022": "7.98",
+    "2022EE": "26.67",
 }
 # __all__ = [x_labels, y_labels, background_labels]

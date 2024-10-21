@@ -6,7 +6,6 @@ from utils.sim_vs_data import draw_data_and_simul_and_ratio
 background_sources = [
     "DiBoson",
     "TT",
-    # "DYto2L-2Jets",
     "DY",
 ]
 # "ZZto2L2QNu",
@@ -15,7 +14,6 @@ background_sources = [
 # "ZZto4L",
 # "WWto2L2Nu",
 # ]
-# signal_sources = ["ggH", "VBF"]
 signal_sources = [
     "ggH",
     "VBF",
@@ -28,8 +26,26 @@ variables = [
     "diMuon_eta",
     "diMuon_pt",
     "diMuon_phi",
+    # "n_jet",
+    # "jet_pt",
+    # "jet_eta",
+    # "jet_phi",
+    # "jet_mass",
+    # "diJet_pt",
+    # "diJet_eta",
+    # "diJet_phi",
+    # "diJet_mass",
+    # "diJet_mass_mo",
+    # "diJet_DeltaEta",
+    "mu1_pt_mass_ratio",
+    "mu2_pt_mass_ratio",
+    "mu1_eta",
+    "mu2_eta",
+    "phi_CS",
+    "cos_theta_CS",
 ]
-era = "2022"
+eras = ["2022", "2022EE"]
 
-for variable in variables:
-    draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sources)
+for era in eras:
+    for variable in variables:
+        draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sources)

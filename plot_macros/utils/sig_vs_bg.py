@@ -7,12 +7,12 @@ from .labels import x_labels
 from .helper import get_canvas, save_figure, get_histograms
 
 y_axis_max_range = {
-    "diMuon_rapidity": 0.06,
+    "diMuon_rapidity": 0.04,
     "diMuon_pt": 0.16,
-    "mu1_pt_mass_ratio": 0.3,
-    "mu2_pt_mass_ratio": 0.3,
-    "mu1_eta": 0.06,
-    "mu2_eta": 0.06,
+    "mu1_pt_mass_ratio": 0.2,
+    "mu2_pt_mass_ratio": 0.2,
+    "mu1_eta": 0.04,
+    "mu2_eta": 0.04,
     "phi_CS": 0.03,
     "cos_theta_CS": 0.03,
 }

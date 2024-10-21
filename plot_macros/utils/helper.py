@@ -27,12 +27,16 @@ def get_histograms(variable, sources, era):
     histograms = []
     for source in sources:
         with ur.open("../root_io/" + source + "_" + era + "_histograms.root") as file:
+            # with ur.open(
+            # "../root_io/no_dimuon_mass_cut/" + source + "_" + era + "_histograms.root"
+            # ) as file:
             histograms.append(file[variable])
 
     return histograms
 
 
 def get_histograms_ratio(numerator_histogram, denominator_histogram):
+
     ratio = np.divide(
         numerator_histogram, denominator_histogram, where=(denominator_histogram != 0)
     )
@@ -42,5 +46,15 @@ def get_histograms_ratio(numerator_histogram, denominator_histogram):
         np.power(denominator_histogram, 2),
         where=(denominator_histogram != 0),
     )
-
+    if (len(error[error < 0.0])):
+        msg = "Unexpected negative ratio-error values found."\
+            "Setting them to zero.\n > Re-run. If the value changes, "\
+            "it might have to do with the minimum subnormal number bug!"
+        print(msg)
+        print("Error; length")
+        print(error[error < 0.0], len(error[error < 0.0]))
+        print("Ratio values")
+        print(ratio[np.where(error < 0.0)])
+        error[error < 0.0] = 0.0
+   
     return ratio, error
