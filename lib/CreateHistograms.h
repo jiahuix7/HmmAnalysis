@@ -79,7 +79,6 @@ class CreateHistograms {
 CreateHistograms::CreateHistograms(TString input, TString output, TString era,
                                    TString channel, bool is_data,
                                    bool is_signal_)
-                                   bool is_signal_)
     : luminosity(LUMINOSITY.at(era)), cross_section(CROSS_SECTION.at(channel)) {
 
     tuple = new TChain("tree");
