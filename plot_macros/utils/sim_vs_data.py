@@ -3,7 +3,7 @@ import mplhep as hep
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .labels import x_labels, background_labels, luminosity  # , y_labels
+from .labels import x_labels, background_labels, luminosity #, y_labels
 from .helper import get_canvas, save_figure, get_histograms, get_histograms_ratio
 
 y_axis_max_range = {
@@ -169,7 +169,9 @@ def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sour
         output_directory = output_directory + "diJet/"
     elif "jet" in variable:
         output_directory = output_directory + "Jet/"
-    else:
+    else: 
         output_directory = output_directory + "muon/"
 
-    save_figure(fig, output_directory, variable + "_" + era + "_MCData_ratio"
+    save_figure(
+        fig,output_directory , variable + "_" + era + "_MCData_ratio"
+    )
