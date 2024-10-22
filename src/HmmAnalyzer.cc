@@ -81,10 +81,11 @@ void HmmAnalyzer::EventLoop() {
         float puWeight, puWeightUp, puWeightDown;
         if (!is_data) {
             value_h_sumOfgw = value_h_sumOfgw + genWeight;
-            puWeight = getPileupWeight(Pileup_nPU);
-            puWeightUp = getPileupWeightUp(Pileup_nPU);
-            puWeightDown = getPileupWeightDown(Pileup_nPU);
+            puWeight = getPileupWeight(Pileup_nTrueInt);
+            puWeightUp = getPileupWeightUp(Pileup_nTrueInt);
+            puWeightDown = getPileupWeightDown(Pileup_nTrueInt);
             h_pileup->Fill(Pileup_nPU);
+            h_pileup_nTrue->Fill(Pileup_nTrueInt);
 
             value_h_sumOfgpw = value_h_sumOfgpw + genWeight * puWeight;
         } else {
@@ -508,7 +509,8 @@ void HmmAnalyzer::EventLoop() {
             // t_puWeight = 1.0;     // puWeight;
             // t_puWeightUp = 1.0;   // puWeightUp;
             // t_puWeightDown = 1.0; // puWeightDown;
-            t_pileup = Pileup_nPU;
+            // t_pileup = Pileup_nPU;
+            t_pileup = Pileup_nTrueInt;
             t_puWeight = puWeight;
             t_puWeightUp = puWeightUp;
             t_puWeightDown = puWeightDown;
