@@ -4,12 +4,12 @@
 #include <TString.h>
 #include <map>
 
-const float H_TO_MUMU_BRANCHING_RATIO = 2.176e-4;
+constexpr float H_TO_MUMU_BRANCHING_RATIO = 2.176e-4;
 
 const std::map<TString, float> LUMINOSITY = {
-    {"2022B", 0.09656}, {"2022C", 5.0104}, {"2022D", 2.9700}, {"2022E", 5.8070},
-    {"2022F", 17.7819}, {"2022G", 3.0828}, {"2022", 7.9804},  {"2022EE", 26.6717},
-
+    {"2022B", 0.09656}, {"2022C", 5.0104},   {"2022D", 2.9700},
+    {"2022E", 5.8070},  {"2022F", 17.7819},  {"2022G", 3.0828},
+    {"2022", 7.9804},   {"2022EE", 26.6717},
 };
 
 const std::map<TString, float> CROSS_SECTION = {
@@ -24,8 +24,8 @@ const std::map<TString, float> CROSS_SECTION = {
     // DY
     //{"DYJetstoLL", 6244.8},
     {"DYto2L-2Jets", 6244.8},
-    //{"DY50-120", 16793 * 8 / 70.},
-    //{"DY120-200", 1970.12 / 80},
+    {"DY50to120", 2219.},
+    {"DY120to200", 21.65},
     // Diboson
     {"WWto2L2Nu", 12.178},
     {"WWto4Q", -1},

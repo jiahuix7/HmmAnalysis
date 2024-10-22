@@ -26,9 +26,13 @@ ANALYZER_HEADERS := $(LIB)/BTagCalibrationStandalone.h \
 
 # Histogram sources and header
 HISTOGRAM_SRC := $(SRC)/CreateHistograms.cc
-HISTOGRAM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/CreateHistograms.h
+HISTOGRAM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/CreateHistograms.h
 
-SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC)
+# Histogram sources and header
+SKIM_SRC := $(SRC)/SkimTuple.cc
+SKIM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/SkimTuples.h
+
+SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_SRC)
 
 
 # Object files
@@ -39,15 +43,19 @@ ANALYZER_OBJECTS := LeptonEfficiencyCorrector.o \
 				HmmAnalyzer.o
  
 HISTOGRAM_OBJECTS := CreateHistograms.o
-OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS)
+
+SKIM_OBJECTS := SkimTuples.o
+
+OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS)
 
 # Executables
 ANALYZER_EXECUTABLE := $(BIN)/HmmAnalyzer
 HISTOGRAM_EXECUTABLE := $(BIN)/CreateHistograms
+SKIM_EXECUTABLE := $(BIN)/SkimTuples
 
 # Default target: build both executables
 .PHONY: all
-all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE)
+all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE)
 
 # Compile only the Analyzer
 .PHONY: analyzer
@@ -56,6 +64,10 @@ analyzer: $(ANALYZER_EXECUTABLE)
 # Compile only the Histograms
 .PHONY: histogram
 histogram: $(HISTOGRAM_EXECUTABLE)
+
+# Compile only the Skim 
+.PHONY: skim
+skim: $(SKIM_EXECUTABLE)
 
 # Compile all the objects
 $(OBJECTS): %.o: $(SRC)/%.cc $(LIB)/%.h
@@ -75,10 +87,16 @@ $(HISTOGRAM_EXECUTABLE): $(HISTOGRAM_OBJECTS)
 	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
 	@echo "done"
 
+# Linking for CrekteHistograms
+$(SKIM_EXECUTABLE): $(SKIM_OBJECTS)
+	@echo "Linking $(SKIM_EXECUTABLE)..."
+	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
+	@echo "done"
+	
 # Specifying the object files as intermediates deletes them automatically after the build process.
-.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS)
+.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS)
 
 # Clean target
 .PHONY: clean
 clean:
-	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE)
+	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE)
