@@ -6,12 +6,12 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TLorentzVector.h>
+#include <TMath.h>
 #include <TVector3.h>
 #include <memory>
 
 long double GetGenWeightSum(const TString &input_name) {
 
-    // TFile *histogram_file = new TFile(input_name, "READ");
     std::unique_ptr<TFile> histogram_file(TFile::Open(input_name, "READ"));
 
     if (!histogram_file || histogram_file->IsZombie()) {
@@ -40,7 +40,7 @@ double GetScaleFactor(const float &luminosity, const float &cross_section,
 }
 
 double GetEventWeight(const float &gen_weight, const float &pileup_weight,
-                   const float &scale_factor) {
+                      const float &scale_factor) {
     return gen_weight * pileup_weight * scale_factor;
 }
 
@@ -82,6 +82,41 @@ std::pair<float, float> CSAngles(TLorentzVector vector_1,
     }
 
     return std::pair<float, float>(cos_theta_CS, phi_CS);
+}
+
+float DeltaPhi(const float &phi_1, const float &phi_2) {
+
+    float delta_phi = phi_1 - phi_2;
+    while (delta_phi > PI)
+        delta_phi -= TWO_PI;
+    while (delta_phi <= -PI)
+        delta_phi += TWO_PI;
+    return delta_phi;
+}
+
+float GetZZeppenfeldVariable(const float &diMuon_rapidity,
+                             const std::vector<float> *const &jet_pt,
+                             const std::vector<float> *const &jet_phi,
+                             const std::vector<float> *const &jet_eta,
+                             const std::vector<float> *const &jet_mass) {
+
+    if (jet_pt->size() < 2) {
+        std::cout << "There isn't 2 jets in this event, returning 0 for the "
+                     "Z Zeppenfeld variable\n";
+        return 0.;
+    }
+    TLorentzVector leading_jet_vector, subleading_jet_vector;
+    leading_jet_vector.SetPtEtaPhiM((*jet_pt)[0], (*jet_eta)[0], (*jet_phi)[0],
+                                    (*jet_mass)[0]);
+    subleading_jet_vector.SetPtEtaPhiM((*jet_pt)[1], (*jet_eta)[1],
+                                       (*jet_phi)[1], (*jet_mass)[1]);
+
+    float leading_jet_rapidity, subleading_jet_rapidity;
+    leading_jet_rapidity = leading_jet_vector.Rapidity();
+    subleading_jet_rapidity = subleading_jet_vector.Rapidity();
+    return (diMuon_rapidity -
+            (leading_jet_rapidity + subleading_jet_rapidity) / 2) /
+           (TMath::Abs(leading_jet_rapidity - subleading_jet_rapidity));
 }
 
 #endif // if LIB_UTILS_H
