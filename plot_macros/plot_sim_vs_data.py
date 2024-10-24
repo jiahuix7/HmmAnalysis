@@ -1,9 +1,10 @@
+from utils.sim_vs_data import draw_data_and_simul_and_ratio_from_tuple
 from utils.sim_vs_data import draw_data_and_simul_and_ratio
 
 
 # ordered from bottom to top in the plot, so order it from lower to bigger cross section
-# background_sources = ["TT", "DY120-200", "DY50-120"]
 background_sources = [
+    "EWK",
     "DiBoson",
     "TT",
     "DY",
@@ -21,7 +22,7 @@ signal_sources = [
 ]
 variables = [
     "diMuon_mass",
-    "diMuon_mass_full_range",
+    # "diMuon_mass_full_range",
     "diMuon_rapidity",
     "diMuon_eta",
     "diMuon_pt",
@@ -44,8 +45,12 @@ variables = [
     "phi_CS",
     "cos_theta_CS",
 ]
-eras = ["2022", "2022EE"]
+eras = ["2022",   "2022EE"]
+# eras = ["2022EE"]
 
 for era in eras:
     for variable in variables:
-        draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sources)
+        # draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sources)
+        draw_data_and_simul_and_ratio_from_tuple(
+            variable, era, background_sources, signal_sources
+        )

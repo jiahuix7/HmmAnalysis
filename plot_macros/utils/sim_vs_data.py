@@ -3,8 +3,16 @@ import mplhep as hep
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .labels import x_labels, background_labels, luminosity #, y_labels
+from .labels import (
+    x_labels,
+    background_labels,
+    luminosity,
+    x_range,
+    n_bins,
+)  # , y_labels
 from .helper import get_canvas, save_figure, get_histograms, get_histograms_ratio
+
+signal_colors = {"ggH": "red", "VBF": "blue", "ttH": "lime"}
 
 y_axis_max_range = {
     "mu1_pt_mass_ratio": 10e6,
@@ -62,7 +70,6 @@ def get_background_label_list(background_sources):
 
 
 def draw_signal_sources(signal_sources, variable, era, ax):
-    signal_colors = {"ggH": "red", "VBF": "blue", "ttH": "lime"}
     for source in signal_sources:
         with ur.open(
             "../root_io/" + source + "_" + era + "_histograms.root"
@@ -121,7 +128,7 @@ def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sour
         data="True",
         label="Test",
         year="2022",
-        com="13,6",
+        com="13.6",
         lumi=luminosity[era],
         ax=axs[0],
     )
@@ -169,9 +176,170 @@ def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sour
         output_directory = output_directory + "diJet/"
     elif "jet" in variable:
         output_directory = output_directory + "Jet/"
-    else: 
+    else:
         output_directory = output_directory + "muon/"
 
-    save_figure(
-        fig,output_directory , variable + "_" + era + "_MCData_ratio"
+    save_figure(fig, output_directory, variable + "_" + era + "_MCData_ratio")
+
+
+def draw_data_and_simul_and_ratio_from_tuple(
+    variable, era, background_sources, signal_sources
+):
+    plt.style.use(hep.style.CMS)
+
+    print("*************************")
+    print("******PLOTTING " + variable + "*****")
+    print("*************************")
+
+    variables = []
+    if variable == "diMuon_mass":
+        variables = ["diMuon_mass", "weight"]
+    else:
+        variables = [variable, "diMuon_mass", "weight"]
+
+    with ur.open(
+        "../root_io/tuples/Data_" + era + "_tuples.root:tree_output"
+    ) as data_file:
+        branches = data_file.arrays(variables, library="np")
+        branches[variable] = branches[variable][
+            (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
+        ]
+        data_histogram, data_bins = np.histogram(
+            branches[variable],
+            bins=n_bins[variable],
+            range=x_range[variable],
+        )
+
+    if variable == "diMuon_mass":
+        data_histogram[data_histogram == 0] = -100.0
+
+    bkg_histograms_list = []
+    bkg_bins_list = []
+    signal_histograms_list = {}
+    signal_bins_list = {}
+
+    for source in background_sources:
+        with ur.open(
+            "../root_io/tuples/" + source + "_" + era + "_tuples.root:tree_output"
+        ) as file:
+            branches = file.arrays(variables, library="np")
+            if variable != "diMuon_mass":
+                branches["weight"] = branches["weight"][
+                    (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
+                ]
+                branches[variable] = branches[variable][
+                    (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
+                ]
+            histogram, bins = np.histogram(
+                branches[variable],
+                bins=n_bins[variable],
+                range=x_range[variable],
+                weights=branches["weight"],
+            )
+            bkg_histograms_list.append(histogram)
+            bkg_bins_list.append(bins)
+
+    for source in signal_sources:
+        with ur.open(
+            "../root_io/tuples/" + source + "_" + era + "_tuples.root:tree_output"
+        ) as file:
+            signal_branches = file.arrays(variables, library="np")
+            histogram, bins = np.histogram(
+                signal_branches[variable],
+                bins=n_bins[variable],
+                range=x_range[variable],
+                weights=signal_branches["weight"],
+            )
+            signal_histograms_list[source] = histogram
+            signal_bins_list[source] = bins
+    # print(data_numpy_histogram)
+
+    fig, axs = get_canvas(True)
+
+    hep.histplot(
+        bkg_histograms_list,
+        bkg_bins_list[0],
+        yerr=True,
+        histtype="fill",
+        label=get_background_label_list(background_sources),
+        ax=axs[0],
+        stack=True,
+        color=get_color_list(len(background_sources)),
     )
+
+    hep.histplot(
+        data_histogram,
+        data_bins,
+        yerr=True,
+        histtype="errorbar",
+        label="data",
+        color="black",
+        ax=axs[0],
+    )
+
+    for source in signal_sources:
+        hep.histplot(
+            signal_histograms_list[source] * 10,
+            signal_bins_list[source],
+            yerr=False,
+            # yerr=True,
+            label=source,
+            color=signal_colors[source],
+            ax=axs[0],
+        )
+
+    hep.cms.label(
+        data="True",
+        label="Test",
+        year="2022",
+        com="13,6",
+        lumi=luminosity[era],
+        ax=axs[0],
+    )
+
+    axs[0].set_ylabel(r"Events")
+    # axs[0].set_ylim(-10000, y_axis_max_range[variable])
+    # axs[0].set_ylim(0.1, y_axis_max_range[variable])
+    axs[0].set_ylim(0.1, 1000 * np.max(data_histogram))
+    axs[0].set_xlim(data_bins[0], data_bins[-1])
+    axs[0].set_yscale("log")
+    axs[0].legend(frameon=False, loc="upper right", ncols=2, fontsize = 18)
+    axs[0].tick_params(axis="x", which="both", bottom=True, top=True, labelbottom=False)
+
+    plt.axhline(y=1, color="grey", linestyle="--", alpha=0.5)
+
+    tot_bg_numpy_hist = np.array([])
+    for i, bg_hist in enumerate(bkg_histograms_list):
+        if i == 0:
+            tot_bg_numpy_hist = bg_hist
+        else:
+            tot_bg_numpy_hist = tot_bg_numpy_hist + bg_hist
+
+    ratio_hist, ratio_error = get_histograms_ratio(data_histogram, tot_bg_numpy_hist)
+
+    hep.histplot(
+        ratio_hist,
+        data_bins,
+        yerr=ratio_error,
+        histtype="errorbar",
+        label="data",
+        color="black",
+        ax=axs[1],
+    )
+
+    axs[1].set_ylabel("Data/MC", loc="center")
+    axs[1].set_ylim(0.5, 1.5)
+    axs[1].set_xlim(data_bins[0], data_bins[-1])
+    axs[1].set_xlabel(x_labels[variable])
+
+    output_directory = "../plots/ratio/tuple/" + era + "/"
+    if "diMuon" in variable:
+        output_directory = output_directory + "diMuon/"
+    elif "diJet" in variable:
+        output_directory = output_directory + "diJet/"
+    elif "jet" in variable:
+        output_directory = output_directory + "Jet/"
+    else:
+        output_directory = output_directory + "muon/"
+
+    save_figure(fig, output_directory, variable + "_" + era + "_MCData_ratio")
