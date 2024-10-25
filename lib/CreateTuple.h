@@ -128,7 +128,7 @@ void CreateTuple::setBranchesAddressesOutput() {
     tree_output->Branch("scale_factor", &scale_factor, "scale_factor/d");
     tree_output->Branch("weight", &weight, "weight/d");
     tree_output->Branch("is_data", &is_data_int, "is_data/i");
-    tree_output->Branch("is_signal", &weight, "signal/i");
+    tree_output->Branch("is_signal", &is_signal_int, "signal/i");
 
     // DiMuon variables
     tree_output->Branch("diMuon_mass", &diMuon_mass, "diMuon_mass/f");

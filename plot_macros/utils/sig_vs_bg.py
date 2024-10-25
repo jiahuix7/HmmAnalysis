@@ -86,12 +86,7 @@ def clean_null_values(branches, variable):
         branches["weight"] = branches["weight"][branches[variable] != -1]
         branches[variable] = branches[variable][branches[variable] != -1]
 
-        branches["weight"] = branches["weight"][branches[variable] != -1]
-        branches[variable] = branches[variable][branches[variable] != -1]
     elif variable != "n_jet":
-        branches["weight"] = branches["weight"][branches[variable] != 0]
-        branches[variable] = branches[variable][branches[variable] != 0]
-
         branches["weight"] = branches["weight"][branches[variable] != 0]
         branches[variable] = branches[variable][branches[variable] != 0]
 
