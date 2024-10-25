@@ -62,7 +62,7 @@ TUPLE_EXECUTABLE := $(BIN)/CreateTuple
 
 # Default target: build both executables
 .PHONY: all
-all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE)
+all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE) $(TUPLE_EXECUTABLE)
 
 # Compile only the Analyzer
 .PHONY: analyzer
