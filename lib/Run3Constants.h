@@ -6,12 +6,14 @@
 
 constexpr float H_TO_MUMU_BRANCHING_RATIO = 2.176e-4;
 
+//// Luminosity in fb-1
 const std::map<TString, float> LUMINOSITY = {
     {"2022B", 0.09656}, {"2022C", 5.0104},   {"2022D", 2.9700},
     {"2022E", 5.8070},  {"2022F", 17.7819},  {"2022G", 3.0828},
     {"2022", 7.9804},   {"2022EE", 26.6717},
 };
 
+//// Cross section in pb
 const std::map<TString, float> CROSS_SECTION = {
     //********************//
     //     Background     //
@@ -36,6 +38,8 @@ const std::map<TString, float> CROSS_SECTION = {
     {"ZZto2L2Nu", 0.601},
     {"ZZto2L2Q", 3.696},
     {"ZZto4L", 1.325},
+    //  EWK
+    {"EWK_2L2J", 1.410},
     // TriBoson
     {"WWW_4F", 0.2086},
     //********************//

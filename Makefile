@@ -28,11 +28,15 @@ ANALYZER_HEADERS := $(LIB)/BTagCalibrationStandalone.h \
 HISTOGRAM_SRC := $(SRC)/CreateHistograms.cc
 HISTOGRAM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/CreateHistograms.h
 
+# Tuple sources and header
+TUPLE_SRC := $(SRC)/CreateTuple.cc
+TUPLE_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/CreateTuple.h
+
 # Histogram sources and header
 SKIM_SRC := $(SRC)/SkimTuple.cc
 SKIM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/SkimTuples.h
 
-SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_SRC)
+SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_SRC) $(TUPLE_SRC)
 
 
 # Object files
@@ -44,18 +48,21 @@ ANALYZER_OBJECTS := LeptonEfficiencyCorrector.o \
  
 HISTOGRAM_OBJECTS := CreateHistograms.o
 
+TUPLE_OBJECTS := CreateTuple.o
+
 SKIM_OBJECTS := SkimTuples.o
 
-OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS)
+OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS)
 
 # Executables
 ANALYZER_EXECUTABLE := $(BIN)/HmmAnalyzer
 HISTOGRAM_EXECUTABLE := $(BIN)/CreateHistograms
 SKIM_EXECUTABLE := $(BIN)/SkimTuples
+TUPLE_EXECUTABLE := $(BIN)/CreateTuple
 
 # Default target: build both executables
 .PHONY: all
-all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE)
+all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE) $(TUPLE_EXECUTABLE)
 
 # Compile only the Analyzer
 .PHONY: analyzer
@@ -64,6 +71,10 @@ analyzer: $(ANALYZER_EXECUTABLE)
 # Compile only the Histograms
 .PHONY: histogram
 histogram: $(HISTOGRAM_EXECUTABLE)
+
+# Compile only the tuples 
+.PHONY: tuple
+tuple: $(TUPLE_EXECUTABLE)
 
 # Compile only the Skim 
 .PHONY: skim
@@ -87,16 +98,22 @@ $(HISTOGRAM_EXECUTABLE): $(HISTOGRAM_OBJECTS)
 	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
 	@echo "done"
 
-# Linking for CrekteHistograms
+# Linking for Tuples
+$(TUPLE_EXECUTABLE): $(TUPLE_OBJECTS)
+	@echo "Linking $(TUPLE_EXECUTABLE)..."
+	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
+	@echo "done"
+
+# Linking for Skim tuplesj
 $(SKIM_EXECUTABLE): $(SKIM_OBJECTS)
 	@echo "Linking $(SKIM_EXECUTABLE)..."
 	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
 	@echo "done"
 	
 # Specifying the object files as intermediates deletes them automatically after the build process.
-.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS)
+.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS)
 
 # Clean target
 .PHONY: clean
 clean:
-	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE)
+	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS) $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE) $(TUPLE_EXECUTABLE)
