@@ -1,4 +1,18 @@
 x_labels = {
+    """
+    A dictionary mapping variable names to their LaTeX-formatted x-axis labels for plotting.
+
+    Keys:
+    -----
+    Each key represents a variable name as a string, which categorizes the type of physical
+    quantity (e.g., DiMuon, Muon, Jet, DiJet variables).
+
+    Values:
+    ------
+    Each value is a LaTeX-formatted string representing the label to be used on the x-axis 
+    when plotting the corresponding variable.
+    
+    """
     ## DiMuon variables
     "diMuon_rapidity": r"$y_{\mu\mu}$",
     "diMuon_pt": r"$p_T^{\mu\mu}$ [GeV]",
@@ -36,6 +50,17 @@ x_labels = {
 }
 
 n_bins = {
+    """
+    A dictionary specifying the number of histogram bins for each variable in the analysis.
+
+    Keys:
+    -----
+    Variable name as a string.
+
+    Values:
+    ------
+    Integer values specifying the number of bins use to create a histogram.
+    """
     ## DiMuon variables
     "diMuon_rapidity": 50,
     "diMuon_pt": 80,
@@ -73,6 +98,16 @@ n_bins = {
 }
 
 x_range = {
+    """
+    A dictionary defining the x-axis range for plotting each variable.
+
+    Keys:
+    -----
+    Variable name as a string
+    Values:
+    ------
+    Tuple of two floats specifying the minimum and maximum range for the x-axis.
+    """
     ## DiMuon variables
     "diMuon_pt": (0, 250),
     "diMuon_mass": (110, 150),
@@ -140,7 +175,20 @@ background_labels = {
 }
 
 luminosity = {
+    """
+    A dictionary storing the integrated luminosity values for different data-taking periods.
+
+    Keys:
+    -----
+    Year or era as a string(e.g., "2022", "2022EE", "2022Combined".)
+
+    Values:
+    ------
+    String representing the integrated luminosity value for each period in inverse femtobarns.
+    """
+    ## LUMINOSITIES
     "2022": "7.98",
     "2022EE": "26.67",
+    "2022Combined": "34.65",
 }
 # __all__ = [x_labels, y_labels, background_labels]

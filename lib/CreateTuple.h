@@ -14,55 +14,103 @@
 #include <iostream>
 #include <math.h>
 
+/**
+ * @class CreateTuple
+ * @brief This Class read outputs from HmmAnalyzer and return a smaller tuple
+ * with the variables necessary for the categorization
+ */
 class CreateTuple {
   public:
-    // Methods
+    /**
+     * @brief Constructor that initializes the CreateTuple class with specified
+     * input and output settings.
+     *
+     * @param input The full path of the input ROOT file containing the data.
+     * @param output Directory path for the output ROOT file.
+     * @param era The data collection era. (e.g. 2022, 2022EE, etc).
+     * @param channel Analysis channel (e.g., DY50to120, ggH, 2022F, etc).
+     * @param is_data Boolean flag indicating whether the input file is data or
+     * simulation
+     * .
+     * @param is_signal_ Boolean flag indicating if the data pertains to signal
+     * or background
+     */
     CreateTuple(TString input, TString output, TString era, TString channel,
                 bool is_data, bool is_signal_);
+    /**
+     * @brief Destructor for CreateTuple, cleaning up dynamically allocated
+     * objects.
+     */
     virtual ~CreateTuple();
+
+    /**
+     * @brief Loads the input file and adds its data to the input TChain.
+     *
+     * @throws std::runtime_error if the input file is not found.
+     */
     void fillChain();
+
+    /**
+     * @brief Sets up branch addresses for reading variables from the input
+     * tree.
+     */
     void setBranchesAddressesInput();
+
+    /**
+     * @brief Sets up branch addresses for writing variables to the output tree.
+     */
     void setBranchesAddressesOutput();
+
+    /**
+     * @brief Processes events and fills the output tree with calculated
+     * variables.
+     */
     void fillOutputTree();
+
+    /**
+     * @brief Saves the output tree to a ROOT file in the specified output
+     * directory.
+     */
     void saveTree();
 
   private:
-    // Members
+    TChain *tree_input; /**< Pointer to input TChain. */
+    TTree *tree_output; /**< Pointer to output TTree. */
+    bool is_signal; /**< Flag indicating if the input file is signal data. */
+    long double
+        gen_weight_sum;     /**< Sum of generator weights for normalization. */
+    const float luminosity; /**< Luminosity of the era. */
+    const float cross_section; /**< Cross-section of the process. */
+    TString input_name;        /**< Path of the input file. */
+    TString output_name;       /**< Name of the output file. */
+    TString output_directory;  /**< Directory for saving the output file. */
+    TFile *output_file;        /**< Pointer to output TFile. */
 
-    TChain *tree_input;
-    TTree *tree_output;
-    bool is_signal;
-    long double gen_weight_sum;
-    const float luminosity;
-    const float cross_section;
-    TString input_name;
-    TString output_name;
-    TString output_directory;
-    TFile *output_file;
-
-    // Read Tuples
-    // DiMuon variables
+    /**< Read DiMuon variables */
     float diMuon_mass, diMuon_pt, diMuon_phi, diMuon_eta, gen_weight,
-        pileup_weight, pileup;
-    // Muon variables
+        pileup_weight;
+
+    /**< Read Muon variables */
     int mu1_index, mu2_index;
     std::vector<int> *mu_charge;
     std::vector<float> *mu_pt, *mu_phi, *mu_eta;
-    // Jet variables
+
+    /** Read Jet variables */
     int n_jet;
     std::vector<float> *jet_mass, *jet_pt, *jet_phi, *jet_eta;
-    // diJet variables
+
+    /**< Read Jet variables */
     float diJet_pt, diJet_eta, diJet_phi, diJet_mass, diJet_mass_mo;
 
-    // New Variables
+    /**< New TTree variables */
     double scale_factor; // luminosity * cross_section / gen_weight_sum
     double weight;
     int is_data_int, is_signal_int;
 
-    // DiMuon variables
+    /**< New DiMuon variables*/
     float diMuon_rapidity;
 
-    // Muon variables
+    /**< New Muon variables*/
     float mu1_pt_mass_ratio, mu2_pt_mass_ratio, mu1_eta, mu2_eta, phi_CS,
         cos_theta_CS;
 };

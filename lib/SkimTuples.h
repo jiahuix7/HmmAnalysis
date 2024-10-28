@@ -55,7 +55,7 @@ class SkimTuples {
     int number_of_b_jets, number_of_jets;
     std::vector<float> *jet_eta, *jet_pt, *jet_phi, *jet_mass;
     // diJets
-    float diJet_mass, diJet_eta, diJet_phi;
+    float diJet_mass;
 
     // Variables to save
     const char *variables_list =
