@@ -1,8 +1,8 @@
 # Ignore directories with condor jobs outputs
 analyzer_HiggsMuMu/
 hadd/
+ctuples/
 # Job sender is updated everytime submit_jobs is run
-condor_job_sender.sh
-condor_job_sender_missing_files.sh
+condor_*sender*.sh
 # Ignore files created by condor job management
 docker_stderror
