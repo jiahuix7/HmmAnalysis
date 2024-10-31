@@ -1,137 +1,35 @@
 #!/usr/bin/python
 
 import os
-import datetime
-import time
-import subprocess
-import glob
 import sys
-from collections import OrderedDict
+sys.path.append('../list')
+from listDatasets_Run3 import datasets_info
 
 analyzer = "HmmAnalyzer"
 analysis = "HiggsMuMu"
 outputfile = analysis
 
-all_dataset_lists = OrderedDict()
-# Each entry contains [isData, max_runs_per_job, year]
-#################
-# 2022 Datasets
-#################
-all_dataset_lists["DoubleMuon_2022A.list"] = ["T", 2, "2022", "Data"]
-all_dataset_lists["DoubleMuon_2022B.list"] = ["T", 2, "2022", "Data"]
-all_dataset_lists["DoubleMuon_2022C.list"] = ["T", 2, "2022", "Data"]
-all_dataset_lists["Muon_2022C.list"] = ["T", 2, "2022", "Data"]
-all_dataset_lists["Muon_2022D.list"] = ["T", 2, "2022", "Data"]
-all_dataset_lists["Muon_2022E.list"] = ["T", 2, "2022EE", "Data"]
-all_dataset_lists["Muon_2022F.list"] = ["T", 2, "2022EE", "Data"]
-all_dataset_lists["Muon_2022G.list"] = ["T", 2, "2022EE", "Data"]
-################################
-# 2022 Simulations Backgrounds
-################################
-all_dataset_lists["DY50to120_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["DY120to200_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["DYJetstoLL_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["DYto2L-2Jets_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["EWK_2L2J_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TTto2L2Nu_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["TTto2L2Nu_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TTtoLNu2Q_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["TTtoLNu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminusto2L2Nu_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminusto2L2Nu_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminusto4Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminusto4Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminustoLNu2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TWminustoLNu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplusto2L2Nu_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplusto2L2Nu_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplusto4Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplusto4Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplustoLNu2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarWplustoLNu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarQto2Q-t-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarQtoLNu-t-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TQbarto2Q-t-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TQbartoLNu-t-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TBbartoLplusNuBbar-s-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["TbarBtoLminusNuB-s-channel_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WZto2L2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WZto2L2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WZto3LNu_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WZtoLNu2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WZtoLNu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2L2Nu_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2L2Nu_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2L2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2L2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2Nu2Q_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto2Nu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto4L_Summer22.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["ZZto4L_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WWto2L2Nu_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["WWto2L2Nu_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WWto4Q_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["WWto4Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WWtoLNu2Q_Summer22.list"] = ["F", 1, "2022", "MC_background"]
-all_dataset_lists["WWtoLNu2Q_Summer22_ext1.list"] = ["F", 2, "2022", "MC_background"]
-all_dataset_lists["WWW_4F_Summer22.list"] = ["F", 2, "2022", "MC_background"]
+# Skip these datasets
+skip_dataset = [
+    "DYJetstoLL_Summer22",
+    "DYto2L-2Jets_Summer22",
+    "TbarQto2Q-t-channel_Summer22",
+    "TQbarto2Q-t-channel_Summer22",
+    "DYto2L-2Jets_Summer22EE",
+    "TbarQto2Q-t-channel_Summer22EE",
+    "TQbarto2Q-t-channel_Summer22EE",
+]
+skip_pattern = [
+    # "Summer22",
+    # "Summer22EE",
+]
 
-all_dataset_lists["DY50to120_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["DY120to200_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["DYJetstoLL_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["DYto2L-2Jets_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["EWK_2L2J_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TTto2L2Nu_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["TTtoLNu2Q_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["TTtoLNu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminusto2L2Nu_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminusto2L2Nu_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminusto4Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminusto4Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminustoLNu2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TWminustoLNu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplusto2L2Nu_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplusto2L2Nu_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplusto4Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplusto4Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplustoLNu2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarWplustoLNu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarQto2Q-t-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarQtoLNu-t-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TQbarto2Q-t-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TQbartoLNu-t-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TBbartoLplusNuBbar-s-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["TbarBtoLminusNuB-s-channel_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WZto2L2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WZto2L2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WZto3LNu_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WZtoLNu2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WZtoLNu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2L2Nu_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2L2Nu_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2L2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2L2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2Nu2Q_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto2Nu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto4L_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["ZZto4L_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WWto2L2Nu_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["WWto2L2Nu_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WWto4Q_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["WWto4Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WWtoLNu2Q_Summer22EE.list"] = ["F", 1, "2022EE", "MC_background"]
-all_dataset_lists["WWtoLNu2Q_Summer22EE_ext1.list"] = ["F", 2, "2022EE", "MC_background"]
-all_dataset_lists["WWW_4F_Summer22EE.list"] = ["F", 2, "2022EE", "MC_background"]
-###########################
-# 2022 Simulations Signal
-###########################
-all_dataset_lists["ggH_Summer22.list"] = ["F", 2, "2022", "MC_signal"]
-all_dataset_lists["VBF_Summer22.list"] = ["F", 2, "2022", "MC_signal"]
-all_dataset_lists["ttH_Summer22.list"] = ["F", 2, "2022", "MC_signal"]
-all_dataset_lists["ggH_Summer22EE.list"] = ["F", 2, "2022EE", "MC_signal"]
-all_dataset_lists["VBF_Summer22EE.list"] = ["F", 2, "2022EE", "MC_signal"]
-all_dataset_lists["ttH_Summer22EE.list"] = ["F", 2, "2022EE", "MC_signal"]
-
+list_datasets = datasets_info.keys()
+# Use in case you want to run over a specific list of datasets!
+# list_datasets = [
+#     "DY120to200_Summer22",
+#     "DY50to120_Summer22",
+# ]
 
 # cmsswReleaseVersion = "CMSSW_10_6_5"
 CMSSW_BASE_DIR = os.getenv('CMSSW_BASE')
@@ -148,16 +46,20 @@ print("Using CMSSW version " + cmsswReleaseVersion)
 send_all_jobs = open(Condor_BASE_DIR + "/condor_job_sender.sh", "w+")
 
 # Create directory for condor jobs
-for list_file in all_dataset_lists.keys():
-    dataset_name = list_file.replace(".list","")
+for dataset_name in list_datasets:
+    match_pattern = [True for pattern in skip_pattern if pattern in dataset_name]
+    if (dataset_name in skip_dataset) or (True in match_pattern):
+        continue
+
+    list_file = dataset_name + ".list"
     print("\n----- %s -----"%(dataset_name))
     if not os.path.exists(Inputfiles_DIR + list_file):
-        print(" (!) List file: " + list_file + " does not exist. Skipping!")
+        print("List file does not exist. Skipping!")
         continue
 
     list_all_runs = open(Inputfiles_DIR + list_file, "r")
 
-    isData, max_runs_per_job, year, type_info = all_dataset_lists[list_file]
+    isData, max_runs_per_job, year, type_info, _ = datasets_info[dataset_name]
 
     Output_DIR = "analyzer_%s/"%(outputfile) + "%s/"%(dataset_name)
     Job_DIR = Condor_BASE_DIR + Output_DIR
