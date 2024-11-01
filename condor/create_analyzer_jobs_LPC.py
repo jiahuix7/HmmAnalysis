@@ -18,17 +18,19 @@ skip_dataset = [
     "DYto2L-2Jets_Summer22EE",
     "TbarQto2Q-t-channel_Summer22EE",
     "TQbarto2Q-t-channel_Summer22EE",
+    "TbarWplustoLNu2Q_Summer23",
+    "TbarWplustoLNu2Q_Summer23BPix",
 ]
 skip_pattern = [
-    # "Summer22",
-    # "Summer22EE",
+    "Summer22",
+    "Summer22EE",
+    "_2022",
 ]
 
 list_datasets = datasets_info.keys()
-# Use in case you want to run over a specific list of datasets!
+# # Use in case you want to run over a specific list of datasets!
 # list_datasets = [
-#     "DY120to200_Summer22",
-#     "DY50to120_Summer22",
+#     "DY50to120_Summer23",
 # ]
 
 # cmsswReleaseVersion = "CMSSW_10_6_5"
@@ -112,9 +114,11 @@ for dataset_name in list_datasets:
     os.system("mkdir -p " + Job_Data_DIR + "leptonSF/2016/")
     os.system("cp " + "%s/leptonSF/2016/*.root"%(Analyzer_Data_DIR) + " " + "%s/leptonSF/2016/"%(Job_Data_DIR))
     os.system("mkdir -p " + Job_Data_DIR + "pileup")
-    pileup_file = "RunII_2016_data" if "2016" in year else "PileupReweight_Summer22"
-    if "EE" in year: pileup_file += "EE"
-    os.system("cp " + "%s/pileup/%s.root"%(Analyzer_Data_DIR, pileup_file) + " " + "%s/pileup/"%(Job_Data_DIR))
+    pileup_file = "PileupReweight_Summer%s"%(year[2:])
+    if not os.path.exists(Analyzer_Data_DIR + "/pileup/%s.root"%(pileup_file)):
+        print(" (!) Pileup file not found for this era. Using 2016 as default.")
+        pileup_file = "RunII_2016_data"
+    os.system("cp " + Analyzer_Data_DIR + "/pileup/%s.root"%(pileup_file) + " " + "%s/pileup/"%(Job_Data_DIR))
 
     #####################################
     # Create Condor JDL file

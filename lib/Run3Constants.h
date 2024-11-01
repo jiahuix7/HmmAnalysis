@@ -58,6 +58,20 @@ const std::map<TString, float> CROSS_SECTION = {
     {"Muon_2022E", -1},
     {"Muon_2022F", -1},
     {"Muon_2022G", -1},
+    {"Muon0_2023B", -1},
+    {"Muon0_2023C_v1", -1},
+    {"Muon0_2023C_v2", -1},
+    {"Muon0_2023C_v3", -1},
+    {"Muon0_2023C_v4", -1},
+    {"Muon1_2023B", -1},
+    {"Muon1_2023C_v1", -1},
+    {"Muon1_2023C_v2", -1},
+    {"Muon1_2023C_v3", -1},
+    {"Muon1_2023C_v4", -1},
+    {"Muon0_2023D_v1", -1},
+    {"Muon0_2023D_v2", -1},
+    {"Muon1_2023D_v1", -1},
+    {"Muon1_2023D_v2", -1},
 };
 
 #endif // LIB_RUN3CONTANTS_H

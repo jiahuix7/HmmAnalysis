@@ -304,6 +304,9 @@ void HmmAnalyzer::EventLoop() {
         t_diMuon_eta = dimu.Eta();
         t_diMuon_phi = dimu.Phi();
         t_diMuon_mass = dimu.M();
+        t_nSoftActivityJet = nSoftActivityJet;
+        t_SoftActivityJetNjets10 = SoftActivityJetNjets10;
+        t_SoftActivityJetNjets2 = SoftActivityJetNjets2;
         t_SoftActivityJetNjets5 = SoftActivityJetNjets5;
 
         for (int j = 0; j < nJet; j++) {
@@ -327,8 +330,7 @@ void HmmAnalyzer::EventLoop() {
             // t_Jet_btagCMVA->push_back(Jet_btagCMVA[j]);
             // t_Jet_btagCSVV2->push_back(Jet_btagCSVV2[j]);
             t_Jet_btagDeepB->push_back(Jet_btagDeepFlavB[j]);
-            // t_Jet_btagDeepC->push_back(Jet_btagDeepC[j]);
-            // t_Jet_btagDeepFlavB->push_back(Jet_btagDeepFlavB[j]);
+            t_Jet_btagPNetB->push_back(Jet_btagPNetB[j]);
             t_Jet_chEmEF->push_back(Jet_chEmEF[j]);
             t_Jet_chHEF->push_back(Jet_chHEF[j]);
             t_Jet_eta->push_back(Jet_eta[j]);
@@ -344,16 +346,13 @@ void HmmAnalyzer::EventLoop() {
             t_Jet_nMuons->push_back(Jet_nMuons[j]);
             // t_Jet_puId->push_back(Jet_puId[j]);
 
-            if (!(Jet_btagDeepFlavB[j] > btag_cut[yearst])) {
+            if (!(Jet_btagPNetB[j] > btag_cut[yearst])) {
                 continue; // medium WP
             } // end of b-tag
             t_nbJet++;
             t_bJet_area->push_back(Jet_area[j]);
-            // t_bJet_btagCMVA->push_back(Jet_btagCMVA[j]);
-            // t_bJet_btagCSVV2->push_back(Jet_btagCSVV2[j]);
             t_bJet_btagDeepB->push_back(Jet_btagDeepFlavB[j]);
-            // t_bJet_btagDeepC->push_back(Jet_btagDeepC[j]);
-            t_bJet_btagDeepFlavB->push_back(Jet_btagDeepFlavB[j]);
+            t_bJet_btagPNetB->push_back(Jet_btagPNetB[j]);
             t_bJet_chEmEF->push_back(Jet_chEmEF[j]);
             t_bJet_chHEF->push_back(Jet_chHEF[j]);
             t_bJet_eta->push_back(Jet_eta[j]);
@@ -503,6 +502,8 @@ void HmmAnalyzer::EventLoop() {
         t_PV_z = PV_z;
         t_PV_npvs = PV_npvs;
         t_PV_npvsGood = PV_npvsGood;
+
+        t_Rho = Rho_fixedGridRhoFastjetAll;
 
         if (!is_data) {
             t_genWeight = genWeight;
