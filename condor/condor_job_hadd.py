@@ -48,7 +48,7 @@ def create_task_to_submit(dataset_name):
     task_new = open(DATASET_DIR + "/task_missing_files.jdl", "w")
     for line in task_original:
         if "RequestMemory" in line:
-            # Edit this number to 6000-8000 ONLY if error-runs persist
+            # Edit this number to 6000-8000 ONLY if failed-runs persist
             line = "RequestMemory = 4000 \n\n# Jobs selection\n"
         elif "Queue I from (" in line:
             break
@@ -67,6 +67,14 @@ def create_task_to_submit(dataset_name):
 
     return command_line
 
+# Arguments
+if (len(sys.argv) == 1):
+    recreate_hadded_file = False
+elif (len(sys.argv) > 2) or (sys.argv[1] not in ["T", "F"]):
+    print("One argument is required! Add T or F if you want to recreate the hadded file")
+    exit()
+else:
+    recreate_hadded_file = True if (sys.argv[1] == "T") else False
 
 list_datasets = []
 analysis_job_sender = open("condor_job_sender.sh", "r")
@@ -84,39 +92,58 @@ analysis_job_sender.close()
 
 # # You can hardcode a list of datasets here if you want!
 # list_datasets = [
-#     "Muon_2022F",
+#     "DY50to120_Summer23",
 # ]
 
-os.system("mkdir -p hadd/log/")
-os.system("mkdir -p hadd/out/")
-os.system("mkdir -p hadd/err/")
+os.system("mkdir -p hadd/")
 
 DIR_eos = "store/user/csanmart/analyzer_HiggsMuMu"
 analysis_new_job_sender = open("condor_job_sender_missing_files.sh", "w")
 for dataset in list_datasets:
     print("\n----- %s -----"%(dataset))
+
     FILESDIR = ""
     for dir_type in ["Data", "MC_background", "MC_signal"]:
         if os.path.exists("/eos/uscms/" + DIR_eos + "/%s/%s"%(dir_type, dataset)):
             print("Directory found!")
             FILESDIR = DIR_eos + "/%s/%s"%(dir_type, dataset)
+            print("/eos/uscms/" + FILESDIR)
             break
-
     if not FILESDIR:
         print("No folder found for " + dataset + " :(. Skipping.")
         continue
-    elif os.path.exists("/eos/uscms/" + FILESDIR + "/SumGenWeight.root"):
-        print("Dataset already merged! Skipping.")
-        continue
-        # Comment 'continue' and uncomment next lines if you want to recreate the hadd file
-        # comm = "xrdfs root://cmseos.fnal.gov mv /" + FILESDIR + "/SumGenWeight.root"
-        # comm+= " /" + FILESDIR + "/SumGenWeight_v1.root "
-        # os.system(comm)
 
-    if len(os.listdir("analyzer_HiggsMuMu/" + dataset + "/log")) == 0:
+    os.system("mkdir -p hadd/" + dataset + "/log/")
+    os.system("mkdir -p hadd/" + dataset + "/out/")
+    os.system("mkdir -p hadd/" + dataset + "/err/")
+
+    hadd_exists = os.path.exists("/eos/uscms/" + FILESDIR + "/SumGenWeight.root")
+    hadd_copy_exists = os.path.exists("/eos/uscms/" + FILESDIR + "/SumGenWeight_v1.root")
+    if hadd_exists:
+        print("Dataset already merged!")
+        if recreate_hadded_file:
+            if hadd_copy_exists:
+                print("A SumGenWeight safe copy already exists! Overwriting.")
+                comm = "xrdfs root://cmseos.fnal.gov rm /"
+                comm+= FILESDIR + "/SumGenWeight_v1.root "
+                os.system(comm)
+            print("Creating new SumGenWeight safe copy!")
+            comm = "xrdfs root://cmseos.fnal.gov mv /" + FILESDIR + "/SumGenWeight.root"
+            comm+= " /" + FILESDIR + "/SumGenWeight_v1.root "
+            os.system(comm)
+        else:
+            print("Skipping.")
+            continue
+
+    analysis_ran = os.path.exists("analyzer_HiggsMuMu/" + dataset)
+    log_path = "analyzer_HiggsMuMu/" + dataset + "/log"
+    if analysis_ran and (len(os.listdir(log_path)) == 0):
         print(" Analyzer /log/ already empty. Send analyzer jobs first!")
         continue
-    elif "job_%s"%(dataset) in [file.split(".")[0] for file in os.listdir("hadd/log")]:
+    hadd_ran = os.path.exists("hadd/" + dataset)
+    out_path = "hadd/" + dataset + "/out"
+    log_path = "hadd/" + dataset + "/log"
+    if hadd_ran and (len(os.listdir(out_path)) != len(os.listdir(log_path))):
         print("Hadd job ran and didn't finish. Consider running manually with:")
         command = " > cd /eos/uscms/" + FILESDIR + "; "
         command += "hadd SumGenWeight.root HiggsMuMu_*.root"
@@ -147,13 +174,12 @@ for dataset in list_datasets:
     args = dataset + " " + FILESDIR
     jobfile.write("Arguments = " + args + "\n")
 
-    jobfile.write("Log = hadd/log/job_%s.$(Cluster).log"%(dataset) + "\n")
-    jobfile.write("Output = hadd/out/job_%s.$(Cluster).out"%(dataset) + "\n")
-    jobfile.write("Error = hadd/err/job_%s.$(Cluster).err"%(dataset) + "\n")
+    jobfile.write("Log = hadd/%s/log/jobHadd.$(Cluster).log"%(dataset) + "\n")
+    jobfile.write("Output = hadd/%s/out/jobHadd.$(Cluster).out"%(dataset) + "\n")
+    jobfile.write("Error = hadd/%s/err/jobHadd.$(Cluster).err"%(dataset) + "\n")
     jobfile.write("x509userproxy = $ENV(X509_USER_PROXY)" + "\n")
 
     transfer_files = "hadd_datasets.sh, "
-
     jobfile.write("transfer_input_files = " + transfer_files + "\n")
 
     jobfile.write("should_transfer_files = YES" + "\n")
