@@ -94,6 +94,11 @@ float DeltaPhi(const float &phi_1, const float &phi_2) {
     return delta_phi;
 }
 
+float DeltaEta(const float &eta_1, const float &eta_2) {
+
+    return TMath::Abs(eta_1 - eta_2);
+}
+
 float GetZZeppenfeldVariable(const float &diMuon_rapidity,
                              const std::vector<float> *const &jet_pt,
                              const std::vector<float> *const &jet_phi,
