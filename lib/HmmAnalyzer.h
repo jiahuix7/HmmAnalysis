@@ -43,7 +43,7 @@
 // NULL_FLOAT_VALUE = -999.
 constexpr float MUON_MASS = 0.1056583745;
 constexpr float FLOAT_NULL_VALUE = -999.;
-constexpr float INT_NULL_VALUE = -999.;
+constexpr int INT_NULL_VALUE = -999;
 
 class HmmAnalyzer : public MainEvent {
   public:
@@ -229,6 +229,7 @@ class HmmAnalyzer : public MainEvent {
     // std::vector<float>         *t_Jet_btagCMVA;
     // std::vector<float>         *t_Jet_btagCSVV2;
     std::vector<float> *t_Jet_btagDeepB;
+    std::vector<float> *t_Jet_btagPNetB;
     // std::vector<float>         *t_Jet_btagDeepC;
     // std::vector<float>         *t_Jet_btagDeepFlavB;
     std::vector<float> *t_Jet_chEmEF;
@@ -246,6 +247,9 @@ class HmmAnalyzer : public MainEvent {
     std::vector<int> *t_Jet_nMuons;
     std::vector<int> *t_Jet_puId;
 
+    int t_nSoftActivityJet;
+    int t_SoftActivityJetNjets10;
+    int t_SoftActivityJetNjets2;
     int t_SoftActivityJetNjets5;
     float t_diJet_pt;
     float t_diJet_eta;
@@ -255,11 +259,8 @@ class HmmAnalyzer : public MainEvent {
 
     int t_nbJet;
     std::vector<float> *t_bJet_area;
-    std::vector<float> *t_bJet_btagCMVA;
-    std::vector<float> *t_bJet_btagCSVV2;
     std::vector<float> *t_bJet_btagDeepB;
-    std::vector<float> *t_bJet_btagDeepC;
-    std::vector<float> *t_bJet_btagDeepFlavB;
+    std::vector<float> *t_bJet_btagPNetB;
     std::vector<float> *t_bJet_chEmEF;
     std::vector<float> *t_bJet_chHEF;
     std::vector<float> *t_bJet_eta;
@@ -285,13 +286,7 @@ class HmmAnalyzer : public MainEvent {
     int t_PV_npvs;
     int t_PV_npvsGood;
 
-    UInt_t t_nLHEPdfWeight;
-    UInt_t t_nLHEScaleWeight;
-    UInt_t t_nPSWeight;
-
-    std::vector<float> *t_LHEPdfWeight;
-    std::vector<float> *t_LHEScaleWeight;
-    std::vector<float> *t_PSWeight;
+    float t_Rho; // Rho_fixedGridRhoFastjetAll
 
     std::vector<float> *t_GenPart_eta;
     std::vector<float> *t_GenPart_mass;
@@ -329,16 +324,22 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
 
     // muon pT selection
     muon_pt_cut["2016"] = 26.0;
-    muon_pt_cut["2022"] = 26.0;
-    muon_pt_cut["2022EE"] = 26.0;
     // muon_pt_cut["2017"] = 29.0;
     // muon_pt_cut["2018"] = 26.0;
-    //  b-tag score selection
+    muon_pt_cut["2022"] = 26.0;
+    muon_pt_cut["2022EE"] = 26.0;
+    muon_pt_cut["2023"] = 26.0;
+    muon_pt_cut["2023BPix"] = 26.0;
+
+    // b-tag deepFlav MEDIUM score selection
     btag_cut["2016"] = 0.6321;
-    btag_cut["2022"] = 0.6321;
-    btag_cut["2022EE"] = 0.6321;
     // btag_cut["2017"] = 0.4941;
     // btag_cut["2018"] = 0.4184;
+    // b-tag particleNet MEDIUM score selection
+    btag_cut["2022"] = 0.245;
+    btag_cut["2022EE"] = 0.2605;
+    btag_cut["2023"] = 0.1917;
+    btag_cut["2023BPix"] = 0.1919;
 
     // muon eff SFs
     muon_effSF_TRIG_files.clear();
@@ -498,6 +499,12 @@ void HmmAnalyzer::getPileupHistograms() {
     } else if (yearst == "2022EE") {
         pileupWeightFile =
             new TFile("./data/pileup/PileupReweight_Summer22EE.root");
+    } else if (yearst == "2023") {
+        pileupWeightFile =
+            new TFile("./data/pileup/PileupReweight_Summer23.root");
+    } else if (yearst == "2023BPix") {
+        pileupWeightFile =
+            new TFile("./data/pileup/PileupReweight_Summer23BPix.root");
     }
     if (pileupWeightFile) {
         pileupWeightHist = (TH1F *)pileupWeightFile->Get("npu_nominal");
@@ -722,7 +729,10 @@ void HmmAnalyzer::clearTreeVectors() {
     t_index_trigm_mu = FLOAT_NULL_VALUE;
     t_nJet = 0;
     t_nbJet = 0;
-    t_SoftActivityJetNjets5 = FLOAT_NULL_VALUE;
+    t_nSoftActivityJet = INT_NULL_VALUE;
+    t_SoftActivityJetNjets10 = INT_NULL_VALUE;
+    t_SoftActivityJetNjets2 = INT_NULL_VALUE;
+    t_SoftActivityJetNjets5 = INT_NULL_VALUE;
     t_El_genPartIdx->clear();
     t_El_genPartFlav->clear();
     t_El_charge->clear();
@@ -834,6 +844,7 @@ void HmmAnalyzer::clearTreeVectors() {
     // t_Jet_btagCMVA->clear();
     // t_Jet_btagCSVV2->clear();
     t_Jet_btagDeepB->clear();
+    t_Jet_btagPNetB->clear();
     // t_Jet_btagDeepC->clear();
     // t_Jet_btagDeepFlavB->clear();
     t_Jet_chEmEF->clear();
@@ -858,11 +869,8 @@ void HmmAnalyzer::clearTreeVectors() {
     t_diJet_mass_mo = FLOAT_NULL_VALUE;
 
     t_bJet_area->clear();
-    t_bJet_btagCMVA->clear();
-    t_bJet_btagCSVV2->clear();
     t_bJet_btagDeepB->clear();
-    t_bJet_btagDeepC->clear();
-    t_bJet_btagDeepFlavB->clear();
+    t_bJet_btagPNetB->clear();
     t_bJet_chEmEF->clear();
     t_bJet_chHEF->clear();
     t_bJet_eta->clear();
@@ -891,12 +899,7 @@ void HmmAnalyzer::clearTreeVectors() {
     t_PV_npvs = -1000;
     t_PV_npvsGood = -1000;
 
-    t_nLHEPdfWeight = 0;
-    t_nLHEScaleWeight = 0;
-    t_nPSWeight = 0;
-    t_LHEPdfWeight->clear();
-    t_LHEScaleWeight->clear();
-    t_PSWeight->clear();
+    t_Rho = FLOAT_NULL_VALUE;
 
     t_GenPart_eta->clear();
     t_GenPart_mass->clear();
@@ -1004,17 +1007,6 @@ void HmmAnalyzer::BookTreeBranches() {
                  &t_Electron_mvaFall17noIso_WP90);
     tree->Branch("t_Electron_mvaFall17noIso_WPL", "vector<bool>",
                  &t_Electron_mvaFall17noIso_WPL);
-
-    t_LHEPdfWeight = new std::vector<float>();
-    t_LHEScaleWeight = new std::vector<float>();
-    t_PSWeight = new std::vector<float>();
-    tree->Branch("t_nLHEPdfWeight", &t_nLHEPdfWeight, "t_nLHEPdfWeight/i");
-    tree->Branch("t_LHEPdfWeight", "vector<float>", &t_LHEPdfWeight);
-    tree->Branch("t_nLHEScaleWeight", &t_nLHEScaleWeight,
-                 "t_nLHEScaleWeight/i");
-    tree->Branch("t_LHEScaleWeight", "vector<float>", &t_LHEScaleWeight);
-    tree->Branch("t_nPSWeight", &t_nPSWeight, "t_nPSWeight/i");
-    tree->Branch("t_PSWeight", "vector<float>", &t_PSWeight);
 
     t_Mu_genPartIdx = new std::vector<int>();
     t_Mu_genPartFlav = new std::vector<UChar_t>();
@@ -1169,6 +1161,7 @@ void HmmAnalyzer::BookTreeBranches() {
     // t_Jet_btagCMVA= new std::vector<float>();
     // t_Jet_btagCSVV2= new std::vector<float>();
     t_Jet_btagDeepB = new std::vector<float>();
+    t_Jet_btagPNetB = new std::vector<float>();
     // t_Jet_btagDeepC= new std::vector<float>();
     // t_Jet_btagDeepFlavB= new std::vector<float>();
     t_Jet_chEmEF = new std::vector<float>();
@@ -1186,6 +1179,12 @@ void HmmAnalyzer::BookTreeBranches() {
     t_Jet_nMuons = new std::vector<int>();
     t_Jet_puId = new std::vector<int>();
 
+    tree->Branch("t_nSoftActivityJet", &t_nSoftActivityJet,
+                 "t_nSoftActivityJet/I");
+    tree->Branch("t_SoftActivityJetNjets10", &t_SoftActivityJetNjets10,
+                 "t_SoftActivityJetNjets10/I");
+    tree->Branch("t_SoftActivityJetNjets2", &t_SoftActivityJetNjets2,
+                 "t_SoftActivityJetNjets2/I");
     tree->Branch("t_SoftActivityJetNjets5", &t_SoftActivityJetNjets5,
                  "t_SoftActivityJetNjets5/I");
     tree->Branch("t_nJet", &t_nJet, "t_nJet/I");
@@ -1193,6 +1192,7 @@ void HmmAnalyzer::BookTreeBranches() {
     // tree->Branch("t_Jet_btagCMVA"    , "vector<float>" ,&t_Jet_btagCMVA);
     // tree->Branch("t_Jet_btagCSVV2"    , "vector<float>" ,&t_Jet_btagCSVV2);
     tree->Branch("t_Jet_btagDeepB", "vector<float>", &t_Jet_btagDeepB);
+    tree->Branch("t_Jet_btagPNetB", "vector<float>", &t_Jet_btagPNetB);
     // tree->Branch("t_Jet_btagDeepC"    , "vector<float>" ,&t_Jet_btagDeepC);
     // tree->Branch("t_Jet_btagDeepFlavB"    , "vector<float>"
     // ,&t_Jet_btagDeepFlavB);
@@ -1219,11 +1219,8 @@ void HmmAnalyzer::BookTreeBranches() {
 
     tree->Branch("t_nbJet", &t_nbJet, "t_nbJet/I");
     t_bJet_area = new std::vector<float>();
-    t_bJet_btagCMVA = new std::vector<float>();
-    t_bJet_btagCSVV2 = new std::vector<float>();
     t_bJet_btagDeepB = new std::vector<float>();
-    t_bJet_btagDeepC = new std::vector<float>();
-    t_bJet_btagDeepFlavB = new std::vector<float>();
+    t_bJet_btagPNetB = new std::vector<float>();
     t_bJet_chEmEF = new std::vector<float>();
     t_bJet_chHEF = new std::vector<float>();
     t_bJet_eta = new std::vector<float>();
@@ -1243,12 +1240,8 @@ void HmmAnalyzer::BookTreeBranches() {
     t_bJet_SFdown = new std::vector<double>();
 
     tree->Branch("t_bJet_area", "vector<float>", &t_bJet_area);
-    tree->Branch("t_bJet_btagCMVA", "vector<float>", &t_bJet_btagCMVA);
-    tree->Branch("t_bJet_btagCSVV2", "vector<float>", &t_bJet_btagCSVV2);
     tree->Branch("t_bJet_btagDeepB", "vector<float>", &t_bJet_btagDeepB);
-    tree->Branch("t_bJet_btagDeepC", "vector<float>", &t_bJet_btagDeepC);
-    tree->Branch("t_bJet_btagDeepFlavB", "vector<float>",
-                 &t_bJet_btagDeepFlavB);
+    tree->Branch("t_bJet_btagPNetB", "vector<float>", &t_bJet_btagPNetB);
     tree->Branch("t_bJet_chEmEF", "vector<float>", &t_bJet_chEmEF);
     tree->Branch("t_bJet_chHEF", "vector<float>", &t_bJet_chHEF);
     tree->Branch("t_bJet_eta", "vector<float>", &t_bJet_eta);
@@ -1273,6 +1266,8 @@ void HmmAnalyzer::BookTreeBranches() {
     tree->Branch("t_PV_z", &t_PV_z, "t_PV_z/F");
     tree->Branch("t_PV_npvs", &t_PV_npvs, "t_PV_npvs/I");
     tree->Branch("t_PV_npvsGood", &t_PV_npvsGood, "t_PV_npvsGood/I");
+
+    tree->Branch("t_Rho", &t_Rho, "t_Rho/F");
 
     t_GenPart_eta = new std::vector<float>();
     t_GenPart_mass = new std::vector<float>();
