@@ -7,6 +7,7 @@ Go to https://uscms.org/uscms_at_work/computing/setup/gpu.shtml and follow the E
 When you are in do 
 
 ```
+"${SHELL}" <(curl -L micro.mamba.pm/install.sh)
 micromamba create -n xgboost_env xgboost python=3.10 krb5  curl cfitsio root tensorflow keras -c conda-forge
 pip3 install pandas 
 pip3 install uproot

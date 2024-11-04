@@ -1,18 +1,22 @@
+"""
+A dictionary mapping variable names to their LaTeX-formatted x-axis labels for plotting.
+
+Keys:
+-----
+Each key represents a variable name as a string, which categorizes the type of physical
+quantity (e.g., DiMuon, Muon, Jet, DiJet variables).
+
+Values:
+------
+Each value is a LaTeX-formatted string representing the label to be used on the x-axis
+when plotting the corresponding variable.
+
+"""
+
 x_labels = {
-    """
-    A dictionary mapping variable names to their LaTeX-formatted x-axis labels for plotting.
-
-    Keys:
-    -----
-    Each key represents a variable name as a string, which categorizes the type of physical
-    quantity (e.g., DiMuon, Muon, Jet, DiJet variables).
-
-    Values:
-    ------
-    Each value is a LaTeX-formatted string representing the label to be used on the x-axis 
-    when plotting the corresponding variable.
-    
-    """
+    ## Event variables
+    "PV": r"$PV$",
+    "rho": r"$\rho$",
     ## DiMuon variables
     "diMuon_rapidity": r"$y_{\mu\mu}$",
     "diMuon_pt": r"$p_T^{\mu\mu}$ [GeV]",
@@ -21,46 +25,52 @@ x_labels = {
     "diMuon_phi": r"$\phi_{\mu\mu}$ rad",
     "diMuon_eta": r"$\eta_{\mu\mu}$ ",
     ## Muon variables
-    "mu1_pt_mass_ratio": r"$p_T^{\mu 1}/m_{/mu/mu}$",
-    "mu2_pt_mass_ratio": r"$p_T^{\mu 2}/m_{/mu/mu}$",
+    "mu1_pt_mass_ratio": r"$p_T^{\mu 1}/m_{\mu\mu}$",
+    "mu2_pt_mass_ratio": r"$p_T^{\mu 2}/m_{\mu\mu}$",
     "mu1_eta": r"$\eta_{\mu_1}$",
     "mu2_eta": r"$\eta_{\mu_2}$",
     "phi_CS": r"$\phi_{CS} [rad]$",
     "cos_theta_CS": r"$cos(\theta_{CS})$",
     ## Jet variables
     "n_jet": r"Number of Jets",
-    "leading_jet_pt": r"$Pt_{jet}$ GeV",
-    "leading_jet_eta": r"$\eta_{jet}$ ",
+    "leading_jet_pt": r"$Pt_{j1}$ GeV",
+    "subleading_jet_pt": r"$Pt_{j2}$ GeV",
+    "leading_jet_eta": r"$\eta_{j1}$ ",
     "jet_phi": r"$Phi_{jet}$ rad",
     "jet_mass": r"$M_{jet}$ GeV",
-    "delta_eta_dimuon_jet": r"$\Delta\eta_{\mu\mu,j}$",
+    "delta_eta_diMuon_jet": r"$\Delta\eta_{\mu\mu,j}$",
     "delta_phi_diMuon_jet": r"$\Delta\phi_{\mu\mu,j}$",
     ## DiJet variables
-    "diJet_pt": r"$Pt_{Dijet}$ GeV",
-    "diJet_eta": r"$\eta_{Dijet}$ ",
-    "diJet_phi": r"$\phi_{Dijet}$ rad",
+    "diJet_pt": r"$Pt_{jj}$ GeV",
+    "diJet_eta": r"$\eta_{jj}$ ",
+    "diJet_phi": r"$\phi_{jj}$ rad",
     "diJet_mass": r"$m_{jj}$ GeV",
     "diJet_mass_mo": r"$M_{Dijet highest mass}$ GeV",
     "diJet_DeltaEta": r"$\Delta\eta_{jj}$",
     "delta_eta_diJet": r"$\Delta\eta_{jj}$",
     "delta_phi_diJet": r"$\Delta\phi_{jj}$",
     "z_zeppenfeld": r"Z Zeppenfeld",
-    "min_delta_eta_dimuon_jet": r"min$\Delta\eta_{\mu\mu,j}$",
-    "min_delta_phi_dimuon_jet": r"min$\Delta\phi_{\mu\mu,j}$",
+    "min_delta_eta_diMuon_jet": r"min$\Delta\eta_{\mu\mu,j}$",
+    "min_delta_phi_diMuon_jet": r"min$\Delta\phi_{\mu\mu,j}$",
+    ## BDT_ggh
+    "BDT_ggH": "BDT Output",
 }
 
+"""
+A dictionary specifying the number of histogram bins for each variable in the analysis.
+
+Keys:
+-----
+Variable name as a string.
+
+Values:
+------
+Integer values specifying the number of bins use to create a histogram.
+"""
 n_bins = {
-    """
-    A dictionary specifying the number of histogram bins for each variable in the analysis.
-
-    Keys:
-    -----
-    Variable name as a string.
-
-    Values:
-    ------
-    Integer values specifying the number of bins use to create a histogram.
-    """
+    ## Event variables
+    "PV": 70,
+    "rho": 100,
     ## DiMuon variables
     "diMuon_rapidity": 50,
     "diMuon_pt": 80,
@@ -78,10 +88,11 @@ n_bins = {
     ## Jet variables
     "n_jet": 8,
     "leading_jet_pt": 50,
+    "subleading_jet_pt": 50,
     "leading_jet_eta": 50,
     "jet_phi": 50,
     "jet_mass": 50,
-    "delta_eta_dimuon_jet": 50,
+    "delta_eta_diMuon_jet": 50,
     "delta_phi_diMuon_jet": 50,
     ## DiJet variables
     "diJet_pt": 50,
@@ -93,21 +104,26 @@ n_bins = {
     "delta_eta_diJet": 50,
     "delta_phi_diJet": 50,
     "z_zeppenfeld": 50,
-    "min_delta_eta_dimuon_jet": 50,
-    "min_delta_phi_dimuon_jet": 50,
+    "min_delta_eta_diMuon_jet": 50,
+    "min_delta_phi_diMuon_jet": 50,
+    ## BDT_ggh
+    "BDT_ggH": 50,
 }
 
-x_range = {
-    """
-    A dictionary defining the x-axis range for plotting each variable.
+"""
+A dictionary defining the x-axis range for plotting each variable.
 
-    Keys:
-    -----
-    Variable name as a string
-    Values:
-    ------
-    Tuple of two floats specifying the minimum and maximum range for the x-axis.
-    """
+Keys:
+-----
+Variable name as a string
+Values:
+------
+Tuple of two floats specifying the minimum and maximum range for the x-axis.
+"""
+x_range = {
+    ## Event variables
+    "PV": (0, 70),
+    "rho": (0, 70),
     ## DiMuon variables
     "diMuon_pt": (0, 250),
     "diMuon_mass": (110, 150),
@@ -116,19 +132,20 @@ x_range = {
     "diMuon_rapidity": (-2.5, 2.5),
     "diMuon_mass_full_range": (50, 150),
     ## Muon variables
-    "mu1_pt_mass_ratio": (0, 1.4),
-    "mu2_pt_mass_ratio": (0, 1.4),
+    "mu1_pt_mass_ratio": (0.19, 1.6),
+    "mu2_pt_mass_ratio": (0.19, 1.6),
     "mu1_eta": (-2.4, 2.4),
     "mu2_eta": (-2.4, 2.4),
     "phi_CS": (-3.1415, 3.1415),
     "cos_theta_CS": (-1, 1),
     ## Jet variables
     "n_jet": (0, 8),
-    "leading_jet_pt": (0, 400),
+    "leading_jet_pt": (25, 400),
+    "subleading_jet_pt": (25, 200),
     "leading_jet_eta": (-5, 5),
     "jet_phi": (-3.1415, 3.1415),
     "jet_mass": (0, 120),
-    "delta_eta_dimuon_jet": (-10, 10),
+    "delta_eta_diMuon_jet": (-10, 10),
     "delta_phi_diMuon_jet": (-5, 5),
     ## DiJetvariables
     "diJet_pt": (0, 800),
@@ -138,10 +155,12 @@ x_range = {
     "diJet_mass_mo": (0, 800),
     "diJet_DeltaEta": (-12, 12),
     "delta_eta_diJet": (0, 5.5),
-    "delta_phi_diJet": (0, 5),
+    "delta_phi_diJet": (0, 3.14),
     "z_zeppenfeld": (-7, 7),
-    "min_delta_eta_dimuon_jet": (-3.2, 3.2),
-    "min_delta_phi_dimuon_jet": (-9, 9),
+    "min_delta_eta_diMuon_jet": (0, 5),
+    "min_delta_phi_diMuon_jet": (0, 3.14),
+    ## BDT_ggh
+    "BDT_ggH": (0, 1),
 }
 
 y_labels = {
@@ -174,21 +193,77 @@ background_labels = {
     "EWK": "EWK Background",
 }
 
+"""
+A dictionary storing the integrated luminosity values for different data-taking periods.
+
+Keys:
+-----
+Year or era as a string(e.g., "2022", "2022EE", "2022Combined".)
+
+Values:
+------
+String representing the integrated luminosity value for each period in inverse femtobarns.
+"""
 luminosity = {
-    """
-    A dictionary storing the integrated luminosity values for different data-taking periods.
-
-    Keys:
-    -----
-    Year or era as a string(e.g., "2022", "2022EE", "2022Combined".)
-
-    Values:
-    ------
-    String representing the integrated luminosity value for each period in inverse femtobarns.
-    """
     ## LUMINOSITIES
     "2022": "7.98",
     "2022EE": "26.67",
     "2022Combined": "34.65",
+    "2023": "17.8",
+    "2023BPix": "9.5",
 }
-# __all__ = [x_labels, y_labels, background_labels]
+
+variables_type = {
+    ## Event variables
+    "event": [
+        "PV",
+        "rho",
+    ],
+    ## DiMuon variables
+    "diMuon": [
+        "diMuon_rapidity",
+        "diMuon_pt",
+        "diMuon_mass",
+        "diMuon_mass_full_range",
+        "diMuon_phi",
+        "diMuon_eta",
+    ],
+    ## Muon variables
+    "muon": [
+        "mu1_pt_mass_ratio",
+        "mu2_pt_mass_ratio",
+        "mu1_eta",
+        "mu2_eta",
+        "phi_CS",
+        "cos_theta_CS",
+    ],
+    ## Jet variables
+    "jet": [
+        "n_jet",
+        "leading_jet_pt",
+        "subleading_jet_pt",
+        "leading_jet_eta",
+        "jet_phi",
+        "jet_mass",
+        "delta_eta_diMuon_jet",
+        "delta_phi_diMuon_jet",
+    ],
+    ## DiJet variables
+    "diJet": [
+        "diJet_pt",
+        "diJet_eta",
+        "diJet_phi",
+        "diJet_mass",
+        "diJet_mass_mo",
+        "diJet_DeltaEta",
+        "delta_eta_diJet",
+        "delta_phi_diJet",
+        "z_zeppenfeld",
+        "min_delta_eta_diMuon_jet",
+        "min_delta_phi_diMuon_jet",
+    ],
+    ## BDT_ggh
+    "ggH_category": [
+        "BDT_ggH",
+    ],
+}

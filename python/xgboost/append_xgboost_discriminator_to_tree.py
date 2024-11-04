@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import pandas as pd
+
 # import math
 import pickle as pickle
 import ROOT as root
@@ -17,7 +18,6 @@ import uproot as uproot
 # USAGE
 # python append_xgboost_discriminator_to_tree.py <folder_name> <input_file_name> <year> <bdt_type>
 
-print("v5")
 root.gROOT.Reset()
 
 if len(sys.argv) != 3:
@@ -26,15 +26,17 @@ if len(sys.argv) != 3:
 channel = sys.argv[1]
 era = sys.argv[2]
 
-FileName = "../../root_io/skim/" + channel + "_" + era + "_skim.root"
+signals = "signals"
+
+FileName = "../../root_io/skim/" + channel + "_" + era + "_skim_" + signals + ".root"
 
 File = root.TFile(FileName, "update")
-Tree = File.Get("tree_skim")
+Tree = File.Get("tree_output")
 
 
 test_name = "ReadingXgBoostModel"
 
-_model_name = "./models/model_mumu_vs_bkg_" + era + ".pkl"
+_model_name = "./models/" + signals + "/model_mumu_vs_bkg_" + era + ".pkl"
 
 variables = [
     ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$ (GeV)", 50, -2.5, 2.5],
@@ -60,25 +62,9 @@ variables = [
     ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
     ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_CS)$", 50, -1, 1],
     #   Jet variables
-    ["n_jets", "n_jet", r"n jets", 8, 0, 8],
+    ["n_jet", "n_jet", r"n jets", 8, 0, 8],
     ["leading_jet_pt", "leading_jet_pt", r"$Pt_{j1}$ GeV", 50, 0, 400],
     ["leading_jet_eta", "leading_jet_eta", r"$\eta_{jet}$", 50, -5, 5],
-    # [
-    # "delta_eta_diMuon_jet",
-    # "delta_eta_diMuon_jet",
-    # r"$\Delta\eta_{\mu\mu,j}$",
-    # 50,
-    # -8,
-    # 8,
-    # ],
-    # [
-    # "delta_phi_diMuon_jet",
-    # "delta_phi_diMuon_jet",
-    # r"$\Delta\phi_{\mu\mu,j}$",
-    # 50,
-    # -3.14,
-    # ],
-    # diJet variables
     ["subleading_jet_pt", "subleading_jet_pt", r"$Pt_{j2}$", 50, 0, 400],
     ["diJet_mass", "diJet_mass", r"$m_{jj}$ GeV", 50, 0, 400],
     ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
@@ -112,7 +98,7 @@ for var in variables:
 
 with uproot.open(FileName) as file:
     df = pd.DataFrame(
-        file["tree_skim"].arrays([row[0] for row in variables], library="np"),
+        file["tree_output"].arrays([row[0] for row in variables], library="np"),
         # flatten=False,
     )
 

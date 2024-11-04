@@ -33,8 +33,8 @@ TUPLE_SRC := $(SRC)/CreateTuple.cc
 TUPLE_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/CreateTuple.h
 
 # Histogram sources and header
-SKIM_SRC := $(SRC)/SkimTuple.cc
-SKIM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/SkimTuples.h
+SKIM_SRC := $(SRC)/SkimTuplesggH.cc
+SKIM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h
 
 SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_SRC) $(TUPLE_SRC)
 
@@ -50,14 +50,14 @@ HISTOGRAM_OBJECTS := CreateHistograms.o
 
 TUPLE_OBJECTS := CreateTuple.o
 
-SKIM_OBJECTS := SkimTuples.o
+SKIM_OBJECTS := SkimTuplesggH.o
 
-OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS)
+OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(TUPLE_OBJECTS)
 
 # Executables
 ANALYZER_EXECUTABLE := $(BIN)/HmmAnalyzer
 HISTOGRAM_EXECUTABLE := $(BIN)/CreateHistograms
-SKIM_EXECUTABLE := $(BIN)/SkimTuples
+SKIM_EXECUTABLE := $(BIN)/SkimTuplesggH
 TUPLE_EXECUTABLE := $(BIN)/CreateTuple
 
 # Default target: build both executables
@@ -83,6 +83,11 @@ skim: $(SKIM_EXECUTABLE)
 # Compile all the objects
 $(OBJECTS): %.o: $(SRC)/%.cc $(LIB)/%.h
 #$(OBJECTS): %.o: $(SOURCES) $(LIB)/%.h
+	@echo "Compiling $<..."
+	$(CXX) $(FLAGS) -c $< -o $@
+
+# Special rule for SkimTuplesggH.o without a header file
+$(SKIM_OBJECTS): %.o: $(SRC)/%.cc
 	@echo "Compiling $<..."
 	$(CXX) $(FLAGS) -c $< -o $@
 

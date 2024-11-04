@@ -9,8 +9,15 @@ from .labels import (
     luminosity,
     x_range,
     n_bins,
+    variables_type,
 )  # , y_labels
-from .helper import get_canvas, save_figure, get_histograms, get_histograms_ratio
+from .helper import (
+    get_canvas,
+    save_figure,
+    get_histograms_ratio,
+    get_output_directory,
+    clean_null_values,
+)
 
 signal_colors = {"ggH": "red", "VBF": "blue", "ttH": "lime"}
 
@@ -69,141 +76,93 @@ def get_background_label_list(background_sources):
     return labels_list
 
 
-def draw_signal_sources(signal_sources, variable, era, ax):
-    for source in signal_sources:
+def get_histograms_from_tuple(
+    sources, era, variables, is_background, use_puweight, use_ggH_category
+):
+    if not use_puweight:
+        variables.append("pileup_weight")
+
+    histograms_list = []
+    bins_list = []
+
+    for source in sources:
         with ur.open(
-            "../root_io/" + source + "_" + era + "_histograms.root"
-        ) as data_file:
-            histogram = data_file[variable]
+            "../root_io/tuples/" + source + "_" + era + "_tuples.root:tree_output"
+        ) as file:
+            branches = file.arrays(variables, library="np")
+            if variables[0] != "diMuon_mass" and is_background:
+                bool_list = (branches["diMuon_mass"] > 130) | (
+                    branches["diMuon_mass"] < 120
+                )
+                for variable in variables:
+                    branches[variable] = branches[variable][bool_list]
 
-        numpy_histogram, bins = histogram.to_numpy()
-        hep.histplot(
-            numpy_histogram * 10,
-            bins,
-            yerr=False,
-            # yerr=True,
-            label=source,
-            color=signal_colors[source],
-            ax=ax,
-        )
+            clean_null_values(branches, variables, variables_type)
 
+            if use_ggH_category:
+                bool_list = branches["is_ggH_category"] == 1
+                for variable in variables:
+                    branches[variable] = branches[variable][bool_list]
 
-def draw_data_and_simul_and_ratio(variable, era, background_sources, signal_sources):
-    plt.style.use(hep.style.CMS)  # or ATLAS/LHCb2
-    background_histograms = get_histograms(variable, background_sources, era)
+            if "delta_phi" in variables[0]:
+                branches[variables[0]] = np.absolute(branches[variables[0]])
+            histogram, bins = np.histogram(
+                branches[variables[0]],
+                bins=n_bins[variables[0]],
+                range=x_range[variables[0]],
+                # weights=branches["weight"],
+                weights=(
+                    branches["weight"]
+                    if use_puweight
+                    else branches["weight"] / branches["pileup_weight"]
+                ),
+            )
+            histograms_list.append(histogram)
+            bins_list.append(bins)
+            # histograms_list[source] = histogram
+            # bins_list[source] = bins
 
-    with ur.open("../root_io/Data_" + era + "_histograms.root") as data_file:
-        data_histogram = data_file[variable]
-
-    data_numpy_histogram, data_bins = data_histogram.to_numpy()
-    if "mass" in variable:
-        data_numpy_histogram[data_numpy_histogram == 0] = -100.0
-    # print(data_numpy_histogram)
-
-    fig, axs = get_canvas(True)
-
-    hep.histplot(
-        background_histograms,
-        yerr=True,
-        histtype="fill",
-        label=get_background_label_list(background_sources),
-        ax=axs[0],
-        stack=True,
-        color=get_color_list(len(background_sources)),
-    )
-
-    hep.histplot(
-        data_numpy_histogram,
-        data_bins,
-        yerr=True,
-        histtype="errorbar",
-        label="data",
-        color="black",
-        ax=axs[0],
-    )
-
-    draw_signal_sources(signal_sources, variable, era, axs[0])
-
-    hep.cms.label(
-        data="True",
-        label="Test",
-        year="2022",
-        com="13.6",
-        lumi=luminosity[era],
-        ax=axs[0],
-    )
-
-    axs[0].set_ylabel(r"Events")
-    # axs[0].set_ylim(-10000, y_axis_max_range[variable])
-    axs[0].set_ylim(0.1, y_axis_max_range[variable])
-    axs[0].set_xlim(data_bins[0], data_bins[-1])
-    axs[0].set_yscale("log")
-    axs[0].legend(frameon=False, loc="upper right", ncols=2)
-    axs[0].tick_params(axis="x", which="both", bottom=True, top=True, labelbottom=False)
-
-    plt.axhline(y=1, color="grey", linestyle="--", alpha=0.5)
-
-    tot_bg_numpy_hist = np.array([])
-    for i, bg_hist in enumerate(background_histograms):
-        if i == 0:
-            tot_bg_numpy_hist = bg_hist.to_numpy()[0]
-        else:
-            tot_bg_numpy_hist = tot_bg_numpy_hist + bg_hist.to_numpy()[0]
-
-    ratio_hist, ratio_error = get_histograms_ratio(
-        data_numpy_histogram, tot_bg_numpy_hist
-    )
-
-    hep.histplot(
-        ratio_hist,
-        data_bins,
-        yerr=ratio_error,
-        histtype="errorbar",
-        label="data",
-        color="black",
-        ax=axs[1],
-    )
-
-    axs[1].set_ylabel("Data/MC", loc="center")
-    axs[1].set_ylim(0.5, 1.5)
-    axs[1].set_xlim(data_bins[0], data_bins[-1])
-    axs[1].set_xlabel(x_labels[variable])
-
-    output_directory = "../plots/ratio/" + era + "/"
-    if "diMuon" in variable:
-        output_directory = output_directory + "diMuon/"
-    elif "diJet" in variable:
-        output_directory = output_directory + "diJet/"
-    elif "jet" in variable:
-        output_directory = output_directory + "Jet/"
-    else:
-        output_directory = output_directory + "muon/"
-
-    save_figure(fig, output_directory, variable + "_" + era + "_MCData_ratio")
+    return histograms_list, bins_list
 
 
-def draw_data_and_simul_and_ratio_from_tuple(
-    variable, era, background_sources, signal_sources
+def draw_data_and_simul_and_ratio(
+    variable,
+    era,
+    background_sources,
+    signal_sources,
+    use_puweight=True,
+    use_ggH_category=False,
 ):
     plt.style.use(hep.style.CMS)
 
-    print("*************************")
-    print("******PLOTTING " + variable + "*****")
-    print("*************************")
+    print("*" * len("****** PLOTTING " + variable + " *****"))
+    print("****** PLOTTING " + variable + " *****")
+    print("*" * len("****** PLOTTING " + variable + " *****"))
 
-    variables = []
-    if variable == "diMuon_mass":
-        variables = ["diMuon_mass", "weight"]
-    else:
-        variables = [variable, "diMuon_mass", "weight"]
+    variables = [variable, "weight"]
+    if variable != "diMuon_mass":
+        variables.append("diMuon_mass")
+    if use_ggH_category:
+        variables.append("is_ggH_category")
 
     with ur.open(
         "../root_io/tuples/Data_" + era + "_tuples.root:tree_output"
     ) as data_file:
         branches = data_file.arrays(variables, library="np")
-        branches[variable] = branches[variable][
-            (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
-        ]
+        bool_list = (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
+
+        for var in variables:
+            branches[var] = branches[var][bool_list]
+        # branches[variable] = branches[variable][
+
+        if "delta_phi" in variable:
+            branches[variable] = np.absolute(branches[variable])
+
+        if use_ggH_category:
+            bool_list = branches["is_ggH_category"] == 1
+            for var in variables:
+                branches[var] = branches[var][bool_list]
+
         data_histogram, data_bins = np.histogram(
             branches[variable],
             bins=n_bins[variable],
@@ -213,46 +172,12 @@ def draw_data_and_simul_and_ratio_from_tuple(
     if variable == "diMuon_mass":
         data_histogram[data_histogram == 0] = -100.0
 
-    bkg_histograms_list = []
-    bkg_bins_list = []
-    signal_histograms_list = {}
-    signal_bins_list = {}
-
-    for source in background_sources:
-        with ur.open(
-            "../root_io/tuples/" + source + "_" + era + "_tuples.root:tree_output"
-        ) as file:
-            branches = file.arrays(variables, library="np")
-            if variable != "diMuon_mass":
-                branches["weight"] = branches["weight"][
-                    (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
-                ]
-                branches[variable] = branches[variable][
-                    (branches["diMuon_mass"] > 130) | (branches["diMuon_mass"] < 120)
-                ]
-            histogram, bins = np.histogram(
-                branches[variable],
-                bins=n_bins[variable],
-                range=x_range[variable],
-                weights=branches["weight"],
-            )
-            bkg_histograms_list.append(histogram)
-            bkg_bins_list.append(bins)
-
-    for source in signal_sources:
-        with ur.open(
-            "../root_io/tuples/" + source + "_" + era + "_tuples.root:tree_output"
-        ) as file:
-            signal_branches = file.arrays(variables, library="np")
-            histogram, bins = np.histogram(
-                signal_branches[variable],
-                bins=n_bins[variable],
-                range=x_range[variable],
-                weights=signal_branches["weight"],
-            )
-            signal_histograms_list[source] = histogram
-            signal_bins_list[source] = bins
-    # print(data_numpy_histogram)
+    bkg_histograms_list, bkg_bins_list = get_histograms_from_tuple(
+        background_sources, era, variables, True, use_puweight, use_ggH_category
+    )
+    signal_histograms_list, signal_bins_list = get_histograms_from_tuple(
+        signal_sources, era, variables, False, use_puweight, use_ggH_category
+    )
 
     fig, axs = get_canvas(True)
 
@@ -277,21 +202,22 @@ def draw_data_and_simul_and_ratio_from_tuple(
         ax=axs[0],
     )
 
-    for source in signal_sources:
+    signal_scale_factor = 10
+    for source, histogram in zip(signal_sources, signal_histograms_list):
         hep.histplot(
-            signal_histograms_list[source] * 10,
-            signal_bins_list[source],
+            histogram * signal_scale_factor,
+            signal_bins_list[0],
             yerr=False,
             # yerr=True,
-            label=source,
+            label=source + " (x" + str(signal_scale_factor) + ")",
             color=signal_colors[source],
             ax=axs[0],
         )
 
     hep.cms.label(
         data="True",
-        label="Test",
-        year="2022",
+        label="" if use_puweight else "No pu weight",
+        year=era,
         com="13,6",
         lumi=luminosity[era],
         ax=axs[0],
@@ -303,7 +229,7 @@ def draw_data_and_simul_and_ratio_from_tuple(
     axs[0].set_ylim(0.1, 1000 * np.max(data_histogram))
     axs[0].set_xlim(data_bins[0], data_bins[-1])
     axs[0].set_yscale("log")
-    axs[0].legend(frameon=False, loc="upper right", ncols=2, fontsize = 18)
+    axs[0].legend(frameon=False, loc="upper right", ncols=2)
     axs[0].tick_params(axis="x", which="both", bottom=True, top=True, labelbottom=False)
 
     plt.axhline(y=1, color="grey", linestyle="--", alpha=0.5)
@@ -332,14 +258,12 @@ def draw_data_and_simul_and_ratio_from_tuple(
     axs[1].set_xlim(data_bins[0], data_bins[-1])
     axs[1].set_xlabel(x_labels[variable])
 
-    output_directory = "../plots/ratio/tuple/" + era + "/"
-    if "diMuon" in variable:
-        output_directory = output_directory + "diMuon/"
-    elif "diJet" in variable:
-        output_directory = output_directory + "diJet/"
-    elif "jet" in variable:
-        output_directory = output_directory + "Jet/"
-    else:
-        output_directory = output_directory + "muon/"
+    output_directory = "../plots/ratio/" + era + "/"
+    if not use_puweight:
+        output_directory = "../plots/ratio/" + era + "/no_puWeight/"
+    if use_ggH_category:
+        output_directory = "../plots/ratio/ggH_category/" + era + "/"
+
+    output_directory = get_output_directory(variable, output_directory, variables_type)
 
     save_figure(fig, output_directory, variable + "_" + era + "_MCData_ratio")
