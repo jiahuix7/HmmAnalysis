@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
     }
     tree_input->SetBranchStatus("*", 0);
 
-    for (auto ggh_branches : {"diMuon_pt",
+    for (auto ggh_branches : {"diMuon_mass",
+                              "diMuon_pt",
                               "diMuon_rapidity",
                               "mu1_pt_mass_ratio",
                               "mu2_pt_mass_ratio",
