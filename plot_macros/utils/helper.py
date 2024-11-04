@@ -127,3 +127,29 @@ def get_histograms_ratio(numerator_histogram, denominator_histogram):
         error[error < 0.0] = 0.0
 
     return ratio, error
+
+
+def get_output_directory(variable, base_directory, variables_dic):
+    for var_type, var_list in variables_dic.items():
+        if variable in var_list:
+            return base_directory + var_type + "/"
+    return base_directory
+
+
+def clean_null_values(branches, variables, variables_dic):
+    if (
+        variables[0] not in variables_dic["diJet"]
+        and variables[0] not in variables_dic["jet"]
+    ):
+        return
+
+    if variables[0] == "n_jet":
+        return
+
+    null_value = 0
+    if variables[0] == "delta_phi_diJet":
+        null_value = -1
+
+    bool_list = branches[variables[0]] != null_value
+    for var in variables:
+        branches[var] = branches[var][bool_list]
