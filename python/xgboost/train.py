@@ -60,16 +60,16 @@ os.system("cp ../index.php " + plotDir + "variables/")
 # signal
 signal_file_name = data_directory + "signal_" + era + "_skim.root"
 signal_file = root.TFile(signal_file_name)
-signal_tree = signal_file.Get("tree_skim")
-signal_tree.Draw("diMuon_pt>>tmp1", "weight")
+signal_tree = signal_file.Get("tree_output")
+signal_tree.Draw("diMuon_pt>>tmp1", "weight_no_lumi")
 signal_histogram = root.gDirectory.Get("tmp1")
 signal_events = luminosity[era] * signal_histogram.Integral()
 
 # bkg
 bkg_file_name = data_directory + "background_" + era + "_skim.root"
 bkg_file = root.TFile(bkg_file_name)
-bkg_tree = bkg_file.Get("tree_skim")
-bkg_tree.Draw("diMuon_pt>>tmp2", "weight")
+bkg_tree = bkg_file.Get("tree_output")
+bkg_tree.Draw("diMuon_pt>>tmp2", "weight_no_lumi")
 bkg_histogram = root.gDirectory.Get("tmp2")
 bkg_events = luminosity[era] * bkg_histogram.Integral()
 
@@ -106,25 +106,9 @@ variables = [
     ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
     ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_CS)$", 50, -1, 1],
     #   Jet variables
-    ["n_jets", "n_jet", r"n jets", 8, 0, 8],
+    ["n_jet", "n_jet", r"n jet", 8, 0, 8],
     ["leading_jet_pt", "leading_jet_pt", r"$Pt_{j1}$ GeV", 50, 0, 400],
     ["leading_jet_eta", "leading_jet_eta", r"$\eta_{jet}$", 50, -5, 5],
-    # [
-    # "delta_eta_diMuon_jet",
-    # "delta_eta_diMuon_jet",
-    # r"$\Delta\eta_{\mu\mu,j}$",
-    # 50,
-    # -8,
-    # 8,
-    # ],
-    # [
-    # "delta_phi_diMuon_jet",
-    # "delta_phi_diMuon_jet",
-    # r"$\Delta\phi_{\mu\mu,j}$",
-    # 50,
-    # -3.14,
-    # ],
-    # diJet variables
     ["subleading_jet_pt", "subleading_jet_pt", r"$Pt_{j2}$", 50, 0, 400],
     ["diJet_mass", "diJet_mass", r"$m_{jj}$ GeV", 50, 0, 400],
     ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
@@ -146,7 +130,7 @@ variables = [
         -3.14,
         3.14,
     ],
-    ["weight", "weight", "weight", 100, -1.0, 1.0],
+    ["weight_no_lumi", "weight_no_lumi", "weight_no_lumi", 100, -1.0, 1.0],
 ]
 
 print("number of variables", len(variables))
@@ -155,14 +139,14 @@ print("number of variables", len(variables))
 
 with uproot.open(signal_file_name) as file:
     df_signal = pd.DataFrame(
-        file["tree_skim"].arrays([row[0] for row in variables], library="np"),
+        file["tree_output"].arrays([row[0] for row in variables], library="np"),
         # flatten=False,
     )
 
 print("Signal data frame created")
 with uproot.open(bkg_file_name) as file:
     df_bkg = pd.DataFrame(
-        file["tree_skim"].arrays([row[0] for row in variables], library="np"),
+        file["tree_output"].arrays([row[0] for row in variables], library="np"),
         # flatten=False,
     )
 
@@ -179,9 +163,9 @@ print("bkg sample size: " + str(len(df_bkg.values)))
 
 ###plot correlation
 file_sig = root.TFile(signal_file_name)
-tree_sig = file_sig.Get("tree_skim")
+tree_sig = file_sig.Get("tree_output")
 file_bkg = root.TFile(bkg_file_name)
-tree_bkg = file_sig.Get("tree_skim")
+tree_bkg = file_sig.Get("tree_output")
 h2_corr_sig = root.TH2F(
     "h2_corr_sig",
     "h2_corr_sig",
@@ -252,77 +236,7 @@ h2_corr_bkg.SetTitle("")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.pdf")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.png")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.C")
-####Plot input variables######
 
-# for idx in range(len(variables) - 1):
-# f = plt.figure()
-# ax = f.add_subplot(111)
-# plt.subplots_adjust(top=0.9, bottom=0.15, left=0.15, right=0.95)
-# plt.hist(
-# df_signal[df_signal[variables[idx][0]] > -999][variables[idx][0]],
-# density=True,
-# alpha=1.0,
-# histtype="step",
-# lw=3,
-# label="signal",
-# bins=variables[idx][3],
-# range=(variables[idx][4], variables[idx][5]),
-# weights=df_signal[df_signal[variables[idx][0]] > -999][variables[-1][0]],
-# )
-# plt.hist(
-# df_bkg[df_bkg[variables[idx][0]] > -999][variables[idx][0]],
-# density=True,
-# alpha=1.0,
-# histtype="step",
-# lw=3,
-# label="bkg",
-# bins=variables[idx][3],
-# range=(variables[idx][4], variables[idx][5]),
-# weights=df_bkg[df_bkg[variables[idx][0]] > -999][variables[-1][0]],
-# )
-# plt.legend(loc="upper right", fontsize=50)
-# plt.xlabel(variables[idx][2], fontsize=50, horizontalalignment="right", x=1.0)
-# plt.ylabel("Events", fontsize=30, horizontalalignment="right", y=1.0)
-# plt.xticks(fontsize=35)
-# plt.yticks(fontsize=30)
-# fig = plt.gcf()
-# fig.set_size_inches(16, 12)
-# plt.text(
-# 0.0,
-# 1.01,
-# "CMS",
-# ha="left",
-# va="bottom",
-# transform=ax.transAxes,
-# weight="bold",
-# fontsize=45,
-# )
-# plt.text(
-# 0.12,
-# 1.01,
-# "Simulation Preliminary",
-# ha="left",
-# va="bottom",
-# transform=ax.transAxes,
-# style="italic",
-# fontsize=40,
-# )
-# plt.text(
-# 1.0,
-# 1.01,
-# "13 TeV",
-# ha="right",
-# va="bottom",
-# transform=ax.transAxes,
-# fontsize=40,
-# )
-# plt.draw()
-# plt.savefig(
-# plotDir + "variables/" + test_name + "_" + variables[idx][0] + ".pdf"
-# )  # , bbox_inches='tight')
-# plt.savefig(
-# plotDir + "variables/" + test_name + "_" + variables[idx][0] + ".png"
-# )  # , bbox_inches='tight')
 
 # split data into train and test sets
 seed = 7
