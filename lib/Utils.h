@@ -124,4 +124,29 @@ float GetZZeppenfeldVariable(const float &diMuon_rapidity,
            (TMath::Abs(leading_jet_rapidity - subleading_jet_rapidity));
 }
 
+float GetPtBalanceVariable(const TLorentzVector diMuon_vec,
+                            const std::vector<float> *const &jet_pt,
+                            const std::vector<float> *const &jet_phi,
+                            const std::vector<float> *const &jet_eta,
+                            const std::vector<float> *const &jet_mass) {
+    if (jet_pt->size() < 2) {
+        std::cout << "Less than 2 jets in this event, returning -1 for the "
+                     "Pt balance\n";
+        return -1;
+    }
+    TLorentzVector leading_jet_vector, subleading_jet_vector, total_vector;
+    leading_jet_vector.SetPtEtaPhiM((*jet_pt)[0], (*jet_eta)[0], (*jet_phi)[0],
+                                    (*jet_mass)[0]);
+    subleading_jet_vector.SetPtEtaPhiM((*jet_pt)[1], (*jet_eta)[1],
+                                       (*jet_phi)[1], (*jet_mass)[1]);
+    total_vector = leading_jet_vector + subleading_jet_vector + diMuon_vec;
+    float total_pt, leading_jet_pt, subleading_jet_pt;
+    total_pt = total_vector.Pt();
+    leading_jet_pt = (*jet_pt)[0];
+    subleading_jet_pt = (*jet_pt)[1];
+
+    return TMath::Abs(total_pt) / (TMath::Abs(leading_jet_pt) +
+            TMath::Abs(subleading_jet_pt) + TMath::Abs(diMuon_vec.Pt()));
+}
+
 #endif // if LIB_UTILS_H
