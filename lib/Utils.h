@@ -124,7 +124,7 @@ float GetZZeppenfeldVariable(const float &diMuon_rapidity,
            (TMath::Abs(leading_jet_rapidity - subleading_jet_rapidity));
 }
 
-float GetPtBalanceVariable(const TLorentzVector diMuon_vec,
+float GetPtBalanceVariable(const TLorentzVector &diMuon_vec,
                             const std::vector<float> *const &jet_pt,
                             const std::vector<float> *const &jet_phi,
                             const std::vector<float> *const &jet_eta,
