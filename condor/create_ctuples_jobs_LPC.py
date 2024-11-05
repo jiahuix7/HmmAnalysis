@@ -18,6 +18,10 @@ skip_dataset = [
     "DYto2L-2Jets_Summer22EE",
     "TbarQto2Q-t-channel_Summer22EE",
     "TQbarto2Q-t-channel_Summer22EE",
+    "DoubleMuon_2022A",
+    "DoubleMuon_2022B",
+    "Muon0_2023B",
+    "Muon1_2023B",
 ]
 skip_pattern = [
     # # "Muon",
@@ -27,7 +31,16 @@ skip_pattern = [
     # "Summer22EE",
     # "Summer23",
     # "Summer23BPix",
-    # "t-channel",
+    ## Unwanted sets
+    "DYJetstoLL",
+    "DYto2L-2Jets",
+    ## Sets with missing cross section (TODO: ADD CROSS SECTIONS!)
+    "t-channel",
+    "s-channel",
+    "TWminusto4Q",
+    "TWminustoLNu2Q",
+    "Tbar",
+    "ZZto2Nu2Q",
 ]
 
 list_datasets = datasets_info.keys()
@@ -73,8 +86,21 @@ for dataset_name in list_datasets:
         print("Tuples file already exists. Skipping!")
         continue
 
-    # Create condor directories
     JOB_DIR = CONDOR_BASE_DIR + "ctuples/" + "%s/"%(dataset_name)
+
+    if os.path.exists(JOB_DIR):
+        if len(os.listdir(JOB_DIR+"/log/")) != len(os.listdir(JOB_DIR+"/out/")):
+            print("Previous job didn't finish well. Try running manually.")
+            comm = "./CreateTuple /eos/uscms/" + INPUT_FILE + " "
+            comm += "/eos/uscms/" + OUTPUT_DIR + " " + era + " " + channel
+            comm += " T" if "Data" in type_info else " F"
+            comm += " T" if "signal" in type_info else " F"
+            print(" > cd " + JOB_DIR + "; " + comm)
+            send_all_jobs.write("cd " + JOB_DIR + "\n")
+            send_all_jobs.write(comm + "\n")
+            continue
+
+    # Create condor directories
     os.system("mkdir -p " + JOB_DIR)
     os.system("mkdir -p " + JOB_DIR + "/log/")
     os.system("mkdir -p " + JOB_DIR + "/out/")

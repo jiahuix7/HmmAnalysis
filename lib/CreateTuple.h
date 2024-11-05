@@ -74,6 +74,7 @@ class CreateTuple {
     void saveTree();
 
     int isggHCategory();
+    int isVBFCategory();
 
   private:
     TChain *tree_input; /**< Pointer to input TChain. */
@@ -90,6 +91,7 @@ class CreateTuple {
 
     /** Read event variables */
     float gen_weight, pileup_weight;
+    int n_SoftJet_pt2, n_SoftJet_pt5, n_SoftJet_pt10;
     /**< Read DiMuon variables */
     float diMuon_mass, diMuon_pt, diMuon_phi, diMuon_eta;
 
@@ -115,7 +117,7 @@ class CreateTuple {
     float rho;
     int pv;
     // int is_data_int, is_signal_int, pv;
-    int is_ggH_category;
+    int is_ggH_category, is_VBF_category;
 
     /** New DiMuon variables*/
     float diMuon_rapidity;
@@ -128,7 +130,7 @@ class CreateTuple {
     float leading_jet_pt, leading_jet_eta, subleading_jet_pt;
 
     /** New DiJets variables*/
-    float delta_eta_diJet, delta_phi_diJet, z_zeppenfeld,
+    float delta_eta_diJet, delta_phi_diJet, z_zeppenfeld, pt_balance,
         min_delta_eta_diMuon_jet, min_delta_phi_diMuon_jet;
 };
 
@@ -198,8 +200,13 @@ void CreateTuple::setBranchesAddressesOutput() {
     // tree_output->Branch("is_signal", &is_signal_int, "signal/i");
     tree_output->Branch("rho", &rho, "rho/f");
     tree_output->Branch("PV", &pv, "PV/i");
+    tree_output->Branch("n_SoftJet_pt2", &n_SoftJet_pt2, "n_SoftJet_pt2/i");
+    tree_output->Branch("n_SoftJet_pt5", &n_SoftJet_pt5, "n_SoftJet_pt5/i");
+    tree_output->Branch("n_SoftJet_pt10", &n_SoftJet_pt10, "n_SoftJet_pt10/i");
     tree_output->Branch("is_ggH_category", &is_ggH_category,
                         "is_ggH_category/i");
+    tree_output->Branch("is_VBF_category", &is_VBF_category,
+                        "is_VBF_category/i");
 
     // DiMuon variables
     tree_output->Branch("diMuon_mass", &diMuon_mass, "diMuon_mass/f");
@@ -234,6 +241,7 @@ void CreateTuple::setBranchesAddressesOutput() {
     tree_output->Branch("delta_phi_diJet", &delta_phi_diJet,
                         "delta_phi_diJet/f");
     tree_output->Branch("z_zeppenfeld", &z_zeppenfeld, "z_zeppenfeld/f");
+    tree_output->Branch("pt_balance", &pt_balance, "pt_balance/f");
     tree_output->Branch("min_delta_eta_diMuon_jet", &min_delta_eta_diMuon_jet,
                         "min_delta_eta_diMuon_jet/f");
     tree_output->Branch("min_delta_phi_diMuon_jet", &min_delta_phi_diMuon_jet,
@@ -248,6 +256,9 @@ void CreateTuple::setBranchesAddressesInput() {
     tree_input->SetBranchAddress("t_genWeight", &gen_weight);
     tree_input->SetBranchAddress("t_Rho", &rho);
     tree_input->SetBranchAddress("t_PV_npvsGood", &pv);
+    tree_input->SetBranchAddress("t_SoftActivityJetNjets2", &n_SoftJet_pt2);
+    tree_input->SetBranchAddress("t_SoftActivityJetNjets5", &n_SoftJet_pt5);
+    tree_input->SetBranchAddress("t_SoftActivityJetNjets10", &n_SoftJet_pt10);
 
     tree_input->SetBranchAddress("t_genWeight", &gen_weight);
     // DiMuon variables
@@ -292,7 +303,6 @@ void CreateTuple::fillOutputTree() {
     TLorentzVector mu1_vector;
     TLorentzVector mu2_vector;
     std::pair<float, float> angles_CS;
-    int test;
     for (int event_index = 0; event_index < total_entries; event_index++) {
         tree_input->GetEntry(event_index);
         if (diMuon_mass < 110 || diMuon_mass > 150)
@@ -312,8 +322,8 @@ void CreateTuple::fillOutputTree() {
 
         angles_CS = CSAngles(mu1_vector, mu2_vector, (*mu_charge)[mu1_index]);
 
-        // is_ggH_category =
-        test = isggHCategory();
+        isggHCategory();
+        isVBFCategory();
 
         mu1_pt_mass_ratio = (*mu_pt)[mu1_index] / diMuon_mass;
         mu2_pt_mass_ratio = (*mu_pt)[mu2_index] / diMuon_mass;
@@ -330,6 +340,7 @@ void CreateTuple::fillOutputTree() {
             delta_eta_diJet = 0;
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
+            pt_balance = -1;
             min_delta_eta_diMuon_jet = 0;
             min_delta_phi_diMuon_jet = 0;
         } else if (n_jet == 1) {
@@ -340,6 +351,7 @@ void CreateTuple::fillOutputTree() {
             delta_eta_diJet = 0;
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
+            pt_balance = -1;
             min_delta_eta_diMuon_jet = DeltaEta(diMuon_eta, jet_eta->at(0));
             min_delta_phi_diMuon_jet = DeltaPhi(diMuon_phi, jet_phi->at(0));
         } else {
@@ -351,6 +363,9 @@ void CreateTuple::fillOutputTree() {
             delta_phi_diJet = DeltaPhi(jet_phi->at(0), jet_phi->at(1));
             z_zeppenfeld = GetZZeppenfeldVariable(diMuon_rapidity, jet_pt,
                                                   jet_phi, jet_eta, jet_mass);
+            pt_balance = GetPtBalanceVariable(mu1_vector + mu2_vector,
+                                              jet_pt, jet_phi, jet_eta,
+                                              jet_mass);
             min_delta_eta_diMuon_jet =
                 TMath::Min(DeltaEta(diMuon_eta, jet_eta->at(0)),
                            DeltaEta(diMuon_eta, jet_eta->at(1)));
@@ -394,6 +409,27 @@ int CreateTuple::isggHCategory() {
         }
     }
     is_ggH_category = 0;
+    return 4;
+}
+
+int CreateTuple::isVBFCategory() {
+
+    if ((n_bjet == 0) && (mu_pt->size() < 3) && (elec_pt->size() == 0)) {
+        if (n_jet >= 2) {
+            if ((diJet_mass < 400) ||
+                (DeltaEta(jet_eta->at(0), jet_eta->at(1)) < 2.5)) {
+                is_VBF_category = 0;
+                return 1;
+            } else {
+                is_VBF_category = 1;
+                return 2;
+            }
+        } else {
+            is_VBF_category = 0;
+            return 3;
+        }
+    }
+    is_VBF_category = 0;
     return 4;
 }
 
