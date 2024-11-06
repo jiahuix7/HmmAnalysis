@@ -29,6 +29,7 @@ era = sys.argv[2]
 signals = "signals"
 
 FileName = "../../root_io/skim/" + channel + "_" + era + "_skim_" + signals + ".root"
+print("File name: ", FileName)
 
 File = root.TFile(FileName, "update")
 Tree = File.Get("tree_output")

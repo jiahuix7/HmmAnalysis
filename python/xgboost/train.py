@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, roc_curve, roc_auc_score
 import numpy as np
 import pandas as pd
+import mplhep as hep
 import math
 import pickle as pickle
 import ROOT as root
@@ -21,22 +22,19 @@ else:
     print("Provided era as input.")
     exit()
 
+plt.style.use(hep.style.CMS)
 root.gROOT.SetBatch(True)
 root.gStyle.SetOptStat(0)
 root.gStyle.SetOptFit(111)
 root.gStyle.SetPaintTextFormat("2.1f")
 
-# plt.rcParams["font.family"] = "Arial"
-plt.rcParams["font.family"] = "DejaVu Sans"
-plt.rcParams["axes.unicode_minus"] = False
-plt.rcParams["text.usetex"] = False
-plt.rcParams["mathtext.fontset"] = "cm"
-
-# era = "2022EE"
 luminosity = {
     "2022": 7.9804,
     "2022EE": 26.6717,
     "2022Combined": 34.6521,
+    "2023": 17.8,
+    "2023BPix": 9.5,
+    "Combined": 61.95,
 }
 
 test_name = "mumu_vs_bkg_" + era
@@ -58,7 +56,7 @@ os.system("cp ../index.php " + plotDir + "variables/")
 
 
 # signal
-signal_file_name = data_directory + "signal_" + era + "_skim.root"
+signal_file_name = data_directory + "signals_" + era + "_skim.root"
 signal_file = root.TFile(signal_file_name)
 signal_tree = signal_file.Get("tree_output")
 signal_tree.Draw("diMuon_pt>>tmp1", "weight_no_lumi")
@@ -83,12 +81,12 @@ print(
 )
 
 variables = [
-    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$ (GeV)", 50, -2.5, 2.5],
-    ["diMuon_pt", "diMuon_pt", r"$M_{\mu\mu}$ (GeV)", 100, 0, 250],
+    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$", 50, -2.5, 2.5],
+    ["diMuon_pt", "diMuon_pt", r"$p_t^{\mu\mu}$", 100, 0, 250],
     [
         "mu1_pt_mass_ratio",
         "mu1_pt_mass_ratio",
-        r"$p_T^{\mu 1}/m_{/mu/mu}$",
+        r"$p_T^{\mu 1}/m_{\mu\mu}$",
         50,
         0,
         1.4,
@@ -96,20 +94,20 @@ variables = [
     [
         "mu2_pt_mass_ratio",
         "mu2_pt_mass_ratio",
-        r"$p_T^{\mu 2}/m_{/mu/mu}$",
+        r"$p_T^{\mu 2}/m_{\mu\mu}$",
         50,
         0,
         1.4,
     ],
-    ["mu1_eta", "mu1_eta", r"$\eta_\mu 1$", 50, -2.4, 2.4],
-    ["mu2_eta", "mu2_eta", r"$\eta_\mu 2$", 50, -2.4, 2.4],
+    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$", 50, -2.4, 2.4],
+    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$", 50, -2.4, 2.4],
     ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
-    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_CS)$", 50, -1, 1],
+    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$", 50, -1, 1],
     #   Jet variables
     ["n_jet", "n_jet", r"n jet", 8, 0, 8],
-    ["leading_jet_pt", "leading_jet_pt", r"$Pt_{j1}$ GeV", 50, 0, 400],
-    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{jet}$", 50, -5, 5],
-    ["subleading_jet_pt", "subleading_jet_pt", r"$Pt_{j2}$", 50, 0, 400],
+    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$", 50, 0, 400],
+    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$", 50, -5, 5],
+    ["subleading_jet_pt", "subleading_jet_pt", r"$p_T^{j2}$", 50, 0, 400],
     ["diJet_mass", "diJet_mass", r"$m_{jj}$ GeV", 50, 0, 400],
     ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
     ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$", 50, -3.14, 3.14],
@@ -117,7 +115,7 @@ variables = [
     [
         "min_delta_eta_diMuon_jet",
         "min_delta_eta_diMuon_jet",
-        r"min$\Delta\eta_{\mu\mu,j}",
+        r"min$\Delta\eta_{\mu\mu,j}$",
         50,
         -8,
         8,
@@ -125,7 +123,7 @@ variables = [
     [
         "min_delta_phi_diMuon_jet",
         "min_delta_phi_diMuon_jet",
-        r"min$\Delta\phi_{\mu\mu,j}",
+        r"min$\Delta\phi_{\mu\mu,j}$",
         50,
         -3.14,
         3.14,
@@ -200,10 +198,10 @@ for idx1 in range(len(variables) - 1):
 h2_corr_sig.GetZaxis().SetRangeUser(-1.0, 1.0)
 h2_corr_bkg.GetZaxis().SetRangeUser(-1.0, 1.0)
 for idx in range(len(variables) - 1):
-    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, variables[idx][1])
-    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, variables[idx][1])
-    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, variables[idx][1])
-    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, variables[idx][1])
+    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
+    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
+    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
+    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
 
 h2_corr_sig.LabelsOption("v", "X")
 h2_corr_bkg.LabelsOption("v", "X")
@@ -261,6 +259,45 @@ for idx in range(len(sample_weights_train)):
 for idx in range(len(sample_weights_test)):
     sample_weights_test[idx] = luminosity[era] * sample_weights_test[idx]
 
+
+# Assuming x_train and y_train are pandas DataFrames or numpy arrays
+# if isinstance(x_train, pd.DataFrame) or isinstance(x_train, pd.Series):
+# print("Checking x_train for NaN, inf, or -inf values:")
+# print(x_train.isin([np.nan, np.inf, -np.inf]).sum())
+
+# if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
+# print("Checking y_train for NaN, inf, or -inf values:")
+# print(y_train.isin([np.nan, np.inf, -np.inf]).sum())
+
+# # If x_train and y_train are numpy arrays
+# print("x_train has inf values:", np.isinf(x_train).any())
+# print("x_train has NaN values:", np.isnan(x_train).any())
+# print("y_train has inf values:", np.isinf(y_train).any())
+# print("y_train has NaN values:", np.isnan(y_train).any())
+
+
+# # Assuming x_train is a pandas DataFrame
+# if isinstance(x_train, pd.DataFrame):
+# # Check for inf or -inf in each column
+# inf_columns = x_train.columns.to_series()[np.isinf(x_train).any()]
+# print("Columns with inf or -inf values:", inf_columns.tolist())
+
+# If x_train is a numpy array
+# if isinstance(x_train, np.ndarray):
+# inf_columns = np.where(np.isinf(x_train).any(axis=0))[0]
+
+# print("Indices of columns with inf or -inf values:", inf_columns)
+# print("variables with inf or -inf values:",[row[0] for row in variables][inf_columns[0]])
+
+# if isinstance(x_train, np.ndarray):
+# # Count the number of inf and -inf values in the whole array
+# total_inf_count = np.isinf(x_train).sum()
+# print("Total number of inf/-inf values in x_train:", total_inf_count)
+
+# # Count per column (axis 0)
+# inf_counts = np.isinf(x_train).sum(axis=0)
+# print("Number of inf/-inf values in each column (by index):")
+
 # fit model no training data
 model = xgb.XGBClassifier(
     max_depth=3,
@@ -299,9 +336,9 @@ f_roc = open(test_name + "_roc.txt", "w")
 
 for i in range(len(fpr)):
     if fpr[i] > 1e-5 and tpr[i] > 1e-5:
-        print(
-            "thr = " + str(thr[i]) + ", fpr = " + str(fpr[i]) + ", tpr = " + str(tpr[i])
-        )
+        # print(
+        # "thr = " + str(thr[i]) + ", fpr = " + str(fpr[i]) + ", tpr = " + str(tpr[i])
+        # )
         f_roc.write(
             "thr = "
             + str(thr[i])
@@ -311,8 +348,6 @@ for i in range(len(fpr)):
             + str(tpr[i])
             + " \n"
         )
-        # print fpr[i], tpr[i]
-        # significance.append(math.sqrt(luminosity[era])*4.8742592356*0.006431528796*tpr[i]/math.sqrt(fpr[i]*0.9935684712))
         significance.append(signal_events * tpr[i] / math.sqrt(fpr[i] * bkg_events))
         effSignal.append(tpr[i])
         effBkg.append(fpr[i])
@@ -386,9 +421,9 @@ weight_bkg = y_frame[y_frame["truth"] == 0]["weight"].values
 weight_bkg_train = y_frame_train[y_frame_train["truth"] == 0]["weight"].values
 weight_signal = y_frame[y_frame["truth"] == 1]["weight"].values
 weight_signal_train = y_frame_train[y_frame_train["truth"] == 1]["weight"].values
+
 f = plt.figure()
 ax = f.add_subplot(111)
-plt.subplots_adjust(top=0.9, bottom=0.15, left=0.15, right=0.95)
 plt.hist(
     disc_signal,
     density=True,
@@ -396,7 +431,7 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="signal - test",
+    label="Signal - test",
     weights=weight_signal,
 )
 plt.hist(
@@ -406,9 +441,10 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="signal  - train",
+    label="Signal  - train",
     weights=weight_signal_train,
 )
+
 plt.hist(
     disc_bkg,
     density=True,
@@ -416,7 +452,7 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="bkg - test",
+    label="Bkg - test",
     weights=weight_bkg,
 )
 plt.hist(
@@ -426,52 +462,31 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="bkg - train",
+    label="Bkg - train",
     weights=weight_bkg_train,
 )
 plt.yscale("log")
 plt.xlim([0.0, 1.0])
 plt.ylim([0.001, 1000.0])
-plt.legend(loc="upper center")
-plt.xlabel("BDT response", horizontalalignment="right", x=1.0, fontsize=15)
-plt.ylabel("Events", horizontalalignment="right", y=1.0, fontsize=14)
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-# plt.axvline(x=WP90_threshold, color="black", linestyle='--')
-# plt.axvline(x=WP80_threshold, color="black")
+plt.legend(loc="upper right")
+plt.xlabel("BDT response")
+plt.ylabel("Events")
+hep.cms.label(
+    data="True",
+    label="",
+    year=era,
+    com="13.6",
+    lumi=str(luminosity[era]),
+)
+plt.axvline(x=WP90_threshold, color="black", linestyle="--")
+plt.axvline(x=WP80_threshold, color="black")
 
-# plt.text(0.5,0.7,'WP90: disc > %.4f'%WP90_threshold, fontsize=12, horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
-# plt.text(0.5,0.6,'WP80: disc > %.4f'%WP80_threshold, fontsize=12, horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
-plt.text(
-    0.0,
-    1.01,
-    "CMS",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    weight="bold",
-    fontsize=17,
-)
-plt.text(
-    0.12,
-    1.01,
-    "Simulation Preliminary",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    style="italic",
-    fontsize=16,
-)
-plt.text(
-    1.0, 1.01, "13 TeV", ha="right", va="bottom", transform=ax.transAxes, fontsize=16
-)
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_logY.pdf")
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_logY.png")
 
 
 f = plt.figure()
 ax = f.add_subplot(111)
-plt.subplots_adjust(top=0.9, bottom=0.15, left=0.15, right=0.95)
 plt.hist(
     disc_signal,
     density=True,
@@ -479,7 +494,7 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="signal - test",
+    label="Signal - test",
     weights=weight_signal,
 )
 plt.hist(
@@ -489,7 +504,7 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="signal  - train",
+    label="Signal  - train",
     weights=weight_signal_train,
 )
 plt.hist(
@@ -499,7 +514,7 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="bkg - test",
+    label="Bkg - test",
     weights=weight_bkg,
 )
 plt.hist(
@@ -509,43 +524,21 @@ plt.hist(
     alpha=1.0,
     histtype="step",
     lw=2,
-    label="bkg - train",
+    label="Bkg - train",
     weights=weight_bkg_train,
 )
 plt.yscale("linear")
 plt.xlim([0.0, 1.0])
 # plt.ylim([0.001, 100.0])
-plt.legend(loc="upper center")
-plt.xlabel("BDT response", horizontalalignment="right", x=1.0, fontsize=15)
-plt.ylabel("Events", horizontalalignment="right", y=1.0, fontsize=14)
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-# plt.axvline(x=WP90_threshold, color="black", linestyle='--')
-# plt.axvline(x=WP80_threshold, color="black")
-# plt.text(0.5,0.7,'WP90: disc > %.4f'%WP90_threshold, fontsize=12, horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
-# plt.text(0.5,0.6,'WP80: disc > %.4f'%WP80_threshold, fontsize=12, horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
-plt.text(
-    0.0,
-    1.01,
-    "CMS",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    weight="bold",
-    fontsize=17,
-)
-plt.text(
-    0.12,
-    1.01,
-    "Simulation Preliminary",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    style="italic",
-    fontsize=16,
-)
-plt.text(
-    1.0, 1.01, "13 TeV", ha="right", va="bottom", transform=ax.transAxes, fontsize=16
+plt.legend(loc="upper right")
+plt.xlabel("BDT response")
+plt.ylabel("Events")
+hep.cms.label(
+    data="True",
+    label="",
+    year=era,
+    com="13.6",
+    lumi=str(luminosity[era]),
 )
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_linY.pdf")
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_linY.png")
@@ -553,48 +546,30 @@ plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_linY.png")
 
 # plot roc curve
 f = plt.figure()
-ax = f.add_subplot(111)
-plt.subplots_adjust(top=0.9, bottom=0.15, left=0.15, right=0.95)
+# ax = f.add_subplot(111)
 lw = 2
 plt.plot(fpr, tpr, color="darkorange", lw=lw, label="ROC curve")
 plt.plot([0, 1], [0, 1], color="navy", lw=lw, linestyle="--")
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
-plt.ylabel("Signal Efficiency", horizontalalignment="right", y=1.0, fontsize=15)
-plt.xlabel("Background Efficiency", horizontalalignment="right", x=1.0, fontsize=15)
-plt.xticks(fontsize=13)
-plt.yticks(fontsize=13)
-# plt.axhline(y=0.9, color="black", linestyle='--')
-# plt.axhline(y=0.8, color="black")
+plt.ylabel("Signal Efficiency")
+plt.xlabel("Background Efficiency")
+plt.axhline(y=0.9, color="black", linestyle="--")
+plt.axhline(y=0.8, color="black")
 # plt.text(0.5,0.1,'WP80: bkg eff = %.4f'%WP80_effBkg, fontsize=12)
 # plt.text(0.5,0.2,'WP90: bkg eff = %.4f'%WP90_effBkg, fontsize=12)
 # plt.text(0.5,0.3,'WP90: S/sqrt(B) = %.2f'%WP90_significance, fontsize=12)
-plt.text(0.5, 0.3, "AUC = %.4f" % AUC, fontsize=12)
+# plt.text(0.5, 0.3, "AUC = %.4f" % AUC, hhhontsize=12)
+plt.text(0.5, 0.3, "AUC = %.4f" % AUC)
 # plt.title('Receiver operating characteristic example')
 # plt.legend(loc="lower right")
-# plt.show()
-plt.text(
-    0.0,
-    1.01,
-    "CMS",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    weight="bold",
-    fontsize=17,
-)
-plt.text(
-    0.12,
-    1.01,
-    "Simulation Preliminary",
-    ha="left",
-    va="bottom",
-    transform=ax.transAxes,
-    style="italic",
-    fontsize=16,
-)
-plt.text(
-    1.0, 1.01, "13 TeV", ha="right", va="bottom", transform=ax.transAxes, fontsize=16
+
+hep.cms.label(
+    data="True",
+    label="",
+    year=era,
+    com="13.6",
+    lumi=str(luminosity[era]),
 )
 plt.savefig(plotDir + "training/myroc_" + test_name + ".pdf")
 plt.savefig(plotDir + "training/myroc_" + test_name + ".png")
@@ -608,7 +583,7 @@ model.get_booster().save_model("models/model_" + test_name + ".xgb")
 
 # plot feature importances
 
-model.get_booster().feature_names = [row[1] for row in variables[:-1]]
+model.get_booster().feature_names = [row[2] for row in variables[:-1]]
 
 xgb.plot_importance(
     model, max_num_features=len(variables) - 1, xlabel="F score (weight)"
@@ -620,9 +595,12 @@ plt.savefig(
     plotDir + "training/myImportances_Fscore_" + test_name + ".png", bbox_inches="tight"
 )
 
+model.get_booster().feature_names = [row[1] for row in variables[:-1]]
+
 # xgb.plot_tree( model.get_booster() )
 xgb.plot_tree(model)
 fig = plt.gcf()
+fig.set_size_inches(150, 100)
 # fig.set_size_inches(500, 50)
 plt.draw()
 plt.savefig(plotDir + "training/myTree_" + test_name + ".pdf")
