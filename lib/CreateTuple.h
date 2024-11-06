@@ -104,7 +104,7 @@ class CreateTuple {
     std::vector<float> *elec_pt;
 
     /** Read Jet variables */
-    int n_jet, n_bjet;
+    int n_jet, n_bjet, n_bjet_Loose;
     std::vector<float> *jet_mass, *jet_pt, *jet_phi, *jet_eta;
 
     /** Read Jet variables */
@@ -280,6 +280,7 @@ void CreateTuple::setBranchesAddressesInput() {
 
     // Jet variables
     tree_input->SetBranchAddress("t_nbJet", &n_bjet);
+    tree_input->SetBranchAddress("t_nbJet_Loose", &n_bjet_Loose);
     tree_input->SetBranchAddress("t_nJet", &n_jet);
     tree_input->SetBranchAddress("t_Jet_mass", &jet_mass);
     tree_input->SetBranchAddress("t_Jet_pt", &jet_pt);
@@ -321,9 +322,6 @@ void CreateTuple::fillOutputTree() {
                                 (*mu_phi)[mu2_index], MUON_MASS);
 
         angles_CS = CSAngles(mu1_vector, mu2_vector, (*mu_charge)[mu1_index]);
-
-        isggHCategory();
-        isVBFCategory();
 
         mu1_pt_mass_ratio = (*mu_pt)[mu1_index] / diMuon_mass;
         mu2_pt_mass_ratio = (*mu_pt)[mu2_index] / diMuon_mass;
@@ -374,6 +372,10 @@ void CreateTuple::fillOutputTree() {
                            TMath::Abs(DeltaPhi(diMuon_eta, jet_eta->at(1))));
         }
 
+        // Choose category
+        isggHCategory();
+        isVBFCategory();
+
         tree_output->Fill();
     }
 
@@ -414,23 +416,15 @@ int CreateTuple::isggHCategory() {
 
 int CreateTuple::isVBFCategory() {
 
-    if ((n_bjet == 0) && (mu_pt->size() < 3) && (elec_pt->size() == 0)) {
-        if (n_jet >= 2) {
-            if ((diJet_mass < 400) ||
-                (DeltaEta(jet_eta->at(0), jet_eta->at(1)) < 2.5)) {
-                is_VBF_category = 0;
-                return 1;
-            } else {
-                is_VBF_category = 1;
-                return 2;
-            }
-        } else {
-            is_VBF_category = 0;
-            return 3;
-        }
+    if ((n_bjet == 0) && (n_bjet_Loose < 2) && (mu_pt->size() < 3) &&
+        (elec_pt->size() == 0) && (n_jet >= 2) && leading_jet_pt > 35 &&
+        (diJet_mass > 400) && (DeltaEta(jet_eta->at(0), jet_eta->at(1)) > 2.5)) {
+        is_VBF_category = 1;
+        return 1;
+    } else {
+        is_VBF_category = 0;
+        return 2;
     }
-    is_VBF_category = 0;
-    return 4;
 }
 
 #endif // if LIB_CreateTuple_H

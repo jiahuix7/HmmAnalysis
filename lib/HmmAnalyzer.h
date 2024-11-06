@@ -76,7 +76,8 @@ class HmmAnalyzer : public MainEvent {
     TString year;
     std::string yearst;
     std::map<std::string, float> muon_pt_cut;
-    std::map<std::string, float> btag_cut;
+    std::map<std::string, float> btagLoose_cut;
+    std::map<std::string, float> btagMedium_cut;
 
     TH1D *h_sumOfgw = new TH1D("h_sumOfgenWeight", "h_sumOfgenWeight", 1, 0, 1);
     TH1D *h_sumOfgpw =
@@ -251,6 +252,10 @@ class HmmAnalyzer : public MainEvent {
     int t_SoftActivityJetNjets10;
     int t_SoftActivityJetNjets2;
     int t_SoftActivityJetNjets5;
+    float t_SoftActivityJetHT;
+    float t_SoftActivityJetHT10;
+    float t_SoftActivityJetHT2;
+    float t_SoftActivityJetHT5;
     float t_diJet_pt;
     float t_diJet_eta;
     float t_diJet_phi;
@@ -258,6 +263,7 @@ class HmmAnalyzer : public MainEvent {
     float t_diJet_mass_mo;
 
     int t_nbJet;
+    int t_nbJet_Loose;
     std::vector<float> *t_bJet_area;
     std::vector<float> *t_bJet_btagDeepB;
     std::vector<float> *t_bJet_btagPNetB;
@@ -331,15 +337,22 @@ HmmAnalyzer::HmmAnalyzer(const TString &inputFileList, const char *outFileName,
     muon_pt_cut["2023"] = 26.0;
     muon_pt_cut["2023BPix"] = 26.0;
 
+    // Define b-tagging scores
+    // b-tag particleNet LOOSE score selection
+    btagLoose_cut["2022"] = 0.047;
+    btagLoose_cut["2022EE"] = 0.0499;
+    btagLoose_cut["2023"] = 0.0358;
+    btagLoose_cut["2023BPix"] = 0.0359;
+
     // b-tag deepFlav MEDIUM score selection
-    btag_cut["2016"] = 0.6321;
-    // btag_cut["2017"] = 0.4941;
-    // btag_cut["2018"] = 0.4184;
+    btagMedium_cut["2016"] = 0.6321;
+    // btagMedium_cut["2017"] = 0.4941;
+    // btagMedium_cut["2018"] = 0.4184;
     // b-tag particleNet MEDIUM score selection
-    btag_cut["2022"] = 0.245;
-    btag_cut["2022EE"] = 0.2605;
-    btag_cut["2023"] = 0.1917;
-    btag_cut["2023BPix"] = 0.1919;
+    btagMedium_cut["2022"] = 0.245;
+    btagMedium_cut["2022EE"] = 0.2605;
+    btagMedium_cut["2023"] = 0.1917;
+    btagMedium_cut["2023BPix"] = 0.1919;
 
     // muon eff SFs
     muon_effSF_TRIG_files.clear();
@@ -729,10 +742,15 @@ void HmmAnalyzer::clearTreeVectors() {
     t_index_trigm_mu = FLOAT_NULL_VALUE;
     t_nJet = 0;
     t_nbJet = 0;
+    t_nbJet_Loose = 0;
     t_nSoftActivityJet = INT_NULL_VALUE;
     t_SoftActivityJetNjets10 = INT_NULL_VALUE;
     t_SoftActivityJetNjets2 = INT_NULL_VALUE;
     t_SoftActivityJetNjets5 = INT_NULL_VALUE;
+    t_SoftActivityJetHT = FLOAT_NULL_VALUE;
+    t_SoftActivityJetHT10 = FLOAT_NULL_VALUE;
+    t_SoftActivityJetHT2 = FLOAT_NULL_VALUE;
+    t_SoftActivityJetHT5 = FLOAT_NULL_VALUE;
     t_El_genPartIdx->clear();
     t_El_genPartFlav->clear();
     t_El_charge->clear();
@@ -1187,6 +1205,14 @@ void HmmAnalyzer::BookTreeBranches() {
                  "t_SoftActivityJetNjets2/I");
     tree->Branch("t_SoftActivityJetNjets5", &t_SoftActivityJetNjets5,
                  "t_SoftActivityJetNjets5/I");
+    tree->Branch("t_SoftActivityJetHT", &t_SoftActivityJetHT,
+                 "t_SoftActivityJetHT/F");
+    tree->Branch("t_SoftActivityJetHT10", &t_SoftActivityJetHT10,
+                 "t_SoftActivityJetHT10/F");
+    tree->Branch("t_SoftActivityJetHT2", &t_SoftActivityJetHT2,
+                 "t_SoftActivityJetHT2/F");
+    tree->Branch("t_SoftActivityJetHT5", &t_SoftActivityJetHT5,
+                 "t_SoftActivityJetHT5/F");
     tree->Branch("t_nJet", &t_nJet, "t_nJet/I");
     tree->Branch("t_Jet_area", "vector<float>", &t_Jet_area);
     // tree->Branch("t_Jet_btagCMVA"    , "vector<float>" ,&t_Jet_btagCMVA);
@@ -1218,6 +1244,7 @@ void HmmAnalyzer::BookTreeBranches() {
     tree->Branch("t_diJet_mass_mo", &t_diJet_mass_mo, "t_diJet_mass_mo/F");
 
     tree->Branch("t_nbJet", &t_nbJet, "t_nbJet/I");
+    tree->Branch("t_nbJet_Loose", &t_nbJet_Loose, "t_nbJet_Loose/I");
     t_bJet_area = new std::vector<float>();
     t_bJet_btagDeepB = new std::vector<float>();
     t_bJet_btagPNetB = new std::vector<float>();
