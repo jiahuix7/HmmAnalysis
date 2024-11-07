@@ -11,36 +11,24 @@ from listDatasets_Run3 import datasets_info
 
 # Skip these datasets
 skip_dataset = [
-    "DYJetstoLL_Summer22",
-    "DYto2L-2Jets_Summer22",
-    "TbarQto2Q-t-channel_Summer22",
-    "TQbarto2Q-t-channel_Summer22",
-    "DYto2L-2Jets_Summer22EE",
-    "TbarQto2Q-t-channel_Summer22EE",
-    "TQbarto2Q-t-channel_Summer22EE",
     "DoubleMuon_2022A",
     "DoubleMuon_2022B",
     "Muon0_2023B",
     "Muon1_2023B",
 ]
 skip_pattern = [
-    # # "Muon",
-    # "Muon0",
-    # "Muon1",
-    # # "Summer22",
-    # "Summer22EE",
-    # "Summer23",
-    # "Summer23BPix",
     ## Unwanted sets
     "DYJetstoLL",
     "DYto2L-2Jets",
     ## Sets with missing cross section (TODO: ADD CROSS SECTIONS!)
-    "t-channel",
-    "s-channel",
     "TWminusto4Q",
     "TWminustoLNu2Q",
     "Tbar",
+    "TQbar",
+    "t-channel",
+    "s-channel",
     "ZZto2Nu2Q",
+    "WWto4Q",
 ]
 
 list_datasets = datasets_info.keys()
