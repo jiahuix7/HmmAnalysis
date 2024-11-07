@@ -92,6 +92,7 @@ class CreateTuple {
     /** Read event variables */
     float gen_weight, pileup_weight;
     int n_SoftJet_pt2, n_SoftJet_pt5, n_SoftJet_pt10;
+    float HT, HT_pt2, HT_pt5, HT_pt10;
     /**< Read DiMuon variables */
     float diMuon_mass, diMuon_pt, diMuon_phi, diMuon_eta;
 
@@ -131,7 +132,7 @@ class CreateTuple {
 
     /** New DiJets variables*/
     float delta_eta_diJet, delta_phi_diJet, z_zeppenfeld, pt_balance,
-        min_delta_eta_diMuon_jet, min_delta_phi_diMuon_jet;
+        pt_centrality, min_delta_eta_diMuon_jet, min_delta_phi_diMuon_jet;
 };
 
 CreateTuple::CreateTuple(TString input, TString output, TString era,
@@ -203,6 +204,11 @@ void CreateTuple::setBranchesAddressesOutput() {
     tree_output->Branch("n_SoftJet_pt2", &n_SoftJet_pt2, "n_SoftJet_pt2/i");
     tree_output->Branch("n_SoftJet_pt5", &n_SoftJet_pt5, "n_SoftJet_pt5/i");
     tree_output->Branch("n_SoftJet_pt10", &n_SoftJet_pt10, "n_SoftJet_pt10/i");
+    tree_output->Branch("HT", &HT, "HT/f");
+    tree_output->Branch("HT_pt2", &HT_pt2, "HT_pt2/f");
+    tree_output->Branch("HT_pt5", &HT_pt5, "HT_pt5/f");
+    tree_output->Branch("HT_pt10", &HT_pt10, "HT_pt10/f");
+
     tree_output->Branch("is_ggH_category", &is_ggH_category,
                         "is_ggH_category/i");
     tree_output->Branch("is_VBF_category", &is_VBF_category,
@@ -242,6 +248,7 @@ void CreateTuple::setBranchesAddressesOutput() {
                         "delta_phi_diJet/f");
     tree_output->Branch("z_zeppenfeld", &z_zeppenfeld, "z_zeppenfeld/f");
     tree_output->Branch("pt_balance", &pt_balance, "pt_balance/f");
+    tree_output->Branch("pt_centrality", &pt_centrality, "pt_centrality/f");
     tree_output->Branch("min_delta_eta_diMuon_jet", &min_delta_eta_diMuon_jet,
                         "min_delta_eta_diMuon_jet/f");
     tree_output->Branch("min_delta_phi_diMuon_jet", &min_delta_phi_diMuon_jet,
@@ -259,6 +266,11 @@ void CreateTuple::setBranchesAddressesInput() {
     tree_input->SetBranchAddress("t_SoftActivityJetNjets2", &n_SoftJet_pt2);
     tree_input->SetBranchAddress("t_SoftActivityJetNjets5", &n_SoftJet_pt5);
     tree_input->SetBranchAddress("t_SoftActivityJetNjets10", &n_SoftJet_pt10);
+
+    tree_input->SetBranchAddress("t_SoftActivityJetHT", &HT);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT2", &HT_pt2);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT5", &HT_pt5);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT10", &HT_pt10);
 
     tree_input->SetBranchAddress("t_genWeight", &gen_weight);
     // DiMuon variables
@@ -339,6 +351,7 @@ void CreateTuple::fillOutputTree() {
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
             pt_balance = -1;
+            pt_centrality = -1;
             min_delta_eta_diMuon_jet = 0;
             min_delta_phi_diMuon_jet = 0;
         } else if (n_jet == 1) {
@@ -350,6 +363,7 @@ void CreateTuple::fillOutputTree() {
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
             pt_balance = -1;
+            pt_centrality = -1;
             min_delta_eta_diMuon_jet = DeltaEta(diMuon_eta, jet_eta->at(0));
             min_delta_phi_diMuon_jet = DeltaPhi(diMuon_phi, jet_phi->at(0));
         } else {
@@ -364,6 +378,8 @@ void CreateTuple::fillOutputTree() {
             pt_balance = GetPtBalanceVariable(mu1_vector + mu2_vector,
                                               jet_pt, jet_phi, jet_eta,
                                               jet_mass);
+            pt_centrality = GetPtCentralityVariable(diMuon_pt, jet_pt, jet_phi,
+                                                    jet_eta, jet_mass);
             min_delta_eta_diMuon_jet =
                 TMath::Min(DeltaEta(diMuon_eta, jet_eta->at(0)),
                            DeltaEta(diMuon_eta, jet_eta->at(1)));

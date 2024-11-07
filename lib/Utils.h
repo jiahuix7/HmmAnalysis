@@ -149,4 +149,26 @@ float GetPtBalanceVariable(const TLorentzVector &diMuon_vec,
             TMath::Abs(subleading_jet_pt) + TMath::Abs(diMuon_vec.Pt()));
 }
 
+float GetPtCentralityVariable(const float &diMuon_pt,
+                            const std::vector<float> *const &jet_pt,
+                            const std::vector<float> *const &jet_phi,
+                            const std::vector<float> *const &jet_eta,
+                            const std::vector<float> *const &jet_mass) {
+    if (jet_pt->size() < 2) {
+        std::cout << "Less than 2 jets in this event, returning -1 for the "
+                     "Pt balance\n";
+        return -1;
+    }
+    TLorentzVector leading_jet_vector, subleading_jet_vector;
+    leading_jet_vector.SetPtEtaPhiM((*jet_pt)[0], (*jet_eta)[0], (*jet_phi)[0],
+                                    (*jet_mass)[0]);
+    subleading_jet_vector.SetPtEtaPhiM((*jet_pt)[1], (*jet_eta)[1],
+                                       (*jet_phi)[1], (*jet_mass)[1]);
+    float jet_sum_pt, jet_dif_pt;
+    jet_sum_pt = (leading_jet_vector + subleading_jet_vector).Pt();
+    jet_dif_pt = (leading_jet_vector - subleading_jet_vector).Pt();
+
+    return (diMuon_pt - TMath::Abs(jet_sum_pt)/2) / TMath::Abs(jet_dif_pt);
+}
+
 #endif // if LIB_UTILS_H
