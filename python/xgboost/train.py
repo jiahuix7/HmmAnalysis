@@ -21,7 +21,7 @@ if len(sys.argv) < 3:
 channel_US = sys.argv[1]
 era = sys.argv[2]
 if len(sys.argv) == 3:
-    background_subset = "NoDY50"
+    background_subset = "Full"
     signal_subset = "NottH"
     print("Using default subsets:", background_subset, signal_subset)
 elif len(sys.argv) == 5:

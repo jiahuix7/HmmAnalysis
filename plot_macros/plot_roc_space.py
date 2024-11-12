@@ -12,7 +12,7 @@ if len(sys.argv) < 3:
 channel_US = sys.argv[1]
 era_input = sys.argv[2]
 if len(sys.argv) == 3:
-    background_subset = "NoDY50"
+    background_subset = "Full"
     signal_subset = "NottH"
     print("Using default subsets:", background_subset, signal_subset)
 elif len(sys.argv) == 5:
@@ -32,18 +32,16 @@ if era_input == "2022":
     eras = ["2022", "2022EE", "2022Combined"]
 elif era_input == "2023":
     eras = ["2023", "2023BPix", "2023Combined"]
-elif era_input == "All" or era_input == "Combined":
-    # eras = ["2022Combined", "2023Combined", "Combined"]
+elif era_input == "Combined":
+    eras = ["2022Combined", "2023Combined", "Combined"]
+elif era_input == "All":
     eras = ["2022", "2022EE", "2023","2023BPix","Combined"]
 else:
     print("Set era to be one of the available sets:")
-    print(" > 2022, 2023, All (or Combined)")
+    print(" > 2022, 2023, Combined, All")
     exit()
 
 subset_title = "B" + background_subset + "_S" + signal_subset
-
-if background_subset == "2L":
-    eras = eras[:-1]
 
 fig, ax = get_canvas()
 for era, colors in zip(eras, colors):

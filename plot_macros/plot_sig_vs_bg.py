@@ -42,12 +42,14 @@ variables = [
 ]
 
 # eras = ["2022", "2022EE"]
-eras = ["2023", "2023BPix"]
+# eras = ["2023", "2023BPix"]
 # eras = ["2022", "2022EE", "2023", "2023BPix"]
-# background_subset = ["Full", "2L", "NoDY50"]
-background_subset = ["NoDY50"]
+eras = ["2022Combined", "2023Combined", "Combined"]
+background_subset = ["Full", "NoDY50"]
+# background_subset = ["NoDY50"]
 # signal_subset = ["Full", "NottH", "VBF"]
 signal_subset = ["NottH", "VBF"]
+# signal_subset = ["VBF"]
 
 for bsubset in background_subset:
     for ssubset in signal_subset:
