@@ -107,7 +107,10 @@ def draw_sig_and_bg_from_tuple(variable, era, category="", bsubset="", ssubset="
                np.max(signal_histogram / np.sum(signal_histogram)))
     ax.set_ylim(0.0, 1.3 * ymax)
     if variable in plot_log_variables:
-        ax.set_ylim(0.001, 1.1)
+        ymin = 0.001
+        if (category == "VBF") and (variable in ["subleading_jet_pt"]):
+            ymin = 0.0001
+        ax.set_ylim(ymin, 1.1)
         ax.set_yscale("log")
     ax.set_xlim(bins[0], bins[-1])
     ax.legend(frameon=False, loc="upper right", ncols=1)
@@ -117,3 +120,5 @@ def draw_sig_and_bg_from_tuple(variable, era, category="", bsubset="", ssubset="
     output_directory = get_output_directory(variable, output_directory, variables_type)
 
     save_figure(fig, output_directory, variable + "_" + era + "_sig_vs_bkg")
+
+    plt.close()
