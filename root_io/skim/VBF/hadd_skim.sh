@@ -1,8 +1,8 @@
 
 mkdir -p merged
 ##############  2022  ##############
-hadd merged/background_2022_skimFull.root DY50to120_2022_skim.root DY120to200_2022_skim.root EWK_2L2J_2022_skim.root TTto2L2Nu_2022_skim.root TTtoLNu2Q_2022_skim.root TWminusto2L2Nu_2022_skim.root WZto2L2Q_2022_skim.root WZto3LNu_2022_skim.root ZZto2L2Nu_2022_skim.root ZZto2L2Q_2022_skim.root ZZto4L_2022_skim.root WWto2L2Nu_2022_skim.root
-hadd merged/background_2022_skimNoDY50.root DY120to200_2022_skim.root EWK_2L2J_2022_skim.root TTto2L2Nu_2022_skim.root TTtoLNu2Q_2022_skim.root TWminusto2L2Nu_2022_skim.root WZto2L2Q_2022_skim.root WZto3LNu_2022_skim.root ZZto2L2Nu_2022_skim.root ZZto2L2Q_2022_skim.root ZZto4L_2022_skim.root WWto2L2Nu_2022_skim.root
+hadd merged/background_2022_skimFull.root DY50to120_2022_skim.root DY120to200_2022_skim.root EWK_2L2J_2022_skim.root TTto2L2Nu_2022_skim.root TTtoLNu2Q_2022_skim.root WZto2L2Q_2022_skim.root WZto3LNu_2022_skim.root ZZto2L2Nu_2022_skim.root ZZto2L2Q_2022_skim.root ZZto4L_2022_skim.root WWto2L2Nu_2022_skim.root
+hadd merged/background_2022_skimNoDY50.root DY120to200_2022_skim.root EWK_2L2J_2022_skim.root TTto2L2Nu_2022_skim.root TTtoLNu2Q_2022_skim.root WZto2L2Q_2022_skim.root WZto3LNu_2022_skim.root ZZto2L2Nu_2022_skim.root ZZto2L2Q_2022_skim.root ZZto4L_2022_skim.root WWto2L2Nu_2022_skim.root
 
 hadd merged/signal_2022_skimFull.root ggH_2022_skim.root VBF_2022_skim.root ttH_2022_skim.root
 hadd merged/signal_2022_skimNottH.root ggH_2022_skim.root VBF_2022_skim.root
