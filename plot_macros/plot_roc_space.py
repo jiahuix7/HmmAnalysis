@@ -11,6 +11,24 @@ if len(sys.argv) < 3:
     exit()
 channel_US = sys.argv[1]
 era_input = sys.argv[2]
+
+colors = ["blue", "red", "lime", "black", "orange"]
+if "--only" in sys.argv:
+    sys.argv.remove("--only")
+    eras = [era_input]
+elif era_input == "2022":
+    eras = ["2022", "2022EE", "2022Combined"]
+elif era_input == "2023":
+    eras = ["2023", "2023BPix", "2023Combined"]
+elif era_input == "Combined":
+    eras = ["2022Combined", "2023Combined", "Combined"]
+elif era_input == "All":
+    eras = ["2022", "2022EE", "2023","2023BPix","Combined"]
+else:
+    print("Set era to be one of the available sets:")
+    print(" > 2022, 2023, Combined, All")
+    exit()
+
 if len(sys.argv) == 3:
     background_subset = "Full"
     signal_subset = "NottH"
@@ -23,23 +41,9 @@ else:
     exit()
 
 print("Channel under study: ", channel_US)
-print("Era: ", era_input)
+print("Eras: ", eras)
 print("Background subset: ", background_subset)
 print("Signal subset: ", signal_subset)
-
-colors = ["blue", "red", "lime", "black", "orange"]
-if era_input == "2022":
-    eras = ["2022", "2022EE", "2022Combined"]
-elif era_input == "2023":
-    eras = ["2023", "2023BPix", "2023Combined"]
-elif era_input == "Combined":
-    eras = ["2022Combined", "2023Combined", "Combined"]
-elif era_input == "All":
-    eras = ["2022", "2022EE", "2023","2023BPix","Combined"]
-else:
-    print("Set era to be one of the available sets:")
-    print(" > 2022, 2023, Combined, All")
-    exit()
 
 subset_title = "B" + background_subset + "_S" + signal_subset
 
@@ -71,5 +75,8 @@ hep.cms.label(data="False", label=channel_US + ", " + subset_title,
 ax.set_yscale("log")
 ax.grid()
 
+file_name = "roc_space_" + channel_US + "_" + era_input
+if len(eras) == 1:
+    file_name += "ONLY"
 save_figure(fig, "../plots/" + channel_US + "_category/roc/",
-            "roc_space_" + channel_US + "_" + era_input + "_" + subset_title)
+            file_name + "_" + subset_title)
