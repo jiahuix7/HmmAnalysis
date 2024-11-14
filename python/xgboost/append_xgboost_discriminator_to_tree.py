@@ -2,6 +2,7 @@
 
 import sys
 import matplotlib
+import os
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -14,88 +15,97 @@ import pickle as pickle
 import ROOT as root
 import uproot as uproot
 
-
-# USAGE
-# python append_xgboost_discriminator_to_tree.py <folder_name> <input_file_name> <year> <bdt_type>
-
 root.gROOT.Reset()
 
-if len(sys.argv) != 3:
-    print("Please use two arguments. channel era")
+if len(sys.argv) < 4:
+    print("Arguments missing: Channel_under_study, era, file_type,\
+          background_subset, signal_subset")
     exit()
-channel = sys.argv[1]
+channel_US = sys.argv[1]
 era = sys.argv[2]
+file_type = sys.argv[3]
+if len(sys.argv) == 4:
+    background_subset = "Full"
+    signal_subset = "NottH"
+    print("Using default subsets:", background_subset, signal_subset)
+elif len(sys.argv) == 6:
+    background_subset = sys.argv[4]
+    signal_subset = sys.argv[5]
+else:
+    print("Include subset of background AND signal only.")
+    exit()
 
-signals = "signals"
+print("Channel under study: ", channel_US)
+print("Era: ", era)
+print("Background subset: ", background_subset)
+print("Signal subset: ", signal_subset)
+print("Type of file: ", file_type)
 
-FileName = "../../root_io/skim/" + channel + "_" + era + "_skim_" + signals + ".root"
-print("File name: ", FileName)
+subset_title = "B"+ background_subset + "_S" + signal_subset
 
+skim_path = "../../root_io/skim/" + channel_US +"/"
+BDT_path = skim_path + "BDT_score/"
+os.system("mkdir -p " + BDT_path)
+if channel_US == "VBF": skim_path += "merged/"
+
+skim_subset = ""
+if file_type == "background" or file_type == "bkg":
+    skim_subset = background_subset
+elif file_type == "signal":
+    skim_subset = signal_subset
+
+skim_name = file_type + "_" + era + "_skim" + skim_subset + ".root"
+BDT_name = file_type + "_" + era + "_skim_" + subset_title + ".root"
+print("File name: ", BDT_name)
+os.system("cp " + skim_path + skim_name + " " + BDT_path + BDT_name)
+
+FileName = BDT_path + BDT_name
 File = root.TFile(FileName, "update")
 Tree = File.Get("tree_output")
 
-
-test_name = "ReadingXgBoostModel"
-
-_model_name = "./models/" + signals + "/model_mumu_vs_bkg_" + era + ".pkl"
+model_name = channel_US +  "_" + era + "_" + subset_title
+model_file = "./models/model_" + model_name + ".pkl"
 
 variables = [
-    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$ (GeV)", 50, -2.5, 2.5],
-    ["diMuon_pt", "diMuon_pt", r"$M_{\mu\mu}$ (GeV)", 100, 0, 250],
-    [
-        "mu1_pt_mass_ratio",
-        "mu1_pt_mass_ratio",
-        r"$p_T^{\mu 1}/m_{/mu/mu}$",
-        50,
-        0,
-        1.4,
-    ],
-    [
-        "mu2_pt_mass_ratio",
-        "mu2_pt_mass_ratio",
-        r"$p_T^{\mu 2}/m_{/mu/mu}$",
-        50,
-        0,
-        1.4,
-    ],
-    ["mu1_eta", "mu1_eta", r"$\eta_\mu 1$", 50, -2.4, 2.4],
-    ["mu2_eta", "mu2_eta", r"$\eta_\mu 2$", 50, -2.4, 2.4],
-    ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
-    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_CS)$", 50, -1, 1],
-    #   Jet variables
-    ["n_jet", "n_jet", r"n jets", 8, 0, 8],
-    ["leading_jet_pt", "leading_jet_pt", r"$Pt_{j1}$ GeV", 50, 0, 400],
-    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{jet}$", 50, -5, 5],
-    ["subleading_jet_pt", "subleading_jet_pt", r"$Pt_{j2}$", 50, 0, 400],
-    ["diJet_mass", "diJet_mass", r"$m_{jj}$ GeV", 50, 0, 400],
-    ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
-    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$", 50, -3.14, 3.14],
-    ["z_zeppenfeld", "z_zeppenfeld", r"Z Zeppendfeld", 50, -8, 8],
-    [
-        "min_delta_eta_diMuon_jet",
-        "min_delta_eta_diMuon_jet",
-        r"min$\Delta\eta_{\mu\mu,j}",
-        50,
-        -8,
-        8,
-    ],
-    [
-        "min_delta_phi_diMuon_jet",
-        "min_delta_phi_diMuon_jet",
-        r"min$\Delta\phi_{\mu\mu,j}",
-        50,
-        -3.14,
-        3.14,
-    ],
-    # ["weight", "weight", "weight", 100, -1.0, 1.0],
+    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$"],
+    ["diMuon_pt", "diMuon_pt", r"$p_T^{\mu\mu}$ [GeV]"],
+    ["mu1_pt_mass_ratio", "mu1_pt_mass_ratio",
+     r"$p_T^{\mu 1}/m_{\mu\mu}$"],
+    ["mu2_pt_mass_ratio", "mu2_pt_mass_ratio",
+     r"$p_T^{\mu 2}/m_{\mu\mu}$"],
+    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$"],
+    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$"],
+    ["phi_CS", "phi_CS", r"$\phi_{CS}$"],
+    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$"],
+    # # Jet variables
+    ["n_jet", "n_jet", r"$N_{jets}$"],
+    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$"],
+    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$"],
+    ["subleading_jet_pt", "subleading_jet_pt", r"$p_T^{j2}$ [GeV]"],
+    ["diJet_mass", "diJet_mass", r"$m_{jj}$ [GeV]"],
+    ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$"],
+    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$ [rad]"],
+    ["z_zeppenfeld", "z_zeppenfeld", r"$Z^{*} Zeppendfeld$"],
+    ["min_delta_eta_diMuon_jet", "min_delta_eta_diMuon_jet",
+     r"min$|\Delta\eta_{\mu\mu,j}|$"],
+    ["min_delta_phi_diMuon_jet", "min_delta_phi_diMuon_jet",
+     r"min$|\Delta\phi_{\mu\mu,j}|$ [rad]"],
 ]
+if channel_US == "VBF":
+    variables += [
+        # VBF sspecific variables
+        ["pt_balance", "pt_balance", r"$R(p_T)$"],
+        ["pt_centrality", "pt_centrality", r"$p_{T}-centrality$"],
+        ["n_SoftJet_pt2", "n_SoftJet_pt2", r"$N_{2}^{soft}$"],
+        ["HT", "HT", r"$H_{T}^{2}(soft)$"],
+    ]
 
 
-print(len(variables))
-my_variables = []
-for var in variables:
-    print(var[0])
-    my_variables.append(var[0])
+# print(len(variables))
+# my_variables = []
+# for var in variables:
+#     print(var[0])
+#     my_variables.append(var[0])
 
 with uproot.open(FileName) as file:
     df = pd.DataFrame(
@@ -112,7 +122,7 @@ y_test = np.zeros(len(df))
 ############################
 # get model from file
 ############################
-with open(_model_name, "rb") as pkl_file:
+with open(model_file, "rb") as pkl_file:
     model = pickle.load(pkl_file)
 
 
@@ -132,7 +142,7 @@ disc = y_frame[y_frame["truth"] == 0]["disc"].values
 plt.figure()
 plt.hist(disc, bins=50, alpha=0.3)
 plt.savefig("mydiscriminator_" + era + ".png")
-print("disc_bkg: ", disc)
+# print("disc_bkg: ", disc)
 # print y_pred
 
 #############################################
@@ -141,7 +151,7 @@ print("disc_bkg: ", disc)
 
 nEntries = Tree.GetEntries()
 print("nEntries = ", nEntries)
-_disc_var_name = "BDT_ggH"
+_disc_var_name = "BDT_" + channel_US
 
 root.gROOT.ProcessLine("struct MyStruct{float disc;};")
 
@@ -162,6 +172,6 @@ for i in range(nEntries):
     my_s.disc = disc[i]
     bpt.Fill()
 
-Tree.Print()
+# Tree.Print()
 Tree.GetCurrentFile().Write()
 Tree.GetCurrentFile().Close()
