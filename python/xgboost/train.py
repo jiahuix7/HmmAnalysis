@@ -103,48 +103,40 @@ os.system("cp ../index.php " + plotDir + "scores/")
 os.system("cp ../index.php " + plotDir + "variables/")
 
 variables = [
-    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$", 50, -2.5, 2.5],
-    ["diMuon_pt", "diMuon_pt", r"$p_T^{\mu\mu}$ [GeV]", 80, 0, 250],
+    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$"],
+    ["diMuon_pt", "diMuon_pt", r"$p_T^{\mu\mu}$ [GeV]"],
     ["mu1_pt_mass_ratio", "mu1_pt_mass_ratio",
-     r"$p_T^{\mu 1}/m_{\mu\mu}$", 50, 0, 1.4],
+     r"$p_T^{\mu 1}/m_{\mu\mu}$"],
     ["mu2_pt_mass_ratio", "mu2_pt_mass_ratio",
-     r"$p_T^{\mu 2}/m_{\mu\mu}$", 50, 0, 1.4],
-    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$", 50, -2.4, 2.4],
-    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$", 50, -2.4, 2.4],
-    ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
-    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$", 50, -1, 1],
+     r"$p_T^{\mu 2}/m_{\mu\mu}$"],
+    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$"],
+    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$"],
+    ["phi_CS", "phi_CS", r"$\phi_{CS}$"],
+    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$"],
     # # Jet variables
-    ["n_jet", "n_jet", r"n jet", 8, 0, 8],
-    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$", 50, 0, 400],
-    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$", 50, -5, 5],
-    ["subleading_jet_pt", "subleading_jet_pt", r"$P_{t}^{j2}$ [GeV]", 50, 0, 400],
-    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$", 50, -3.14, 3.14],
-    ["z_zeppenfeld", "z_zeppenfeld", r"$Z^{*} Zeppendfeld$", 50, -8, 8],
+    ["n_jet", "n_jet", r"$N_{jets}$"],
+    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$"],
+    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$"],
+    ["subleading_jet_pt", "subleading_jet_pt", r"$p_T^{j2}$ [GeV]"],
+    ["diJet_mass", "diJet_mass", r"$m_{jj}$ [GeV]"],
+    ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$"],
+    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$ [rad]"],
+    ["z_zeppenfeld", "z_zeppenfeld", r"$Z^{*} Zeppendfeld$"],
     ["min_delta_eta_diMuon_jet", "min_delta_eta_diMuon_jet",
-     r"min$|\Delta\eta_{\mu\mu,j}|$", 50, 0, 8],
+     r"min$|\Delta\eta_{\mu\mu,j}|$"],
     ["min_delta_phi_diMuon_jet", "min_delta_phi_diMuon_jet",
-     r"min$\Delta\phi_{\mu\mu,j}$", 50, -3.14, 3.14],
+     r"min$|\Delta\phi_{\mu\mu,j}|$ [rad]"],
 ]
-if channel_US == "ggH":
+if channel_US == "VBF":
     variables += [
-        # Different binning
-        ["diJet_mass", "diJet_mass", r"$m_{jj}$ [GeV]", 50, 0, 400],
-        ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
-        # New variables
-    ]
-elif channel_US == "VBF":
-    variables += [
-        # Different binning
-        ["diJet_mass", "diJet_mass", r"$m_{jj}$ [GeV]", 50, 400, 900],
-        ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, 2.5, 8],
-        # New variables
-        ["pt_balance", "pt_balance", r"$R(p_T)$", 50, 0, 1],
-        ["pt_centrality", "pt_centrality", r"$p_{T}-centrality$", 30, 0, 12],
-        ["n_SoftJet_pt2", "n_SoftJet_pt2", r"$N_{2}^{soft}$", 40, 0, 40],
-        ["HT", "HT", r"$H_{T}^{2}(soft)$", 20, 0, 60],
+        # VBF sspecific variables
+        ["pt_balance", "pt_balance", r"$R(p_T)$"],
+        ["pt_centrality", "pt_centrality", r"$p_{T}-centrality$"],
+        ["n_SoftJet_pt2", "n_SoftJet_pt2", r"$N_{2}^{soft}$"],
+        ["HT", "HT", r"$H_{T}^{2}(soft)$"],
     ]
 # Add weight at the end!
-variables += [["weight_no_lumi", "weight_no_lumi", "weight_no_lumi", 100, -1.0, 1.0]]
+variables += [["weight_no_lumi", "weight_no_lumi", "weight_no_lumi"]]
 
 print("number of variables", len(variables))
 
