@@ -20,9 +20,9 @@ x_labels = {
     ## DiMuon variables
     "diMuon_rapidity": r"$y_{\mu\mu}$",
     "diMuon_pt": r"$p_T^{\mu\mu}$ [GeV]",
-    "diMuon_mass": r"$M_{\mu\mu}$ [GeV]",
-    "diMuon_mass_full_range": r"$M_{\mu\mu}$ [GeV]",
-    "diMuon_phi": r"$\phi_{\mu\mu}$ [rad]",
+    "diMuon_mass": r"$m_{\mu\mu}$ [GeV]",
+    "diuon_mass_full_range": r"$_{\mu\mu}$ [GeV]",
+    "diuon_phi": r"$\phi_{\mu\mu}$ [rad]",
     "diMuon_eta": r"$\eta_{\mu\mu}$ ",
     ## Muon variables
     "mu1_pt_mass_ratio": r"$p_T^{\mu 1}/m_{\mu\mu}$",
@@ -37,7 +37,7 @@ x_labels = {
     "subleading_jet_pt": r"$p_T^{j2}$ [GeV]",
     "leading_jet_eta": r"$\eta_{j1}$ ",
     "jet_phi": r"$\phi_{jet}$ [rad]",
-    "jet_mass": r"$M_{jet}$ [GeV]",
+    "jet_mass": r"$m_{jet}$ [GeV]",
     "delta_eta_diMuon_jet": r"$\Delta\eta_{\mu\mu,j}$",
     "delta_phi_diMuon_jet": r"$\Delta\phi_{\mu\mu,j}$",
     ## DiJet variables
@@ -45,7 +45,7 @@ x_labels = {
     "diJet_eta": r"$\eta_{jj}$ ",
     "diJet_phi": r"$\phi_{jj}$ [rad]",
     "diJet_mass": r"$m_{jj}$ [GeV]",
-    "diJet_mass_mo": r"$M_{Dijet highest mass}$ [GeV]",
+    "diJet_mass_mo": r"$m_{Dijet highest mass}$ [GeV]",
     "diJet_DeltaEta": r"$\Delta\eta_{jj}$",
     "delta_eta_diJet": r"$|\Delta\eta_{jj}|$",
     "delta_phi_diJet": r"$|\Delta\phi_{jj}|$ [rad]",
