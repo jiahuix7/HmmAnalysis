@@ -167,35 +167,20 @@ print("signal sample size: " + str(len(df_signal.values)))
 print("bkg sample size: " + str(len(df_bkg.values)))
 
 ###plot correlation
+correlation_vars = variables[:-1] + [["diMuon_mass", "diMuon_mass", r"$M_{\mu\mu}$ [GeV]"]]
+
 file_sig = root.TFile(signal_file_name)
 tree_sig = file_sig.Get("tree_output")
 file_bkg = root.TFile(bkg_file_name)
-tree_bkg = file_sig.Get("tree_output")
-h2_corr_sig = root.TH2F(
-    "h2_corr_sig",
-    "h2_corr_sig",
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-)
-h2_corr_bkg = root.TH2F(
-    "h2_corr_bkg",
-    "h2_corr_bkg",
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-)
+tree_bkg = file_bkg.Get("tree_output")
+n_corr = len(correlation_vars)
+h2_corr_sig = root.TH2F("h2_corr_sig", "h2_corr_sig", n_corr, 0, n_corr, n_corr, 0, n_corr)
+h2_corr_bkg = root.TH2F("h2_corr_bkg", "h2_corr_bkg", n_corr, 0, n_corr, n_corr, 0, n_corr)
 
-for idx1 in range(len(variables) - 1):
-    for idx2 in range(len(variables) - 1):
-        tree_sig.Draw(variables[idx1][0] + ":" + variables[idx2][0] + ">>temp_sig")
-        tree_bkg.Draw(variables[idx1][0] + ":" + variables[idx2][0] + ">>temp_bkg")
+for idx1 in range(n_corr):
+    for idx2 in range(n_corr):
+        tree_sig.Draw(correlation_vars[idx1][0] + ":" + correlation_vars[idx2][0] + ">>temp_sig")
+        tree_bkg.Draw(correlation_vars[idx1][0] + ":" + correlation_vars[idx2][0] + ">>temp_bkg")
         sig_hist = root.gDirectory.Get("temp_sig")
         h2_corr_sig.SetBinContent(idx1 + 1, idx2 + 1, sig_hist.GetCorrelationFactor())
         bkg_hist = root.gDirectory.Get("temp_bkg")
@@ -204,11 +189,11 @@ for idx1 in range(len(variables) - 1):
         root.gDirectory.Delete("temp_bkg")
 h2_corr_sig.GetZaxis().SetRangeUser(-1.0, 1.0)
 h2_corr_bkg.GetZaxis().SetRangeUser(-1.0, 1.0)
-for idx in range(len(variables) - 1):
-    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
+for idx in range(n_corr):
+    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
 
 h2_corr_sig.LabelsOption("v", "X")
 h2_corr_bkg.LabelsOption("v", "X")
@@ -233,14 +218,14 @@ root.gStyle.SetNumberContours(255)
 
 h2_corr_sig.Draw("COLZTEXT")
 h2_corr_sig.SetTitle("")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.pdf")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.pdf")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.png")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.C")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.C")
 h2_corr_bkg.Draw("COLZTEXT")
 h2_corr_bkg.SetTitle("")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.pdf")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.pdf")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.png")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.C")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.C")
 
 
 # split data into train and test sets
