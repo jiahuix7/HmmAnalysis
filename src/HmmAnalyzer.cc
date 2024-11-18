@@ -308,6 +308,10 @@ void HmmAnalyzer::EventLoop() {
         t_SoftActivityJetNjets10 = SoftActivityJetNjets10;
         t_SoftActivityJetNjets2 = SoftActivityJetNjets2;
         t_SoftActivityJetNjets5 = SoftActivityJetNjets5;
+        t_SoftActivityJetHT = SoftActivityJetHT;
+        t_SoftActivityJetHT10 = SoftActivityJetHT10;
+        t_SoftActivityJetHT2 = SoftActivityJetHT2;
+        t_SoftActivityJetHT5 = SoftActivityJetHT5;
 
         for (int j = 0; j < nJet; j++) {
             if (!isValidJet(j)) {
@@ -345,8 +349,11 @@ void HmmAnalyzer::EventLoop() {
             t_Jet_nElectrons->push_back(Jet_nElectrons[j]);
             t_Jet_nMuons->push_back(Jet_nMuons[j]);
             // t_Jet_puId->push_back(Jet_puId[j]);
+            if (Jet_btagPNetB[j] > btagLoose_cut[yearst]) {
+                t_nbJet_Loose++;
+            }
 
-            if (!(Jet_btagPNetB[j] > btag_cut[yearst])) {
+            if (!(Jet_btagPNetB[j] > btagMedium_cut[yearst])) {
                 continue; // medium WP
             } // end of b-tag
             t_nbJet++;

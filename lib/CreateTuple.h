@@ -92,6 +92,7 @@ class CreateTuple {
     /** Read event variables */
     float gen_weight, pileup_weight;
     int n_SoftJet_pt2, n_SoftJet_pt5, n_SoftJet_pt10;
+    float HT, HT_pt2, HT_pt5, HT_pt10;
     /**< Read DiMuon variables */
     float diMuon_mass, diMuon_pt, diMuon_phi, diMuon_eta;
 
@@ -104,7 +105,7 @@ class CreateTuple {
     std::vector<float> *elec_pt;
 
     /** Read Jet variables */
-    int n_jet, n_bjet;
+    int n_jet, n_bjet, n_bjet_Loose;
     std::vector<float> *jet_mass, *jet_pt, *jet_phi, *jet_eta;
 
     /** Read Jet variables */
@@ -131,7 +132,7 @@ class CreateTuple {
 
     /** New DiJets variables*/
     float delta_eta_diJet, delta_phi_diJet, z_zeppenfeld, pt_balance,
-        min_delta_eta_diMuon_jet, min_delta_phi_diMuon_jet;
+        pt_centrality, min_delta_eta_diMuon_jet, min_delta_phi_diMuon_jet;
 };
 
 CreateTuple::CreateTuple(TString input, TString output, TString era,
@@ -203,6 +204,11 @@ void CreateTuple::setBranchesAddressesOutput() {
     tree_output->Branch("n_SoftJet_pt2", &n_SoftJet_pt2, "n_SoftJet_pt2/i");
     tree_output->Branch("n_SoftJet_pt5", &n_SoftJet_pt5, "n_SoftJet_pt5/i");
     tree_output->Branch("n_SoftJet_pt10", &n_SoftJet_pt10, "n_SoftJet_pt10/i");
+    tree_output->Branch("HT", &HT, "HT/f");
+    tree_output->Branch("HT_pt2", &HT_pt2, "HT_pt2/f");
+    tree_output->Branch("HT_pt5", &HT_pt5, "HT_pt5/f");
+    tree_output->Branch("HT_pt10", &HT_pt10, "HT_pt10/f");
+
     tree_output->Branch("is_ggH_category", &is_ggH_category,
                         "is_ggH_category/i");
     tree_output->Branch("is_VBF_category", &is_VBF_category,
@@ -242,6 +248,7 @@ void CreateTuple::setBranchesAddressesOutput() {
                         "delta_phi_diJet/f");
     tree_output->Branch("z_zeppenfeld", &z_zeppenfeld, "z_zeppenfeld/f");
     tree_output->Branch("pt_balance", &pt_balance, "pt_balance/f");
+    tree_output->Branch("pt_centrality", &pt_centrality, "pt_centrality/f");
     tree_output->Branch("min_delta_eta_diMuon_jet", &min_delta_eta_diMuon_jet,
                         "min_delta_eta_diMuon_jet/f");
     tree_output->Branch("min_delta_phi_diMuon_jet", &min_delta_phi_diMuon_jet,
@@ -259,6 +266,11 @@ void CreateTuple::setBranchesAddressesInput() {
     tree_input->SetBranchAddress("t_SoftActivityJetNjets2", &n_SoftJet_pt2);
     tree_input->SetBranchAddress("t_SoftActivityJetNjets5", &n_SoftJet_pt5);
     tree_input->SetBranchAddress("t_SoftActivityJetNjets10", &n_SoftJet_pt10);
+
+    tree_input->SetBranchAddress("t_SoftActivityJetHT", &HT);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT2", &HT_pt2);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT5", &HT_pt5);
+    tree_input->SetBranchAddress("t_SoftActivityJetHT10", &HT_pt10);
 
     tree_input->SetBranchAddress("t_genWeight", &gen_weight);
     // DiMuon variables
@@ -280,6 +292,7 @@ void CreateTuple::setBranchesAddressesInput() {
 
     // Jet variables
     tree_input->SetBranchAddress("t_nbJet", &n_bjet);
+    tree_input->SetBranchAddress("t_nbJet_Loose", &n_bjet_Loose);
     tree_input->SetBranchAddress("t_nJet", &n_jet);
     tree_input->SetBranchAddress("t_Jet_mass", &jet_mass);
     tree_input->SetBranchAddress("t_Jet_pt", &jet_pt);
@@ -322,9 +335,6 @@ void CreateTuple::fillOutputTree() {
 
         angles_CS = CSAngles(mu1_vector, mu2_vector, (*mu_charge)[mu1_index]);
 
-        isggHCategory();
-        isVBFCategory();
-
         mu1_pt_mass_ratio = (*mu_pt)[mu1_index] / diMuon_mass;
         mu2_pt_mass_ratio = (*mu_pt)[mu2_index] / diMuon_mass;
         mu1_eta = (*mu_eta)[mu1_index];
@@ -341,6 +351,7 @@ void CreateTuple::fillOutputTree() {
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
             pt_balance = -1;
+            pt_centrality = -1;
             min_delta_eta_diMuon_jet = 0;
             min_delta_phi_diMuon_jet = 0;
         } else if (n_jet == 1) {
@@ -352,6 +363,7 @@ void CreateTuple::fillOutputTree() {
             delta_phi_diJet = -1;
             z_zeppenfeld = 0;
             pt_balance = -1;
+            pt_centrality = -1;
             min_delta_eta_diMuon_jet = DeltaEta(diMuon_eta, jet_eta->at(0));
             min_delta_phi_diMuon_jet = DeltaPhi(diMuon_phi, jet_phi->at(0));
         } else {
@@ -366,6 +378,8 @@ void CreateTuple::fillOutputTree() {
             pt_balance = GetPtBalanceVariable(mu1_vector + mu2_vector,
                                               jet_pt, jet_phi, jet_eta,
                                               jet_mass);
+            pt_centrality = GetPtCentralityVariable(diMuon_pt, jet_pt, jet_phi,
+                                                    jet_eta, jet_mass);
             min_delta_eta_diMuon_jet =
                 TMath::Min(DeltaEta(diMuon_eta, jet_eta->at(0)),
                            DeltaEta(diMuon_eta, jet_eta->at(1)));
@@ -373,6 +387,10 @@ void CreateTuple::fillOutputTree() {
                 TMath::Min(TMath::Abs(DeltaPhi(diMuon_eta, jet_eta->at(0))),
                            TMath::Abs(DeltaPhi(diMuon_eta, jet_eta->at(1))));
         }
+
+        // Choose category
+        isggHCategory();
+        isVBFCategory();
 
         tree_output->Fill();
     }
@@ -414,23 +432,15 @@ int CreateTuple::isggHCategory() {
 
 int CreateTuple::isVBFCategory() {
 
-    if ((n_bjet == 0) && (mu_pt->size() < 3) && (elec_pt->size() == 0)) {
-        if (n_jet >= 2) {
-            if ((diJet_mass < 400) ||
-                (DeltaEta(jet_eta->at(0), jet_eta->at(1)) < 2.5)) {
-                is_VBF_category = 0;
-                return 1;
-            } else {
-                is_VBF_category = 1;
-                return 2;
-            }
-        } else {
-            is_VBF_category = 0;
-            return 3;
-        }
+    if ((n_bjet == 0) && (n_bjet_Loose < 2) && (mu_pt->size() < 3) &&
+        (elec_pt->size() == 0) && (n_jet >= 2) && leading_jet_pt > 35 &&
+        (diJet_mass > 400) && (DeltaEta(jet_eta->at(0), jet_eta->at(1)) > 2.5)) {
+        is_VBF_category = 1;
+        return 1;
+    } else {
+        is_VBF_category = 0;
+        return 2;
     }
-    is_VBF_category = 0;
-    return 4;
 }
 
 #endif // if LIB_CreateTuple_H

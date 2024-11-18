@@ -11,20 +11,25 @@ outputfile = analysis
 
 # Skip these datasets
 skip_dataset = [
-    "DYJetstoLL_Summer22",
-    "DYto2L-2Jets_Summer22",
-    "TbarQto2Q-t-channel_Summer22",
-    "TQbarto2Q-t-channel_Summer22",
-    "DYto2L-2Jets_Summer22EE",
-    "TbarQto2Q-t-channel_Summer22EE",
-    "TQbarto2Q-t-channel_Summer22EE",
-    "TbarWplustoLNu2Q_Summer23",
-    "TbarWplustoLNu2Q_Summer23BPix",
+    "DoubleMuon_2022A",
+    "DoubleMuon_2022B",
+    "Muon0_2023B",
+    "Muon1_2023B",
 ]
 skip_pattern = [
-    "Summer22",
-    "Summer22EE",
-    "_2022",
+    # "Summer22",
+    # "Summer22EE",
+    # "_2022",
+    "DYJetstoLL",
+    "DYto2L-2Jets",
+    "TWminusto4Q",
+    "TWminustoLNu2Q",
+    "Tbar",
+    "TQbar",
+    "t-channel",
+    "s-channel",
+    "ZZto2Nu2Q",
+    "WWto4Q",
 ]
 
 list_datasets = datasets_info.keys()

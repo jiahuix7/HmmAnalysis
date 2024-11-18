@@ -15,12 +15,27 @@ import shlex
 import uproot
 import sys
 
-if len(sys.argv) > 1:
-    era = sys.argv[1]
-    print("Era :", era)
-else:
-    print("Provided era as input.")
+if len(sys.argv) < 3:
+    print("Arguments missing: Channel_under_study, era, background_subset, signal_subset")
     exit()
+channel_US = sys.argv[1]
+era = sys.argv[2]
+if len(sys.argv) == 3:
+    background_subset = "Full"
+    signal_subset = "NottH"
+    print("Using default subsets:", background_subset, signal_subset)
+elif len(sys.argv) == 5:
+    background_subset = sys.argv[3]
+    signal_subset = sys.argv[4]
+else:
+    print("Include subset of background AND signal only.")
+    exit()
+
+print("Channel under study: ", channel_US)
+print("Era: ", era)
+print("Background subset: ", background_subset)
+print("Signal subset: ", signal_subset)
+
 
 plt.style.use(hep.style.CMS)
 root.gROOT.SetBatch(True)
@@ -32,31 +47,24 @@ luminosity = {
     "2022": 7.9804,
     "2022EE": 26.6717,
     "2022Combined": 34.6521,
-    "2023": 17.8,
-    "2023BPix": 9.5,
-    "Combined": 61.95,
+    "2023": 17.794,
+    "2023BPix": 9.451,
+    "2023Combined": 27.245,
+    "Combined": 61.897,
 }
 
-test_name = "mumu_vs_bkg_" + era
-plotDir = "../../plots/xgboost/"
-pwd = os.getcwd()
-data_directory = "../../root_io/skim/"
+subset_title = "B"+ background_subset + "_S" + signal_subset
 
-os.system("mkdir -p " + plotDir)
-os.system("mkdir -p " + plotDir + "training")
-os.system("mkdir -p " + plotDir + "results")
-os.system("mkdir -p " + plotDir + "scores")
-os.system("mkdir -p " + plotDir + "variables")
-os.system("mkdir -p models")
-os.system("cp ../index.php " + plotDir)
-os.system("cp ../index.php " + plotDir + "training/")
-os.system("cp ../index.php " + plotDir + "results/")
-os.system("cp ../index.php " + plotDir + "scores/")
-os.system("cp ../index.php " + plotDir + "variables/")
+test_name = channel_US +  "_" + era + "_" + subset_title
+plotDir = "../../plots/xgboost/" + channel_US + "/" + subset_title + "/"
+pwd = os.getcwd()
+data_directory = "../../root_io/skim/" + channel_US + "/"
+if channel_US == "VBF": data_directory += "merged/"
 
 
 # signal
-signal_file_name = data_directory + "signals_" + era + "_skim.root"
+signal_file_name = data_directory + "signal_" + era + "_skim" +\
+                   signal_subset + ".root"
 signal_file = root.TFile(signal_file_name)
 signal_tree = signal_file.Get("tree_output")
 signal_tree.Draw("diMuon_pt>>tmp1", "weight_no_lumi")
@@ -64,7 +72,8 @@ signal_histogram = root.gDirectory.Get("tmp1")
 signal_events = luminosity[era] * signal_histogram.Integral()
 
 # bkg
-bkg_file_name = data_directory + "background_" + era + "_skim.root"
+bkg_file_name = data_directory + "background_" + era + "_skim" +\
+                background_subset + ".root"
 bkg_file = root.TFile(bkg_file_name)
 bkg_tree = bkg_file.Get("tree_output")
 bkg_tree.Draw("diMuon_pt>>tmp2", "weight_no_lumi")
@@ -80,56 +89,54 @@ print(
     + str(signal_events / math.sqrt(bkg_events))
 )
 
+os.system("mkdir -p " + plotDir)
+os.system("mkdir -p " + plotDir + "training")
+os.system("mkdir -p " + plotDir + "results")
+os.system("mkdir -p " + plotDir + "scores")
+os.system("mkdir -p " + plotDir + "variables")
+os.system("mkdir -p models")
+os.system("mkdir -p roc")
+os.system("cp ../index.php " + plotDir)
+os.system("cp ../index.php " + plotDir + "training/")
+os.system("cp ../index.php " + plotDir + "results/")
+os.system("cp ../index.php " + plotDir + "scores/")
+os.system("cp ../index.php " + plotDir + "variables/")
+
 variables = [
-    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$", 50, -2.5, 2.5],
-    ["diMuon_pt", "diMuon_pt", r"$p_t^{\mu\mu}$", 100, 0, 250],
-    [
-        "mu1_pt_mass_ratio",
-        "mu1_pt_mass_ratio",
-        r"$p_T^{\mu 1}/m_{\mu\mu}$",
-        50,
-        0,
-        1.4,
-    ],
-    [
-        "mu2_pt_mass_ratio",
-        "mu2_pt_mass_ratio",
-        r"$p_T^{\mu 2}/m_{\mu\mu}$",
-        50,
-        0,
-        1.4,
-    ],
-    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$", 50, -2.4, 2.4],
-    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$", 50, -2.4, 2.4],
-    ["phi_CS", "phi_CS", r"$\phi_{CS}$", 50, -3.14, 3.14],
-    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$", 50, -1, 1],
-    #   Jet variables
-    ["n_jet", "n_jet", r"n jet", 8, 0, 8],
-    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$", 50, 0, 400],
-    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$", 50, -5, 5],
-    ["subleading_jet_pt", "subleading_jet_pt", r"$p_T^{j2}$", 50, 0, 400],
-    ["diJet_mass", "diJet_mass", r"$m_{jj}$ GeV", 50, 0, 400],
-    ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$", 50, -8, 8],
-    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$", 50, -3.14, 3.14],
-    ["z_zeppenfeld", "z_zeppenfeld", r"Z Zeppendfeld", 50, -8, 8],
-    [
-        "min_delta_eta_diMuon_jet",
-        "min_delta_eta_diMuon_jet",
-        r"min$\Delta\eta_{\mu\mu,j}$",
-        50,
-        -8,
-        8,
-    ],
-    [
-        "min_delta_phi_diMuon_jet",
-        "min_delta_phi_diMuon_jet",
-        r"min$\Delta\phi_{\mu\mu,j}$",
-        50,
-        -3.14,
-        3.14,
-    ],
-    ["weight_no_lumi", "weight_no_lumi", "weight_no_lumi", 100, -1.0, 1.0],
+    ["diMuon_rapidity", "diMuon_rapidity", r"$y_{\mu\mu}$"],
+    ["diMuon_pt", "diMuon_pt", r"$p_T^{\mu\mu}$ [GeV]"],
+    ["mu1_pt_mass_ratio", "mu1_pt_mass_ratio",
+     r"$p_T^{\mu 1}/m_{\mu\mu}$"],
+    ["mu2_pt_mass_ratio", "mu2_pt_mass_ratio",
+     r"$p_T^{\mu 2}/m_{\mu\mu}$"],
+    ["mu1_eta", "mu1_eta", r"$\eta_{\mu 1}$"],
+    ["mu2_eta", "mu2_eta", r"$\eta_{\mu 2}$"],
+    ["phi_CS", "phi_CS", r"$\phi_{CS}$"],
+    ["cos_theta_CS", "cos_theta_CS", r"$cos(\theta_{CS})$"],
+    # # Jet variables
+    ["n_jet", "n_jet", r"$N_{jets}$"],
+    ["leading_jet_pt", "leading_jet_pt", r"$p_T^{j1}$"],
+    ["leading_jet_eta", "leading_jet_eta", r"$\eta_{j1}$"],
+    ["subleading_jet_pt", "subleading_jet_pt", r"$p_T^{j2}$ [GeV]"],
+    ["diJet_mass", "diJet_mass", r"$m_{jj}$ [GeV]"],
+    ["delta_eta_diJet", "delta_eta_diJet", r"$\Delta\eta_{jj}$"],
+    ["delta_phi_diJet", "delta_phi_diJet", r"$\Delta\phi_{jj}$ [rad]"],
+    ["z_zeppenfeld", "z_zeppenfeld", r"$Z^{*} Zeppendfeld$"],
+    ["min_delta_eta_diMuon_jet", "min_delta_eta_diMuon_jet",
+     r"min$|\Delta\eta_{\mu\mu,j}|$"],
+    ["min_delta_phi_diMuon_jet", "min_delta_phi_diMuon_jet",
+     r"min$|\Delta\phi_{\mu\mu,j}|$ [rad]"],
 ]
+if channel_US == "VBF":
+    variables += [
+        # VBF sspecific variables
+        ["pt_balance", "pt_balance", r"$R(p_T)$"],
+        ["pt_centrality", "pt_centrality", r"$p_{T}-centrality$"],
+        ["n_SoftJet_pt2", "n_SoftJet_pt2", r"$N_{2}^{soft}$"],
+        ["HT", "HT", r"$H_{T}^{2}(soft)$"],
+    ]
+# Add weight at the end!
+variables += [["weight_no_lumi", "weight_no_lumi", "weight_no_lumi"]]
 
 print("number of variables", len(variables))
 
@@ -160,35 +167,20 @@ print("signal sample size: " + str(len(df_signal.values)))
 print("bkg sample size: " + str(len(df_bkg.values)))
 
 ###plot correlation
+correlation_vars = variables[:-1] + [["diMuon_mass", "diMuon_mass", r"$M_{\mu\mu}$ [GeV]"]]
+
 file_sig = root.TFile(signal_file_name)
 tree_sig = file_sig.Get("tree_output")
 file_bkg = root.TFile(bkg_file_name)
-tree_bkg = file_sig.Get("tree_output")
-h2_corr_sig = root.TH2F(
-    "h2_corr_sig",
-    "h2_corr_sig",
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-)
-h2_corr_bkg = root.TH2F(
-    "h2_corr_bkg",
-    "h2_corr_bkg",
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-    len(variables) - 1,
-    0,
-    len(variables) - 1,
-)
+tree_bkg = file_bkg.Get("tree_output")
+n_corr = len(correlation_vars)
+h2_corr_sig = root.TH2F("h2_corr_sig", "h2_corr_sig", n_corr, 0, n_corr, n_corr, 0, n_corr)
+h2_corr_bkg = root.TH2F("h2_corr_bkg", "h2_corr_bkg", n_corr, 0, n_corr, n_corr, 0, n_corr)
 
-for idx1 in range(len(variables) - 1):
-    for idx2 in range(len(variables) - 1):
-        tree_sig.Draw(variables[idx1][0] + ":" + variables[idx2][0] + ">>temp_sig")
-        tree_bkg.Draw(variables[idx1][0] + ":" + variables[idx2][0] + ">>temp_bkg")
+for idx1 in range(n_corr):
+    for idx2 in range(n_corr):
+        tree_sig.Draw(correlation_vars[idx1][0] + ":" + correlation_vars[idx2][0] + ">>temp_sig")
+        tree_bkg.Draw(correlation_vars[idx1][0] + ":" + correlation_vars[idx2][0] + ">>temp_bkg")
         sig_hist = root.gDirectory.Get("temp_sig")
         h2_corr_sig.SetBinContent(idx1 + 1, idx2 + 1, sig_hist.GetCorrelationFactor())
         bkg_hist = root.gDirectory.Get("temp_bkg")
@@ -197,11 +189,11 @@ for idx1 in range(len(variables) - 1):
         root.gDirectory.Delete("temp_bkg")
 h2_corr_sig.GetZaxis().SetRangeUser(-1.0, 1.0)
 h2_corr_bkg.GetZaxis().SetRangeUser(-1.0, 1.0)
-for idx in range(len(variables) - 1):
-    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, variables[idx][2])
-    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, variables[idx][2])
+for idx in range(n_corr):
+    h2_corr_sig.GetXaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_sig.GetYaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_bkg.GetXaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
+    h2_corr_bkg.GetYaxis().SetBinLabel(idx + 1, correlation_vars[idx][2])
 
 h2_corr_sig.LabelsOption("v", "X")
 h2_corr_bkg.LabelsOption("v", "X")
@@ -226,14 +218,14 @@ root.gStyle.SetNumberContours(255)
 
 h2_corr_sig.Draw("COLZTEXT")
 h2_corr_sig.SetTitle("")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.pdf")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.pdf")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.png")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.C")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_sig.C")
 h2_corr_bkg.Draw("COLZTEXT")
 h2_corr_bkg.SetTitle("")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.pdf")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.pdf")
 my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.png")
-my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.C")
+# my_canvas.SaveAs(plotDir + "variables/" + test_name + "_correlation_matrix_bkg.C")
 
 
 # split data into train and test sets
@@ -332,7 +324,7 @@ effBkg = []
 thresholds = []
 
 ctr = 0
-f_roc = open(test_name + "_roc.txt", "w")
+f_roc = open("roc/" + test_name + "_roc.txt", "w")
 
 for i in range(len(fpr)):
     if fpr[i] > 1e-5 and tpr[i] > 1e-5:
@@ -478,8 +470,8 @@ hep.cms.label(
     com="13.6",
     lumi=str(luminosity[era]),
 )
-plt.axvline(x=WP90_threshold, color="black", linestyle="--")
-plt.axvline(x=WP80_threshold, color="black")
+# plt.axvline(x=WP90_threshold, color="black", linestyle="--")
+# plt.axvline(x=WP80_threshold, color="black")
 
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_logY.pdf")
 plt.savefig(plotDir + "training/mydiscriminator_" + test_name + "_logY.png")
@@ -554,8 +546,8 @@ plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.ylabel("Signal Efficiency")
 plt.xlabel("Background Efficiency")
-plt.axhline(y=0.9, color="black", linestyle="--")
-plt.axhline(y=0.8, color="black")
+# plt.axhline(y=0.9, color="black", linestyle="--")
+# plt.axhline(y=0.8, color="black")
 # plt.text(0.5,0.1,'WP80: bkg eff = %.4f'%WP80_effBkg, fontsize=12)
 # plt.text(0.5,0.2,'WP90: bkg eff = %.4f'%WP90_effBkg, fontsize=12)
 # plt.text(0.5,0.3,'WP90: S/sqrt(B) = %.2f'%WP90_significance, fontsize=12)

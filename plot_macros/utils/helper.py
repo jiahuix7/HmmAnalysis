@@ -147,7 +147,7 @@ def clean_null_values(branches, variables, variables_dic):
         return
 
     null_value = 0
-    if variables[0] == "delta_phi_diJet":
+    if variables[0] in ["delta_phi_diJet", "pt_balance"]:
         null_value = -1
 
     bool_list = branches[variables[0]] != null_value

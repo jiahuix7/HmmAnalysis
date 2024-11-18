@@ -99,6 +99,7 @@ os.system("mkdir -p hadd/")
 
 DIR_eos = "store/user/csanmart/analyzer_HiggsMuMu"
 analysis_new_job_sender = open("condor_job_sender_missing_files.sh", "w")
+manual_hadd = ""
 for dataset in list_datasets:
     print("\n----- %s -----"%(dataset))
 
@@ -145,11 +146,12 @@ for dataset in list_datasets:
     log_path = "hadd/" + dataset + "/log"
     if hadd_ran and (len(os.listdir(out_path)) != len(os.listdir(log_path))):
         print("Hadd job ran and didn't finish. Consider running manually with:")
-        command = " > cd /eos/uscms/" + FILESDIR + "; "
+        command = "cd /eos/uscms/" + FILESDIR + "; "
         command += "hadd SumGenWeight.root HiggsMuMu_*.root"
         if os.path.exists("analyzer_HiggsMuMu/" + dataset + "_ext1"):
             command += " ../" + dataset + "_ext1/HiggsMuMu_*.root"
-        print(command)
+        print(" > " + command)
+        manual_hadd += command + "\n"
         continue
 
     skip = False
@@ -198,3 +200,10 @@ print("\n----- End -----")
 print("Run missing-runs jobs with:")
 print(" > bash condor_job_sender_missing_files.sh")
 analysis_new_job_sender.close()
+
+if manual_hadd:
+    manual_hadd_script = open("condor_manual_hadd_sender.sh", "w")
+    manual_hadd_script.write(manual_hadd)
+    manual_hadd_script.close()
+    print("Run remaining hadd sets manually:")
+    print(" > bash condor_manual_hadd_sender.sh")

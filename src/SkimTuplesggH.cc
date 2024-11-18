@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 
     gROOT->cd();
     // Open the output ROOT file and create a new TTree
-    TFile output_file("./root_io/skim/" + channel + "_" + era + "_skim.root",
+    TFile output_file("./root_io/skim/ggH/" + channel + "_" + era + "_skim.root",
                       "RECREATE");
     TTree *tree_output = tree_input->CloneTree(0); // Clone the structure only
 

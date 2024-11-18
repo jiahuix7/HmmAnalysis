@@ -33,10 +33,11 @@ TUPLE_SRC := $(SRC)/CreateTuple.cc
 TUPLE_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h $(LIB)/CreateTuple.h
 
 # Histogram sources and header
-SKIM_SRC := $(SRC)/SkimTuplesggH.cc
+SKIM_ggH_SRC := $(SRC)/SkimTuplesggH.cc
+SKIM_VBF_SRC := $(SRC)/SkimTuples_VBF.cc
 SKIM_HEADERS := $(LIB)/Run3Constants.h $(LIB)/Constants.h
 
-SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_SRC) $(TUPLE_SRC)
+SOURCES := $(ANALYZER_SRC) $(HISTOGRAM_SRC) $(SKIM_ggH_SRC) $(SKIM_VBF_SRC) $(TUPLE_SRC)
 
 
 # Object files
@@ -50,19 +51,21 @@ HISTOGRAM_OBJECTS := CreateHistograms.o
 
 TUPLE_OBJECTS := CreateTuple.o
 
-SKIM_OBJECTS := SkimTuplesggH.o
+SKIM_ggH_OBJECTS := SkimTuplesggH.o
+SKIM_VBF_OBJECTS := SkimTuples_VBF.o
 
 OBJECTS := $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(TUPLE_OBJECTS)
 
 # Executables
 ANALYZER_EXECUTABLE := $(BIN)/HmmAnalyzer
 HISTOGRAM_EXECUTABLE := $(BIN)/CreateHistograms
-SKIM_EXECUTABLE := $(BIN)/SkimTuplesggH
+SKIM_ggH_EXECUTABLE := $(BIN)/SkimTuplesggH
+SKIM_VBF_EXECUTABLE := $(BIN)/SkimTuples_VBF
 TUPLE_EXECUTABLE := $(BIN)/CreateTuple
 
 # Default target: build both executables
 .PHONY: all
-all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE) $(TUPLE_EXECUTABLE)
+all: $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_ggH_EXECUTABLE) $(SKIM_VBF_EXECUTABLE) $(TUPLE_EXECUTABLE)
 
 # Compile only the Analyzer
 .PHONY: analyzer
@@ -76,9 +79,13 @@ histogram: $(HISTOGRAM_EXECUTABLE)
 .PHONY: tuple
 tuple: $(TUPLE_EXECUTABLE)
 
-# Compile only the Skim 
+# Compile only the Skim ggH
 .PHONY: skim
-skim: $(SKIM_EXECUTABLE)
+skim: $(SKIM_ggH_EXECUTABLE)
+
+# Compile only the Skim VBF
+.PHONY: skim_vbf
+skim: $(SKIM_VBF_EXECUTABLE)
 
 # Compile all the objects
 $(OBJECTS): %.o: $(SRC)/%.cc $(LIB)/%.h
@@ -87,7 +94,12 @@ $(OBJECTS): %.o: $(SRC)/%.cc $(LIB)/%.h
 	$(CXX) $(FLAGS) -c $< -o $@
 
 # Special rule for SkimTuplesggH.o without a header file
-$(SKIM_OBJECTS): %.o: $(SRC)/%.cc
+$(SKIM_ggH_OBJECTS): %.o: $(SRC)/%.cc
+	@echo "Compiling $<..."
+	$(CXX) $(FLAGS) -c $< -o $@
+
+# Special rule for SkimTuples_VBF.o without a header file
+$(SKIM_VBF_OBJECTS): %.o: $(SRC)/%.cc
 	@echo "Compiling $<..."
 	$(CXX) $(FLAGS) -c $< -o $@
 
@@ -109,16 +121,23 @@ $(TUPLE_EXECUTABLE): $(TUPLE_OBJECTS)
 	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
 	@echo "done"
 
-# Linking for Skim tuplesj
-$(SKIM_EXECUTABLE): $(SKIM_OBJECTS)
-	@echo "Linking $(SKIM_EXECUTABLE)..."
+# Linking for Skim ggH tuples
+$(SKIM_ggH_EXECUTABLE): $(SKIM_ggH_OBJECTS)
+	@echo "Linking $(SKIM_ggH_EXECUTABLE)..."
+	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
+	@echo "done"
+
+# Linking for Skim VBF tuples
+$(SKIM_VBF_EXECUTABLE): $(SKIM_VBF_OBJECTS)
+	@echo "Linking $(SKIM_VBF_EXECUTABLE)..."
 	$(CXX) $(FLAGS) -o $@ $^ $(LIBS)
 	@echo "done"
 	
 # Specifying the object files as intermediates deletes them automatically after the build process.
-.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS)
+.INTERMEDIATE: $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_ggH_OBJECTS) $(SKIM_VBF_OBJECTS) $(TUPLE_OBJECTS)
 
 # Clean target
 .PHONY: clean
 clean:
-	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_OBJECTS) $(TUPLE_OBJECTS) $(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_EXECUTABLE) $(TUPLE_EXECUTABLE)
+	rm -f $(ANALYZER_OBJECTS) $(HISTOGRAM_OBJECTS) $(SKIM_ggH_OBJECTS) $(SKIM_VBF_OBJECTS) $(TUPLE_OBJECTS)\
+	$(ANALYZER_EXECUTABLE) $(HISTOGRAM_EXECUTABLE) $(SKIM_ggH_EXECUTABLE) $(SKIM_VBF_EXECUTABLE) $(TUPLE_EXECUTABLE)
