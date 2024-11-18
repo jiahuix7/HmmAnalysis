@@ -63,6 +63,7 @@ x_labels = {
     "HT_pt10": r"$H_{T}^{10}(soft)$",
     ## BDT_ggh
     "BDT_ggH": "BDT Output",
+    "BDT_VBF": "BDT Output",
 }
 
 """
@@ -130,6 +131,7 @@ n_bins = {
     "HT_pt10": 20,
     ## BDT_ggh
     "BDT_ggH": 50,
+    "BDT_VBF": 50,
 }
 
 """
@@ -196,6 +198,7 @@ x_range = {
     "HT_pt10": (0, 60),
     ## BDT_ggh
     "BDT_ggH": (0, 1),
+    "BDT_VBF": (0, 1),
 }
 
 y_labels = {
@@ -244,9 +247,10 @@ luminosity = {
     "2022": "7.98",
     "2022EE": "26.67",
     "2022Combined": "34.65",
-    "2023": "17.8",
-    "2023BPix": "9.5",
-    "2023Combined": "27.3",
+    "2023": "17.79",
+    "2023BPix": "9.45",
+    "2023Combined": "27.24",
+    "Combined": "61.89",
 }
 
 variables_type = {
@@ -310,5 +314,6 @@ variables_type = {
     ## BDT_ggh
     "ggH_category": [
         "BDT_ggH",
+        "BDT_VBF",
     ],
 }

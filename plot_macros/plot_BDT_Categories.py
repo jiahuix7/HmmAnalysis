@@ -8,39 +8,63 @@ import sys
 from utils.labels import luminosity, x_range, n_bins, x_labels
 from utils.helper import get_canvas, save_figure, get_histograms_ratio
 
-eras = []
-if len(sys.argv) == 1:
-    eras = ["2022", "2022EE", "2023", "2023BPix", "Combined"]
-elif len(sys.argv) == 2:
-    eras = [sys.argv[1]]
+if len(sys.argv) < 3:
+    print("Arguments missing: Channel_under_study, era, background_subset, signal_subset")
+    exit()
+channel_US = sys.argv[1]
+era_input = sys.argv[2]
+
+if "--only" in sys.argv:
+    sys.argv.remove("--only")
+    eras = [era_input]
+elif era_input == "2022":
+    eras = ["2022", "2022EE", "2022Combined"]
+elif era_input == "2023":
+    eras = ["2023", "2023BPix", "2023Combined"]
+elif era_input == "Combined":
+    eras = ["2022Combined", "2023Combined", "Combined"]
+elif era_input == "All":
+    eras = ["2022", "2022EE", "2023","2023BPix","Combined"]
 else:
-    print("Use 0 arguments for run over the all the eras or use the eras as argument.")
+    print("Set era to be one of the available sets:")
+    print(" > 2022, 2023, Combined, All")
     exit()
 
-signals = "signals"
-# signals = "ggH"
+if len(sys.argv) == 3:
+    background_subset = "Full"
+    signal_subset = "NottH"
+    print("Using default subsets:", background_subset, signal_subset)
+elif len(sys.argv) == 5:
+    background_subset = sys.argv[3]
+    signal_subset = sys.argv[4]
+else:
+    print("Include subset of background AND signal only.")
+    exit()
 
+print("Channel under study: ", channel_US)
+print("Eras: ", eras)
+print("Background subset: ", background_subset)
+print("Signal subset: ", signal_subset)
+
+subset_title = "B" + background_subset + "_S" + signal_subset
+BDTvar = "BDT_" + channel_US
+BDTscore_path = "../root_io/skim/" + channel_US + "/BDT_score/"
+N_max_iterations = 1 if channel_US == "ggH" else 2
 
 def find_bdt_categories(era, bdt_categories, bdf_cut_max=1, iteration=0):
     # print("BDF Max Cut: ", bdf_cut_max)
     plt.style.use(hep.style.CMS)
     with ur.open(
-        "../root_io/skim/background_" + era + "_skim_" + signals + ".root:tree_output"
+        BDTscore_path + "background_" + era + "_skim_" + subset_title + ".root:tree_output"
     ) as file:
         bkg_branches = file.arrays(
-            ["BDT_ggH", "weight_no_lumi", "diMuon_mass"], library="np"
+            [BDTvar, "weight_no_lumi", "diMuon_mass"], library="np"
         )
     with ur.open(
-        "../root_io/skim/"
-        + signals
-        + "_"
-        + era
-        + "_skim_"
-        + signals
-        + ".root:tree_output"
+        BDTscore_path + "signal_" + era + "_skim_" + subset_title + ".root:tree_output"
     ) as file:
         signal_branches = file.arrays(
-            ["BDT_ggH", "weight_no_lumi", "diMuon_mass"], library="np"
+            [BDTvar, "weight_no_lumi", "diMuon_mass"], library="np"
         )
 
     signal = []
@@ -56,14 +80,14 @@ def find_bdt_categories(era, bdt_categories, bdf_cut_max=1, iteration=0):
         bkg_bool_list = (
             (bkg_branches["diMuon_mass"] > 121)
             & (bkg_branches["diMuon_mass"] < 129)
-            & (bkg_branches["BDT_ggH"] > bdf_cut_min)
-            & (bkg_branches["BDT_ggH"] < bdf_cut_max)
+            & (bkg_branches[BDTvar] > bdf_cut_min)
+            & (bkg_branches[BDTvar] < bdf_cut_max)
         )
         signal_bool_list = (
             (signal_branches["diMuon_mass"] > 121)
             & (signal_branches["diMuon_mass"] < 129)
-            & (signal_branches["BDT_ggH"] > bdf_cut_min)
-            & (signal_branches["BDT_ggH"] < bdf_cut_max)
+            & (signal_branches[BDTvar] > bdf_cut_min)
+            & (signal_branches[BDTvar] < bdf_cut_max)
         )
 
         signal_events = np.sum(
@@ -129,12 +153,13 @@ def find_bdt_categories(era, bdt_categories, bdf_cut_max=1, iteration=0):
     # ax.legend(frameon=False, loc="upper right")
     ax.set_xlabel("BTD Cut")
 
-    output_directory = "../plots/ggH_category/" + signals + "/cuts/"
-    save_figure(fig, output_directory, "BDT_cuts_" + era + "_Cat" + str(iteration))
+    output_directory = "../plots/" + channel_US + "_category/BDT_categories/cuts/"
+    save_name = "BDT_cuts_" + era + "_Cat" + str(iteration) + "_" + subset_title
+    save_figure(fig, output_directory, save_name)
 
     bdt_categories.append(round(best_cut, 3))
     # if max(significance) > 0.05:
-    if iteration < 1:
+    if iteration < N_max_iterations:
         find_bdt_categories(era, bdt_categories, best_cut, iteration + 1)
 
 
@@ -147,37 +172,31 @@ def draw_bdt_categories(era):
     bdt_categories.append(1.0)
 
     print("Era: ", era)
-    print("Categroies: ", bdt_categories)
+    print("Categories: ", bdt_categories)
 
     with ur.open(
-        "../root_io/skim/background_" + era + "_skim_" + signals + ".root:tree_output"
+        BDTscore_path + "background_" + era + "_skim_" + subset_title + ".root:tree_output"
     ) as file:
         bkg_branches = file.arrays(
-            ["BDT_ggH", "weight_no_lumi", "diMuon_mass"], library="np"
+            [BDTvar, "weight_no_lumi", "diMuon_mass"], library="np"
         )
         bkg_hist, bkg_bins = np.histogram(
-            bkg_branches["BDT_ggH"],
-            bins=n_bins["BDT_ggH"],
-            range=x_range["BDT_ggH"],
+            bkg_branches[BDTvar],
+            bins=n_bins[BDTvar],
+            range=x_range[BDTvar],
             weights=float(luminosity[era]) * bkg_branches["weight_no_lumi"],
         )
 
     with ur.open(
-        "../root_io/skim/"
-        + signals
-        + "_"
-        + era
-        + "_skim_"
-        + signals
-        + ".root:tree_output"
+        BDTscore_path + "signal_" + era + "_skim_" + subset_title + ".root:tree_output"
     ) as file:
         signal_branches = file.arrays(
-            ["BDT_ggH", "weight_no_lumi", "diMuon_mass"], library="np"
+            [BDTvar, "weight_no_lumi", "diMuon_mass"], library="np"
         )
         signal_hist, signal_bins = np.histogram(
-            signal_branches["BDT_ggH"],
-            bins=n_bins["BDT_ggH"],
-            range=x_range["BDT_ggH"],
+            signal_branches[BDTvar],
+            bins=n_bins[BDTvar],
+            range=x_range[BDTvar],
             weights=float(luminosity[era]) * signal_branches["weight_no_lumi"],
         )
     fig, axs = get_canvas(True)
@@ -195,7 +214,7 @@ def draw_bdt_categories(era):
     hep.histplot(
         signal_hist / np.sum(signal_hist),
         signal_bins,
-        label="Signal (ggH)",
+        label="Signal (" + channel_US + ")",
         color="blue",
         linewidth=2,
         ax=axs[0],
@@ -246,14 +265,14 @@ def draw_bdt_categories(era):
         bkg_bool_list = (
             (bkg_branches["diMuon_mass"] > 121)
             & (bkg_branches["diMuon_mass"] < 129)
-            & (bkg_branches["BDT_ggH"] > bdt_categories[category])
-            & (bkg_branches["BDT_ggH"] < bdt_categories[category + 1])
+            & (bkg_branches[BDTvar] > bdt_categories[category])
+            & (bkg_branches[BDTvar] < bdt_categories[category + 1])
         )
         signal_bool_list = (
             (signal_branches["diMuon_mass"] > 121)
             & (signal_branches["diMuon_mass"] < 129)
-            & (signal_branches["BDT_ggH"] > bdt_categories[category])
-            & (signal_branches["BDT_ggH"] < bdt_categories[category + 1])
+            & (signal_branches[BDTvar] > bdt_categories[category])
+            & (signal_branches[BDTvar] < bdt_categories[category + 1])
         )
 
         signal_events = np.sum(
@@ -282,10 +301,11 @@ def draw_bdt_categories(era):
     axs[1].set_ylabel(r"S/$\sqrt{B}$", loc="center")
     axs[1].set_ylim(0.0, 2.000)
     axs[1].set_xlim(signal_bins[0], signal_bins[-1])
-    axs[1].set_xlabel(x_labels["BDT_ggH"])
+    axs[1].set_xlabel(x_labels[BDTvar])
 
-    output_directory = "../plots/ggH_category/" + signals + "/"
-    save_figure(fig, output_directory, "BDT_output_" + era)
+    output_directory = "../plots/" + channel_US + "_category/BDT_categories/"
+    save_name = "BDT_output_" + era + "_" + subset_title
+    save_figure(fig, output_directory, save_name)
 
 
 for era in eras:
