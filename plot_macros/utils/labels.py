@@ -21,8 +21,8 @@ x_labels = {
     "diMuon_rapidity": r"$y_{\mu\mu}$",
     "diMuon_pt": r"$p_T^{\mu\mu}$ [GeV]",
     "diMuon_mass": r"$m_{\mu\mu}$ [GeV]",
-    "diuon_mass_full_range": r"$_{\mu\mu}$ [GeV]",
-    "diuon_phi": r"$\phi_{\mu\mu}$ [rad]",
+    "diMuon_mass_full_range": r"$m_{\mu\mu}$ [GeV]",
+    "diMuon_phi": r"$\phi_{\mu\mu}$ [rad]",
     "diMuon_eta": r"$\eta_{\mu\mu}$ ",
     ## Muon variables
     "mu1_pt_mass_ratio": r"$p_T^{\mu 1}/m_{\mu\mu}$",
