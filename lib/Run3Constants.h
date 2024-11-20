@@ -19,36 +19,54 @@ const std::map<TString, float> CROSS_SECTION = {
     //********************//
     //     Background     //
     //********************//
-    // TT
-    {"TTto2L2Nu", 86.61},
-    {"TTtoLNu2Q", 358.61},
-    {"TWminusto2L2Nu", -1},
-
-    // DY
-    //{"DYJetstoLL", 6244.8},
+    // ***** DY ***** //
+    // {"DYJetstoLL", 6244.8},
     {"DYto2L-2Jets", 6244.8},
     {"DY50to120", 2219.},
     {"DY120to200", 21.65},
-    // Diboson
+    // ***** EWK ***** //
+    {"EWK_2L2J", 1.410},
+    // ***** TT ***** //
+    {"TTto2L2Nu", 86.61},
+    {"TTtoLNu2Q", 358.61},
+    {"TWminusto2L2Nu", 35.99},
+    // {"TWminusto4Q", 35.99},
+    {"TWminustoLNu2Q", 35.99},
+    {"TbarWplusto2L2Nu", 36.05},
+    // {"TbarWplusto4Q", -1},
+    {"TbarWplustoLNu2Q", 36.05},
+    // {"TbarQto2Q-t-channel", 78.56},
+    {"TbarQtoLNu-t-channel", 78.56},
+    // {"TQbarto2Q-t-channel", -1},
+    {"TQbartoLNu-t-channel", 130.0},
+    {"TBbartoLplusNuBbar-s-channel", 2.278},
+    {"TbarBtoLminusNuB-s-channel", 1.430},
+    // ***** Diboson ***** //
     {"WWto2L2Nu", 12.178},
-    {"WWto4Q", -1},
-    {"WWtoLNu2Q", -1},
+    // {"WWto4Q", -1},
+    // {"WWtoLNu2Q", -1},
     {"WZto2L2Q", 6.321},
     {"WZto3LNu", 4.658},
-    {"WZtoLNu2Q", -1},
+    // {"WZtoLNu2Q", 15.87},
     {"ZZto2L2Nu", 0.601},
     {"ZZto2L2Q", 3.696},
     {"ZZto4L", 1.325},
-    //  EWK
-    {"EWK_2L2J", 1.410},
-    // TriBoson
+    // ***** TriBoson ***** //
+    {"ZZZ", 0.01591},
+    {"WZZ", 0.06206},
+    {"WWZ_4F", 0.1851},
     {"WWW_4F", 0.2086},
+
     //********************//
     //       Signal       //
     //********************//
     {"ggH", 52.23 * H_TO_MUMU_BRANCHING_RATIO},
     {"VBF", 4.078 * H_TO_MUMU_BRANCHING_RATIO},
     {"ttH", 0.57 * H_TO_MUMU_BRANCHING_RATIO},
+    {"WplusH", 0.8889 * H_TO_MUMU_BRANCHING_RATIO},
+    {"WminusH", 0.5677 * H_TO_MUMU_BRANCHING_RATIO},
+    {"ZH", 0.9439 * H_TO_MUMU_BRANCHING_RATIO},
+
     //********************//
     //  Dummy data value  //
     //********************//
