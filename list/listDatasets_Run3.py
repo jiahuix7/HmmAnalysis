@@ -162,6 +162,12 @@ datasets_info = {
     "WWtoLNu2Q_Summer22_ext1": ["F", 2, "2022", "MC_background",
             "/WWtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5_ext1-v2/NANOAODSIM"],
     # TriBoson Backgrounds
+    "ZZZ_Summer22": ["F", 2, "2022", "MC_background",
+            "/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM"],
+    "WZZ_Summer22": ["F", 2, "2022", "MC_background",
+            "/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM"],
+    "WWZ_4F_Summer22": ["F", 2, "2022", "MC_background",
+            "/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM"],
     "WWW_4F_Summer22": ["F", 2, "2022", "MC_background",
             "/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v2/NANOAODSIM"],
     ####################################################################################################
@@ -262,6 +268,12 @@ datasets_info = {
     "WWtoLNu2Q_Summer22EE_ext1": ["F", 2, "2022EE", "MC_background",
             "/WWtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6_ext1-v2/NANOAODSIM"],
     # TriBoson Backgrounds
+    "ZZZ_Summer22EE": ["F", 2, "2022EE", "MC_background",
+            "/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM"],
+    "WZZ_Summer22EE": ["F", 2, "2022EE", "MC_background",
+            "/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM"],
+    "WWZ_4F_Summer22EE": ["F", 2, "2022EE", "MC_background",
+            "/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM"],
     "WWW_4F_Summer22EE": ["F", 2, "2022EE", "MC_background",
             "/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v2/NANOAODSIM"],
 
@@ -320,6 +332,12 @@ datasets_info = {
     "WWtoLNu2Q_Summer23": ["F", 2, "2023", "MC_background",
             "/WWtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v3/NANOAODSIM"],
     # TriBoson Backgrounds
+    "ZZZ_Summer23": ["F", 2, "2023", "MC_background",
+            "/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM"],
+    "WZZ_Summer23": ["F", 2, "2023", "MC_background",
+            "/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM"],
+    "WWZ_4F_Summer23": ["F", 2, "2023", "MC_background",
+            "/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM"],
     "WWW_4F_Summer23": ["F", 2, "2023", "MC_background",
             "/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM"],
     ####################################################################################################
@@ -378,6 +396,12 @@ datasets_info = {
     "WWtoLNu2Q_Summer23BPix": ["F", 2, "2023BPix", "MC_background",
             "/WWtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM"],
     # TriBoson Backgrounds
+    "ZZZ_Summer23BPix": ["F", 2, "2023BPix", "MC_background",
+            "/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM"],
+    "WZZ_Summer23BPix": ["F", 2, "2023BPix", "MC_background",
+            "/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM"],
+    "WWZ_4F_Summer23BPix": ["F", 2, "2023BPix", "MC_background",
+            "/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v3/NANOAODSIM"],
     "WWW_4F_Summer23BPix": ["F", 2, "2023BPix", "MC_background",
             "/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v2-v2/NANOAODSIM"],
 
@@ -390,6 +414,12 @@ datasets_info = {
             "/VBFHto2Mu_M-125_TuneCP5_withDipoleRecoil_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM"],
     "ttH_Summer22": ["F", 2, "2022", "MC_signal",
             "/TTH_Hto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM"],
+    "WplusH_Summer22": ["F", 2, "2022", "MC_signal",
+            "/WplusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM"],
+    "WminusH_Summer22": ["F", 2, "2022", "MC_signal",
+            "/WminusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM"],
+    "ZH_Summer22": ["F", 2, "2022", "MC_signal",
+            "/ZH_Hto2Mu_ZtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v3/NANOAODSIM"],
     ####################################################################################################
     # 2022EE Simulations Signal
     ####################################################################################################
@@ -399,6 +429,12 @@ datasets_info = {
             "/VBFHto2Mu_M-125_TuneCP5_withDipoleRecoil_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM"],
     "ttH_Summer22EE": ["F", 2, "2022EE", "MC_signal",
             "/TTH_Hto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM"],
+    "WplusH_Summer22EE": ["F", 2, "2022EE", "MC_signal",
+            "/WplusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM"],
+    "WminusH_Summer22EE": ["F", 2, "2022EE", "MC_signal",
+            "/WminusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM"],
+    "ZH_Summer22EE": ["F", 2, "2022EE", "MC_signal",
+            "/ZH_Hto2Mu_ZtoAll_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22EENanoAODv12-130X_mcRun3_2022_realistic_postEE_v6-v3/NANOAODSIM"],
 
     ####################################################################################################
     # 2023 Simulations Signal
@@ -409,6 +445,12 @@ datasets_info = {
             "/VBFHto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM"],
     "ttH_Summer23": ["F", 2, "2023", "MC_signal",
             "/TTH_Hto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM"],
+    "WplusH_Summer23": ["F", 2, "2023", "MC_signal",
+            "/WplusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM"],
+    "WminusH_Summer23": ["F", 2, "2023", "MC_signal",
+            "/WminusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM"],
+    "ZH_Summer23": ["F", 2, "2023", "MC_signal",
+            "/ZH_Hto2Mu_ZtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v15-v2/NANOAODSIM"],
     ####################################################################################################
     # 2023BPix Simulations Signal
     ####################################################################################################
@@ -418,4 +460,10 @@ datasets_info = {
             "/VBFHto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM"],
     "ttH_Summer23BPix": ["F", 2, "2023BPix", "MC_signal",
             "/TTH_Hto2Mu_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM"],
+    "WplusH_Summer23BPix": ["F", 2, "2023BPix", "MC_signal",
+            "/WplusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM"],
+    "WminusH_Summer23BPix": ["F", 2, "2023BPix", "MC_signal",
+            "/WminusH_Hto2Mu_WtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM"],
+    "ZH_Summer23BPix": ["F", 2, "2023BPix", "MC_signal",
+            "/ZH_Hto2Mu_ZtoAll_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23BPixNanoAODv12-130X_mcRun3_2023_realistic_postBPix_v6-v2/NANOAODSIM"],
 }
