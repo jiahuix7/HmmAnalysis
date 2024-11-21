@@ -20,15 +20,12 @@ skip_pattern = [
     ## Unwanted sets
     "DYJetstoLL",
     "DYto2L-2Jets",
-    ## Sets with missing cross section (TODO: ADD CROSS SECTIONS!)
-    "TWminusto4Q",
-    "TWminustoLNu2Q",
-    "Tbar",
-    "TQbar",
-    "t-channel",
-    "s-channel",
+    "4Q",
+    "TbarWplustoLNu2Q",
+    "2Q-t-channel",
+    "WZtoLNu2Q",
     "ZZto2Nu2Q",
-    "WWto4Q",
+    "WWtoLNu2Q",
 ]
 
 list_datasets = datasets_info.keys()
@@ -37,6 +34,15 @@ list_datasets = datasets_info.keys()
 #     "DY120to200_Summer22",
 #     "DY50to120_Summer22",
 # ]
+
+# Arguments
+if (len(sys.argv) == 1):
+    recreate_hadded_file = False
+elif (len(sys.argv) > 2) or (sys.argv[1] not in ["T", "F"]):
+    print("One argument is required! Add T or F if you want to recreate the hadded file")
+    exit()
+else:
+    recreate_hadded_file = True if (sys.argv[1] == "T") else False
 
 # cmsswReleaseVersion = "CMSSW_10_6_5"
 CMSSW_BASE_DIR = os.getenv('CMSSW_BASE')
@@ -59,7 +65,6 @@ for dataset_name in list_datasets:
 
     isData, _, era, type_info, _ = datasets_info[dataset_name]
     channel = dataset_name.split("_Summer")[0]
-    # TODO: Check if this applies to all datasets! Especially those with t-channel
 
     EOS_BASE_DIR = "/store/user/csanmart/analyzer_HiggsMuMu/"
     INPUT_FILE = EOS_BASE_DIR + type_info + "/%s/"%(dataset_name) + "SumGenWeight.root"
@@ -70,9 +75,26 @@ for dataset_name in list_datasets:
     OUTPUT_DIR = EOS_BASE_DIR + "tuples/"
     os.system("xrdfs root://cmseos.fnal.gov mkdir -p "+ OUTPUT_DIR)
     file_name = channel + "_" + era + "_tuples.root"
-    if os.path.exists("/eos/uscms/" + OUTPUT_DIR + file_name):
-        print("Tuples file already exists. Skipping!")
-        continue
+    file_copy_name = channel + "_" + era + "_tuples_v1.root"
+
+    hadd_exists = os.path.exists("/eos/uscms/" + OUTPUT_DIR + file_name)
+    # print("Exists?", hadd_exists)
+    hadd_copy_exists = os.path.exists("/eos/uscms/" + OUTPUT_DIR + file_copy_name)
+    if hadd_exists:
+        print("Tuples file already exists.")
+        if recreate_hadded_file:
+            if hadd_copy_exists:
+                print("A tuple safe copy already exists! Overwriting.")
+                comm = "xrdfs root://cmseos.fnal.gov rm /"
+                comm+= OUTPUT_DIR + file_name
+                os.system(comm)
+            print("Creating new tuple safe copy!")
+            comm = "xrdfs root://cmseos.fnal.gov mv /" + OUTPUT_DIR + file_name
+            comm+= " /" + OUTPUT_DIR + file_copy_name
+            os.system(comm)
+        else:
+            print("Skipping.")
+            continue
 
     JOB_DIR = CONDOR_BASE_DIR + "ctuples/" + "%s/"%(dataset_name)
 
