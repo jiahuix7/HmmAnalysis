@@ -22,6 +22,14 @@ Data:
 /mnt/hadoop/store/data/Run2018C/SingleMuon/NANOAOD/Nano14Dec2018-v1
 /mnt/hadoop/store/data/Run2018D/SingleMuon/NANOAOD/22Jan2019_Nano14Dec2018-v1
 
+# Correction types
+btagSF:
+
+leptonSF:
+
+pileup:
+
+Rocco:
 
 # Corrections plottings
 ```bash
