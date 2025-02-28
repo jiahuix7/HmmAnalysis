@@ -5,6 +5,7 @@ This code is based in the Run2 Anaylis https://github.com/irenedutta23/HmmAna
 ```
 cmsrel CMSSW_14_0_14
 cd CMSSW_14_0_14/src
+cmsenv
 git clone git@github.com:elisejsledge/HmmAnalysis.git
 cd HmmAnalysis
 make -j4
