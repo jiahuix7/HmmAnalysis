@@ -1,4 +1,4 @@
-This code is based in the Run2 Anaylis https://github.com/irenedutta23/HmmAna
+This code is based in the Run2 Analysis https://github.com/irenedutta23/HmmAna
 
 ## Setup
 
