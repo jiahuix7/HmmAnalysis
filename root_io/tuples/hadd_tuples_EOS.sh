@@ -1,5 +1,5 @@
 
-EOS_PATH="/eos/uscms/store/user/csanmart/analyzer_HiggsMuMu/tuples/"
+EOS_PATH="/eos/uscms/store/group/lpchmumu/esledge/analyzer_HiggsMuMu/tuples/"
 ##############  2022  ##############
 # hadd Data_2022_tuples.root ${EOS_PATH}DoubleMuon_2022C_2022_tuples.root ${EOS_PATH}Muon_2022C_2022_tuples.root ${EOS_PATH}Muon_2022D_2022_tuples.root
 
