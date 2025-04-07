@@ -464,15 +464,15 @@ void HmmAnalyzer::EventLoop() {
             // t_Electron_mvaFall17noIso_WPL->push_back(Electron_mvaFall17V2noIso_WPL[i]);
         }
         // if (year != "2017") {
-        t_MET_pt = MET_pt;
-        t_MET_phi = MET_phi;
-        t_MET_sumEt = MET_sumEt;
+        //t_MET_pt = MET_pt
+        //t_MET_phi = MET_phi;
+        //t_MET_sumEt = MET_sumEt;
         //}
         for (int i = 0; i < nFatJet; i++) {
             t_FatJet_area->push_back(FatJet_area[i]);
             // t_FatJet_btagCMVA->push_back(FatJet_btagCMVA[i]);
             // t_FatJet_btagCSVV2->push_back(FatJet_btagCSVV2[i]);
-            t_FatJet_btagDeepB->push_back(FatJet_btagDeepB[i]);
+            //t_FatJet_btagDeepB->push_back(FatJet_btagDeepB[i]);
             t_FatJet_eta->push_back(FatJet_eta[i]);
             t_FatJet_mass->push_back(FatJet_mass[i]);
             t_FatJet_msoftdrop->push_back(FatJet_msoftdrop[i]);

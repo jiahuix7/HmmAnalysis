@@ -163,11 +163,11 @@ public :
    Short_t         FatJet_electronIdx3SJ[3];   //[nFatJet]
    Short_t         FatJet_muonIdx3SJ[3];   //[nFatJet]
    Float_t         FatJet_area[3];   //[nFatJet]
-   Float_t         FatJet_btagDDBvLV2[3];   //[nFatJet]
-   Float_t         FatJet_btagDDCvBV2[3];   //[nFatJet]
-   Float_t         FatJet_btagDDCvLV2[3];   //[nFatJet]
-   Float_t         FatJet_btagDeepB[3];   //[nFatJet]
-   Float_t         FatJet_btagHbb[3];   //[nFatJet]
+   //Float_t         FatJet_btagDDBvLV2[3];   //[nFatJet]
+   //Float_t         FatJet_btagDDCvBV2[3];   //[nFatJet]
+   //Float_t         FatJet_btagDDCvLV2[3];   //[nFatJet]
+   //Float_t         FatJet_btagDeepB[3];   //[nFatJet]
+   //Float_t         FatJet_btagHbb[3];   //[nFatJet]
    Float_t         FatJet_eta[3];   //[nFatJet]
    Float_t         FatJet_mass[3];   //[nFatJet]
    Float_t         FatJet_msoftdrop[3];   //[nFatJet]
@@ -379,16 +379,16 @@ public :
    // Float_t         LowPtElectron_unbiased[5];   //[nLowPtElectron]
    Float_t         GenMET_phi;
    Float_t         GenMET_pt;
-   Float_t         MET_MetUnclustEnUpDeltaX;
-   Float_t         MET_MetUnclustEnUpDeltaY;
-   Float_t         MET_covXX;
-   Float_t         MET_covXY;
-   Float_t         MET_covYY;
-   Float_t         MET_phi;
-   Float_t         MET_pt;
-   Float_t         MET_significance;
-   Float_t         MET_sumEt;
-   Float_t         MET_sumPtUnclustered;
+   //Float_t         MET_MetUnclustEnUpDeltaX;
+   //Float_t         MET_MetUnclustEnUpDeltaY;
+   //Float_t         MET_covXX;
+   //Float_t         MET_covXY;
+   //Float_t         MET_covYY;
+   //Float_t         MET_phi;
+   //Float_t         MET_pt;
+   //Float_t         MET_significance;
+   //Float_t         MET_sumEt;
+   //Float_t         MET_sumPtUnclustered;
    Int_t           nMuon;
    UChar_t         Muon_highPtId[6];   //[nMuon]
    Bool_t          Muon_highPurity[6];   //[nMuon]
@@ -501,23 +501,23 @@ public :
    Float_t         Pileup_pudensity;
    Float_t         Pileup_gpudensity;
    Float_t         PuppiMET_phi;
-   Float_t         PuppiMET_phiJERDown;
-   Float_t         PuppiMET_phiJERUp;
-   Float_t         PuppiMET_phiJESDown;
-   Float_t         PuppiMET_phiJESUp;
+   //Float_t         PuppiMET_phiJERDown;
+   //Float_t         PuppiMET_phiJERUp;
+   //Float_t         PuppiMET_phiJESDown;
+   //Float_t         PuppiMET_phiJESUp;
    Float_t         PuppiMET_phiUnclusteredDown;
    Float_t         PuppiMET_phiUnclusteredUp;
    Float_t         PuppiMET_pt;
-   Float_t         PuppiMET_ptJERDown;
-   Float_t         PuppiMET_ptJERUp;
-   Float_t         PuppiMET_ptJESDown;
-   Float_t         PuppiMET_ptJESUp;
+   //Float_t         PuppiMET_ptJERDown;
+   //Float_t         PuppiMET_ptJERUp;
+   //Float_t         PuppiMET_ptJESDown;
+   //Float_t         PuppiMET_ptJESUp;
    Float_t         PuppiMET_ptUnclusteredDown;
    Float_t         PuppiMET_ptUnclusteredUp;
    Float_t         PuppiMET_sumEt;
-   Float_t         RawMET_phi;
-   Float_t         RawMET_pt;
-   Float_t         RawMET_sumEt;
+   //Float_t         RawMET_phi;
+   //Float_t         RawMET_pt;
+   //Float_t         RawMET_sumEt;
    Float_t         RawPuppiMET_phi;
    Float_t         RawPuppiMET_pt;
    Float_t         RawPuppiMET_sumEt;
@@ -614,9 +614,9 @@ public :
    Float_t         Tau_rawPNetVSe[7];   //[nTau]
    Float_t         Tau_rawPNetVSjet[7];   //[nTau]
    Float_t         Tau_rawPNetVSmu[7];   //[nTau]
-   Float_t         TkMET_phi;
-   Float_t         TkMET_pt;
-   Float_t         TkMET_sumEt;
+   //Float_t         TkMET_phi;
+   //Float_t         TkMET_pt;
+   //Float_t         TkMET_sumEt;
    Int_t           nTrigObj;
    Short_t         TrigObj_l1charge[52];   //[nTrigObj]
    UShort_t        TrigObj_id[52];   //[nTrigObj]
@@ -2005,11 +2005,11 @@ public :
    TBranch        *b_FatJet_electronIdx3SJ;   //!
    TBranch        *b_FatJet_muonIdx3SJ;   //!
    TBranch        *b_FatJet_area;   //!
-   TBranch        *b_FatJet_btagDDBvLV2;   //!
-   TBranch        *b_FatJet_btagDDCvBV2;   //!
-   TBranch        *b_FatJet_btagDDCvLV2;   //!
-   TBranch        *b_FatJet_btagDeepB;   //!
-   TBranch        *b_FatJet_btagHbb;   //!
+   //TBranch        *b_FatJet_btagDDBvLV2;   //!
+   //TBranch        *b_FatJet_btagDDCvBV2;   //!
+   //TBranch        *b_FatJet_btagDDCvLV2;   //!
+   //TBranch        *b_FatJet_btagDeepB;   //!
+   //TBranch        *b_FatJet_btagHbb;   //!
    TBranch        *b_FatJet_eta;   //!
    TBranch        *b_FatJet_mass;   //!
    TBranch        *b_FatJet_msoftdrop;   //!
@@ -2221,16 +2221,16 @@ public :
    // TBranch        *b_LowPtElectron_unbiased;   //!
    TBranch        *b_GenMET_phi;   //!
    TBranch        *b_GenMET_pt;   //!
-   TBranch        *b_MET_MetUnclustEnUpDeltaX;   //!
-   TBranch        *b_MET_MetUnclustEnUpDeltaY;   //!
-   TBranch        *b_MET_covXX;   //!
-   TBranch        *b_MET_covXY;   //!
-   TBranch        *b_MET_covYY;   //!
-   TBranch        *b_MET_phi;   //!
-   TBranch        *b_MET_pt;   //!
-   TBranch        *b_MET_significance;   //!
-   TBranch        *b_MET_sumEt;   //!
-   TBranch        *b_MET_sumPtUnclustered;   //!
+   //TBranch        *b_MET_MetUnclustEnUpDeltaX;   //!
+   //TBranch        *b_MET_MetUnclustEnUpDeltaY;   //!
+   //TBranch        *b_MET_covXX;   //!
+   //TBranch        *b_MET_covXY;   //!
+   //TBranch        *b_MET_covYY;   //!
+   //TBranch        *b_MET_phi;   //!
+   //TBranch        *b_MET_pt;   //!
+   //TBranch        *b_MET_significance;   //!
+   //TBranch        *b_MET_sumEt;   //!
+   //TBranch        *b_MET_sumPtUnclustered;   //!
    TBranch        *b_nMuon;   //!
    TBranch        *b_Muon_highPtId;   //!
    TBranch        *b_Muon_highPurity;   //!
@@ -2343,23 +2343,23 @@ public :
    TBranch        *b_Pileup_pudensity;   //!
    TBranch        *b_Pileup_gpudensity;   //!
    TBranch        *b_PuppiMET_phi;   //!
-   TBranch        *b_PuppiMET_phiJERDown;   //!
-   TBranch        *b_PuppiMET_phiJERUp;   //!
-   TBranch        *b_PuppiMET_phiJESDown;   //!
-   TBranch        *b_PuppiMET_phiJESUp;   //!
+   //TBranch        *b_PuppiMET_phiJERDown;   //!
+   //TBranch        *b_PuppiMET_phiJERUp;   //!
+   //TBranch        *b_PuppiMET_phiJESDown;   //!
+   //TBranch        *b_PuppiMET_phiJESUp;   //!
    TBranch        *b_PuppiMET_phiUnclusteredDown;   //!
    TBranch        *b_PuppiMET_phiUnclusteredUp;   //!
    TBranch        *b_PuppiMET_pt;   //!
-   TBranch        *b_PuppiMET_ptJERDown;   //!
-   TBranch        *b_PuppiMET_ptJERUp;   //!
-   TBranch        *b_PuppiMET_ptJESDown;   //!
-   TBranch        *b_PuppiMET_ptJESUp;   //!
+   //TBranch        *b_PuppiMET_ptJERDown;   //!
+   //TBranch        *b_PuppiMET_ptJERUp;   //!
+   //TBranch        *b_PuppiMET_ptJESDown;   //!
+   //TBranch        *b_PuppiMET_ptJESUp;   //!
    TBranch        *b_PuppiMET_ptUnclusteredDown;   //!
    TBranch        *b_PuppiMET_ptUnclusteredUp;   //!
    TBranch        *b_PuppiMET_sumEt;   //!
-   TBranch        *b_RawMET_phi;   //!
-   TBranch        *b_RawMET_pt;   //!
-   TBranch        *b_RawMET_sumEt;   //!
+   //TBranch        *b_RawMET_phi;   //!
+   //TBranch        *b_RawMET_pt;   //!
+   //TBranch        *b_RawMET_sumEt;   //!
    TBranch        *b_RawPuppiMET_phi;   //!
    TBranch        *b_RawPuppiMET_pt;   //!
    TBranch        *b_RawPuppiMET_sumEt;   //!
@@ -2456,9 +2456,9 @@ public :
    TBranch        *b_Tau_rawPNetVSe;   //!
    TBranch        *b_Tau_rawPNetVSjet;   //!
    TBranch        *b_Tau_rawPNetVSmu;   //!
-   TBranch        *b_TkMET_phi;   //!
-   TBranch        *b_TkMET_pt;   //!
-   TBranch        *b_TkMET_sumEt;   //!
+   //TBranch        *b_TkMET_phi;   //!
+   //TBranch        *b_TkMET_pt;   //!
+   //TBranch        *b_TkMET_sumEt;   //!
    TBranch        *b_nTrigObj;   //!
    TBranch        *b_TrigObj_l1charge;   //!
    TBranch        *b_TrigObj_id;   //!
@@ -3859,11 +3859,11 @@ void MainEvent::Init(TTree *tree)
    fChain->SetBranchAddress("FatJet_electronIdx3SJ", FatJet_electronIdx3SJ, &b_FatJet_electronIdx3SJ);
    fChain->SetBranchAddress("FatJet_muonIdx3SJ", FatJet_muonIdx3SJ, &b_FatJet_muonIdx3SJ);
    fChain->SetBranchAddress("FatJet_area", FatJet_area, &b_FatJet_area);
-   fChain->SetBranchAddress("FatJet_btagDDBvLV2", FatJet_btagDDBvLV2, &b_FatJet_btagDDBvLV2);
-   fChain->SetBranchAddress("FatJet_btagDDCvBV2", FatJet_btagDDCvBV2, &b_FatJet_btagDDCvBV2);
-   fChain->SetBranchAddress("FatJet_btagDDCvLV2", FatJet_btagDDCvLV2, &b_FatJet_btagDDCvLV2);
-   fChain->SetBranchAddress("FatJet_btagDeepB", FatJet_btagDeepB, &b_FatJet_btagDeepB);
-   fChain->SetBranchAddress("FatJet_btagHbb", FatJet_btagHbb, &b_FatJet_btagHbb);
+   //fChain->SetBranchAddress("FatJet_btagDDBvLV2", FatJet_btagDDBvLV2, &b_FatJet_btagDDBvLV2);
+   //fChain->SetBranchAddress("FatJet_btagDDCvBV2", FatJet_btagDDCvBV2, &b_FatJet_btagDDCvBV2);
+   //fChain->SetBranchAddress("FatJet_btagDDCvLV2", FatJet_btagDDCvLV2, &b_FatJet_btagDDCvLV2);
+   //fChain->SetBranchAddress("FatJet_btagDeepB", FatJet_btagDeepB, &b_FatJet_btagDeepB);
+   //fChain->SetBranchAddress("FatJet_btagHbb", FatJet_btagHbb, &b_FatJet_btagHbb);
    fChain->SetBranchAddress("FatJet_eta", FatJet_eta, &b_FatJet_eta);
    fChain->SetBranchAddress("FatJet_mass", FatJet_mass, &b_FatJet_mass);
    fChain->SetBranchAddress("FatJet_msoftdrop", FatJet_msoftdrop, &b_FatJet_msoftdrop);
@@ -3993,16 +3993,16 @@ void MainEvent::Init(TTree *tree)
    // fChain->SetBranchAddress("LowPtElectron_scEtOverPt", LowPtElectron_scEtOverPt, &b_LowPtElectron_scEtOverPt);
    // fChain->SetBranchAddress("LowPtElectron_sieie", LowPtElectron_sieie, &b_LowPtElectron_sieie);
    // fChain->SetBranchAddress("LowPtElectron_unbiased", LowPtElectron_unbiased, &b_LowPtElectron_unbiased);
-   fChain->SetBranchAddress("MET_MetUnclustEnUpDeltaX", &MET_MetUnclustEnUpDeltaX, &b_MET_MetUnclustEnUpDeltaX);
-   fChain->SetBranchAddress("MET_MetUnclustEnUpDeltaY", &MET_MetUnclustEnUpDeltaY, &b_MET_MetUnclustEnUpDeltaY);
-   fChain->SetBranchAddress("MET_covXX", &MET_covXX, &b_MET_covXX);
-   fChain->SetBranchAddress("MET_covXY", &MET_covXY, &b_MET_covXY);
-   fChain->SetBranchAddress("MET_covYY", &MET_covYY, &b_MET_covYY);
-   fChain->SetBranchAddress("MET_phi", &MET_phi, &b_MET_phi);
-   fChain->SetBranchAddress("MET_pt", &MET_pt, &b_MET_pt);
-   fChain->SetBranchAddress("MET_significance", &MET_significance, &b_MET_significance);
-   fChain->SetBranchAddress("MET_sumEt", &MET_sumEt, &b_MET_sumEt);
-   fChain->SetBranchAddress("MET_sumPtUnclustered", &MET_sumPtUnclustered, &b_MET_sumPtUnclustered);
+   //fChain->SetBranchAddress("MET_MetUnclustEnUpDeltaX", &MET_MetUnclustEnUpDeltaX, &b_MET_MetUnclustEnUpDeltaX);
+   //fChain->SetBranchAddress("MET_MetUnclustEnUpDeltaY", &MET_MetUnclustEnUpDeltaY, &b_MET_MetUnclustEnUpDeltaY);
+   //fChain->SetBranchAddress("MET_covXX", &MET_covXX, &b_MET_covXX);
+   //fChain->SetBranchAddress("MET_covXY", &MET_covXY, &b_MET_covXY);
+   //fChain->SetBranchAddress("MET_covYY", &MET_covYY, &b_MET_covYY);
+   //fChain->SetBranchAddress("MET_phi", &MET_phi, &b_MET_phi);
+   //fChain->SetBranchAddress("MET_pt", &MET_pt, &b_MET_pt);
+   //fChain->SetBranchAddress("MET_significance", &MET_significance, &b_MET_significance);
+   //fChain->SetBranchAddress("MET_sumEt", &MET_sumEt, &b_MET_sumEt);
+   //fChain->SetBranchAddress("MET_sumPtUnclustered", &MET_sumPtUnclustered, &b_MET_sumPtUnclustered);
    fChain->SetBranchAddress("nMuon", &nMuon, &b_nMuon);
    fChain->SetBranchAddress("Muon_highPtId", Muon_highPtId, &b_Muon_highPtId);
    fChain->SetBranchAddress("Muon_highPurity", Muon_highPurity, &b_Muon_highPurity);
@@ -4109,23 +4109,23 @@ void MainEvent::Init(TTree *tree)
    // fChain->SetBranchAddress("Photon_y_calo", Photon_y_calo, &b_Photon_y_calo);
    // fChain->SetBranchAddress("Photon_z_calo", Photon_z_calo, &b_Photon_z_calo);
    fChain->SetBranchAddress("PuppiMET_phi", &PuppiMET_phi, &b_PuppiMET_phi);
-   fChain->SetBranchAddress("PuppiMET_phiJERDown", &PuppiMET_phiJERDown, &b_PuppiMET_phiJERDown);
-   fChain->SetBranchAddress("PuppiMET_phiJERUp", &PuppiMET_phiJERUp, &b_PuppiMET_phiJERUp);
-   fChain->SetBranchAddress("PuppiMET_phiJESDown", &PuppiMET_phiJESDown, &b_PuppiMET_phiJESDown);
-   fChain->SetBranchAddress("PuppiMET_phiJESUp", &PuppiMET_phiJESUp, &b_PuppiMET_phiJESUp);
+   //fChain->SetBranchAddress("PuppiMET_phiJERDown", &PuppiMET_phiJERDown, &b_PuppiMET_phiJERDown);
+   //fChain->SetBranchAddress("PuppiMET_phiJERUp", &PuppiMET_phiJERUp, &b_PuppiMET_phiJERUp);
+   //fChain->SetBranchAddress("PuppiMET_phiJESDown", &PuppiMET_phiJESDown, &b_PuppiMET_phiJESDown);
+   //fChain->SetBranchAddress("PuppiMET_phiJESUp", &PuppiMET_phiJESUp, &b_PuppiMET_phiJESUp);
    fChain->SetBranchAddress("PuppiMET_phiUnclusteredDown", &PuppiMET_phiUnclusteredDown, &b_PuppiMET_phiUnclusteredDown);
    fChain->SetBranchAddress("PuppiMET_phiUnclusteredUp", &PuppiMET_phiUnclusteredUp, &b_PuppiMET_phiUnclusteredUp);
    fChain->SetBranchAddress("PuppiMET_pt", &PuppiMET_pt, &b_PuppiMET_pt);
-   fChain->SetBranchAddress("PuppiMET_ptJERDown", &PuppiMET_ptJERDown, &b_PuppiMET_ptJERDown);
-   fChain->SetBranchAddress("PuppiMET_ptJERUp", &PuppiMET_ptJERUp, &b_PuppiMET_ptJERUp);
-   fChain->SetBranchAddress("PuppiMET_ptJESDown", &PuppiMET_ptJESDown, &b_PuppiMET_ptJESDown);
-   fChain->SetBranchAddress("PuppiMET_ptJESUp", &PuppiMET_ptJESUp, &b_PuppiMET_ptJESUp);
+   //fChain->SetBranchAddress("PuppiMET_ptJERDown", &PuppiMET_ptJERDown, &b_PuppiMET_ptJERDown);
+   //fChain->SetBranchAddress("PuppiMET_ptJERUp", &PuppiMET_ptJERUp, &b_PuppiMET_ptJERUp);
+   //fChain->SetBranchAddress("PuppiMET_ptJESDown", &PuppiMET_ptJESDown, &b_PuppiMET_ptJESDown);
+   //fChain->SetBranchAddress("PuppiMET_ptJESUp", &PuppiMET_ptJESUp, &b_PuppiMET_ptJESUp);
    fChain->SetBranchAddress("PuppiMET_ptUnclusteredDown", &PuppiMET_ptUnclusteredDown, &b_PuppiMET_ptUnclusteredDown);
    fChain->SetBranchAddress("PuppiMET_ptUnclusteredUp", &PuppiMET_ptUnclusteredUp, &b_PuppiMET_ptUnclusteredUp);
    fChain->SetBranchAddress("PuppiMET_sumEt", &PuppiMET_sumEt, &b_PuppiMET_sumEt);
-   fChain->SetBranchAddress("RawMET_phi", &RawMET_phi, &b_RawMET_phi);
-   fChain->SetBranchAddress("RawMET_pt", &RawMET_pt, &b_RawMET_pt);
-   fChain->SetBranchAddress("RawMET_sumEt", &RawMET_sumEt, &b_RawMET_sumEt);
+   //fChain->SetBranchAddress("RawMET_phi", &RawMET_phi, &b_RawMET_phi);
+   //fChain->SetBranchAddress("RawMET_pt", &RawMET_pt, &b_RawMET_pt);
+   //fChain->SetBranchAddress("RawMET_sumEt", &RawMET_sumEt, &b_RawMET_sumEt);
    fChain->SetBranchAddress("RawPuppiMET_phi", &RawPuppiMET_phi, &b_RawPuppiMET_phi);
    fChain->SetBranchAddress("RawPuppiMET_pt", &RawPuppiMET_pt, &b_RawPuppiMET_pt);
    fChain->SetBranchAddress("RawPuppiMET_sumEt", &RawPuppiMET_sumEt, &b_RawPuppiMET_sumEt);
@@ -4210,9 +4210,9 @@ void MainEvent::Init(TTree *tree)
    fChain->SetBranchAddress("Tau_rawPNetVSe", Tau_rawPNetVSe, &b_Tau_rawPNetVSe);
    fChain->SetBranchAddress("Tau_rawPNetVSjet", Tau_rawPNetVSjet, &b_Tau_rawPNetVSjet);
    fChain->SetBranchAddress("Tau_rawPNetVSmu", Tau_rawPNetVSmu, &b_Tau_rawPNetVSmu);
-   fChain->SetBranchAddress("TkMET_phi", &TkMET_phi, &b_TkMET_phi);
-   fChain->SetBranchAddress("TkMET_pt", &TkMET_pt, &b_TkMET_pt);
-   fChain->SetBranchAddress("TkMET_sumEt", &TkMET_sumEt, &b_TkMET_sumEt);
+   //fChain->SetBranchAddress("TkMET_phi", &TkMET_phi, &b_TkMET_phi);
+   //fChain->SetBranchAddress("TkMET_pt", &TkMET_pt, &b_TkMET_pt);
+   //fChain->SetBranchAddress("TkMET_sumEt", &TkMET_sumEt, &b_TkMET_sumEt);
    fChain->SetBranchAddress("nTrigObj", &nTrigObj, &b_nTrigObj);
    fChain->SetBranchAddress("TrigObj_l1charge", TrigObj_l1charge, &b_TrigObj_l1charge);
    fChain->SetBranchAddress("TrigObj_id", TrigObj_id, &b_TrigObj_id);
