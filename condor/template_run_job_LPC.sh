@@ -90,9 +90,9 @@ ls -l
 # Copy output file to /eos space -- define in submitter code
 ################################################################
 echo ${output_Directory}
-xrdfs root://cmseos.fnal.gov mkdir -p /store/user/${output_Directory}
-xrdcp -f ${output_name}_${job_number}.root root://cmseos.fnal.gov//store/user/${output_Directory}/${output_name}_${job_number}.root
-echo "Output file saved in root://cmseos.fnal.gov//store/user/${output_Directory}/${output_name}_${job_number}.root"
+xrdfs root://cmseos.fnal.gov mkdir -p /store/group/lpchmumu/${output_Directory}
+xrdcp -f ${output_name}_${job_number}.root root://cmseos.fnal.gov//store/group/lpchmumu/${output_Directory}/${output_name}_${job_number}.root
+echo "Output file saved in root://cmseos.fnal.gov//store/group/lpchmumu/${output_Directory}/${output_name}_${job_number}.root"
 rm ${output_name}_${job_number}.root
 rm inputs -rv
 

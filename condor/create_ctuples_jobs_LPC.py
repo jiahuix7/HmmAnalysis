@@ -66,7 +66,8 @@ for dataset_name in list_datasets:
     isData, _, era, type_info, _ = datasets_info[dataset_name]
     channel = dataset_name.split("_Summer")[0]
 
-    EOS_BASE_DIR = "/store/user/csanmart/analyzer_HiggsMuMu/"
+    user = os.getenv('LOGNAME')
+    EOS_BASE_DIR = "/store/group/lpchmumu/" + user + "/analyzer_HiggsMuMu/"
     INPUT_FILE = EOS_BASE_DIR + type_info + "/%s/"%(dataset_name) + "SumGenWeight.root"
     if not os.path.exists("/eos/uscms/" + INPUT_FILE):
         print("Merged file does not exist. Skipping!")
