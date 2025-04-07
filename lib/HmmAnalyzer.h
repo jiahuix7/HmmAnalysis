@@ -518,6 +518,9 @@ void HmmAnalyzer::getPileupHistograms() {
     } else if (yearst == "2023BPix") {
         pileupWeightFile =
             new TFile("./data/pileup/PileupReweight_Summer23BPix.root");
+    } else if (yearst == "2024") {
+        pileupWeightFile =
+            new TFile("./data/pileup/PileupReweight_Summer24.root");
     }
     if (pileupWeightFile) {
         pileupWeightHist = (TH1F *)pileupWeightFile->Get("npu_nominal");
