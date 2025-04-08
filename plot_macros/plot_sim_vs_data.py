@@ -64,9 +64,10 @@ variables = [
     "HT_pt10",
 ]
 
-eras = ["2022", "2022EE", "2023", "2023BPix"]
+# eras = ["2022", "2022EE", "2023", "2023BPix","2024"]
 # eras = ["2022", "2022EE"]
 # eras = ["2023", "2023BPix"]
+eras = ["2024"]
 
 for era in eras:
     for variable in variables:

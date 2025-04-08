@@ -95,6 +95,12 @@ def get_histograms_from_tuple(
     histograms_list = []
     bins_list = []
 
+    # For 2024 data there is not simulations yet!!!
+    # so in the case we re escale the luminosity
+    era_reweight = 1
+    if era == "2024":
+        era_reweight = 106.45/9.45
+
     variable_bin = variables[0]
     if use_ggH_category and (variable_bin + "_ggH" in x_range):
         variable_bin += "_ggH"
@@ -124,17 +130,19 @@ def get_histograms_from_tuple(
                 for variable in variables:
                     branches[variable] = branches[variable][bool_list]
 
+            
             if "delta_phi" in variables[0]:
                 branches[variables[0]] = np.absolute(branches[variables[0]])
+
             histogram, bins = np.histogram(
                 branches[variables[0]],
                 bins=n_bins[variable_bin],
                 range=x_range[variable_bin],
                 # weights=branches["weight"],
                 weights=(
-                    branches["weight"]
+                    branches["weight"]*era_reweight
                     if use_puweight
-                    else branches["weight"] / branches["pileup_weight"]
+                    else branches["weight"]/ branches["pileup_weight"]
                 ),
             )
             histograms_list.append(histogram)
@@ -205,14 +213,19 @@ def draw_data_and_simul_and_ratio(
     if variable == "diMuon_mass":
         data_histogram[data_histogram == 0] = -100.0
 
+    simulation_era = era
+    if era == "2024":
+        simulation_era = "2023BPix"
+
     bkg_histograms_list, bkg_bins_list = get_histograms_from_tuple(
-        background_sources, era, variables, True, use_puweight,
+        background_sources, simulation_era, variables, True, use_puweight,
         use_ggH_category, use_VBF_category
     )
     signal_histograms_list, signal_bins_list = get_histograms_from_tuple(
-        signal_sources, era, variables, False, use_puweight,
+        signal_sources, simulation_era, variables, False, use_puweight,
         use_ggH_category, use_VBF_category
     )
+
 
     fig, axs = get_canvas(True)
 
