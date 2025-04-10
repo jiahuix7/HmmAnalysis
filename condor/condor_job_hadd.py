@@ -99,6 +99,7 @@ os.system("mkdir -p hadd/")
 
 user = os.getenv('LOGNAME')
 DIR_eos = "store/group/lpchmumu/" + user + "/analyzer_HiggsMuMu"
+
 analysis_new_job_sender = open("condor_job_sender_missing_files.sh", "w")
 manual_hadd = ""
 for dataset in list_datasets:
