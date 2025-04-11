@@ -10,8 +10,8 @@ constexpr float H_TO_MUMU_BRANCHING_RATIO = 2.176e-4;
 const std::map<TString, float> LUMINOSITY = {
     {"2022B", 0.09656},  {"2022C", 5.0104},   {"2022D", 2.9700},
     {"2022E", 5.8070},   {"2022F", 17.7819},  {"2022G", 3.0828},
-    {"2022", 7.9804},     {"2022EE", 26.6717}, {"2023", 17.794},
-    {"2023BPix", 9.451},
+    {"2022", 7.9804},    {"2022EE", 26.6717}, {"2023", 17.794},
+    {"2023BPix", 9.451}, {"2024", 109.08}
 };
 
 //// Cross section in pb
@@ -91,6 +91,33 @@ const std::map<TString, float> CROSS_SECTION = {
     {"Muon0_2023D_v2", -1},
     {"Muon1_2023D_v1", -1},
     {"Muon1_2023D_v2", -1},
+    {"Muon0_2024B", -1},
+    {"Muon0_2024C", -1},
+    {"Muon0_2024D", -1},
+    {"Muon0_2024E_v1", -1},
+    {"Muon0_2024E_v2", -1},
+    {"Muon0_2024F", -1},
+    {"Muon0_2024G", -1},
+    {"Muon0_2024H", -1},
+    {"Muon0_2024I_v1", -1},
+    {"Muon0_2024I_v2", -1},
+    {"Muon1_2024B", -1},
+    {"Muon1_2024C", -1},
+    {"Muon1_2024D", -1},
+    {"Muon1_2024E_v1", -1},
+    {"Muon1_2024E_v2", -1},
+    {"Muon1_2024F", -1},
+    {"Muon1_2024G", -1},
+    {"Muon1_2024H", -1},
+    {"Muon1_2024I_v1", -1},
+    {"Muon1_2024I_v2", -1},
+    {"MuonEG_2024E_v1", -1},
+    {"MuonEG_2024E_v2", -1},
+    {"MuonEG_2024F", -1},
+    {"MuonEG_2024G", -1},
+    {"MuonEG_2024H", -1},
+    {"MuonEG_2024I_v1", -1},
+    {"MuonEG_2024I_v2", -1}
 };
 
 #endif // LIB_RUN3CONTANTS_H

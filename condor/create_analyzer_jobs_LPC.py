@@ -133,7 +133,7 @@ for dataset_name in list_datasets:
     jobfile_JDL.write("Executable = ./run_job_LPC.sh" + "\n")
 
     EOS_SUBPATH = os.getenv('LOGNAME') + "/analyzer_%s/"%(outputfile) + type_info + "/%s/"%(dataset_name)
-    os.system("xrdfs root://cmseos.fnal.gov mkdir -p /store/user/"+ EOS_SUBPATH)
+    os.system("xrdfs root://cmseos.fnal.gov mkdir -p /store/group/lpchmumu/"+ EOS_SUBPATH)
     args = outputfile + " $(I) " + isData + " " + year + " " + EOS_SUBPATH + " " + cmsswReleaseVersion
     jobfile_JDL.write("Arguments = " + args + "\n")
 
