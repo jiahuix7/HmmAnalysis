@@ -87,7 +87,7 @@ def get_background_label_list(background_sources):
 
 def get_histograms_from_tuple(
     sources, era, variables, is_background, use_puweight,
-    use_ggH_category, use_VBF_category
+    use_ggH_category, use_VBF_category,  lumi_rescale=False,
 ):
     if not use_puweight:
         variables.append("pileup_weight")
@@ -98,7 +98,7 @@ def get_histograms_from_tuple(
     # For 2024 data there is not simulations yet!!!
     # so in the case we re escale the luminosity
     era_reweight = 1
-    if era == "2024":
+    if lumi_rescale:
         era_reweight = 106.45/9.45
 
     variable_bin = variables[0]
@@ -219,11 +219,11 @@ def draw_data_and_simul_and_ratio(
 
     bkg_histograms_list, bkg_bins_list = get_histograms_from_tuple(
         background_sources, simulation_era, variables, True, use_puweight,
-        use_ggH_category, use_VBF_category
+        use_ggH_category, use_VBF_category, era == "2024",
     )
     signal_histograms_list, signal_bins_list = get_histograms_from_tuple(
         signal_sources, simulation_era, variables, False, use_puweight,
-        use_ggH_category, use_VBF_category
+        use_ggH_category, use_VBF_category, era == "2024",
     )
 
 
